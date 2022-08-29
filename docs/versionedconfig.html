@@ -82,13 +82,13 @@
 <span id="versionedconfig-config-module"></span><h2>versionedconfig.config module<a class="headerlink" href="#module-versionedconfig.config" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="versionedconfig.config.CustomValue">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedconfig.config.</span></span><span class="sig-name descname"><span class="pre">CustomValue</span></span><a class="headerlink" href="#versionedconfig.config.CustomValue" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedconfig.config.</span></span><span class="sig-name descname"><span class="pre">CustomValue</span></span><a class="reference internal" href="_modules/versionedconfig/config.html#CustomValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.CustomValue" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract class that can be sub-classed if you want to serialize/deserialize
 a custom class that the standard JSON parser is not handling the way you want</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.CustomValue.from_dict">
-<span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.CustomValue.from_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#CustomValue.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.CustomValue.from_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Load this object instance with values from a dict returned by json.load</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -99,7 +99,7 @@ a custom class that the standard JSON parser is not handling the way you want</p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.CustomValue.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.CustomValue.to_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#CustomValue.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.CustomValue.to_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Convert this object instance to something that is suitable for json.dump</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -115,7 +115,7 @@ a custom class that the standard JSON parser is not handling the way you want</p
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="versionedconfig.config.LoadConfigError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedconfig.config.</span></span><span class="sig-name descname"><span class="pre">LoadConfigError</span></span><a class="headerlink" href="#versionedconfig.config.LoadConfigError" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedconfig.config.</span></span><span class="sig-name descname"><span class="pre">LoadConfigError</span></span><a class="reference internal" href="_modules/versionedconfig/config.html#LoadConfigError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.LoadConfigError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception raised whenever saved config data cannot be loaded, either because of
 a JSON parser error, or because of unrecognized/invalid fields</p>
@@ -123,13 +123,13 @@ a JSON parser error, or because of unrecognized/invalid fields</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedconfig.config.</span></span><span class="sig-name descname"><span class="pre">VersionedConfig</span></span><a class="headerlink" href="#versionedconfig.config.VersionedConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedconfig.config.</span></span><span class="sig-name descname"><span class="pre">VersionedConfig</span></span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Versioned config class supporting saving/loading to/from JSON files, and
 migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig.add_migration">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migration_func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.VersionedConfig.add_migration" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migration_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig.add_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig.add_migration" title="Permalink to this definition"></a></dt>
 <dd><p>Add a function for migration config data from an earlier version to a later version</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -144,7 +144,7 @@ migrating older files to the current version</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig.from_dict">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.VersionedConfig.from_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig.from_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Load config data from a dict</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -155,7 +155,7 @@ migrating older files to the current version</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig.from_file">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.VersionedConfig.from_file" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig.from_file" title="Permalink to this definition"></a></dt>
 <dd><p>Load config data from a JSON file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -166,7 +166,7 @@ migrating older files to the current version</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.VersionedConfig.from_json" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonstr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig.from_json" title="Permalink to this definition"></a></dt>
 <dd><p>Load config data from a JSON string</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -182,7 +182,7 @@ migrating older files to the current version</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig.to_dict">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.VersionedConfig.to_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig.to_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Convert config object to a dict, suitable for passing to the json library</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -196,7 +196,7 @@ migrating older files to the current version</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig.to_file">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.VersionedConfig.to_file" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig.to_file" title="Permalink to this definition"></a></dt>
 <dd><p>Save config data to a JSON file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -210,7 +210,7 @@ migrating older files to the current version</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedconfig.config.VersionedConfig.to_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#versionedconfig.config.VersionedConfig.to_json" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedconfig/config.html#VersionedConfig.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedconfig.config.VersionedConfig.to_json" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a JSON string containing all config data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
