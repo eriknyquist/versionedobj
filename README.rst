@@ -5,7 +5,7 @@ This package provides an easy way to define nested configuration data structures
 in python, save/load them to/from JSON files, and migrate older versions of your config
 file to the latest version.
 
-See `API documentation <eriknyquist.github.io/versionedconfig/>`_
+See `API documentation <https://eriknyquist.github.io/versionedconfig/>`_
 
 Config file example
 -------------------
