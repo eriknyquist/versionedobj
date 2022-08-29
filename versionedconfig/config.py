@@ -67,7 +67,7 @@ class VersionedConfig(metaclass=__Meta):
         if attrs['version'] != version:
             # Attempt migrations
             for fromversion, toversion, migrate in cls.migrations:
-                if fromversion == version:
+                if fromversion == version_after_migration:
                     attrs = migrate(attrs)
 
                 version_after_migration = toversion
@@ -75,7 +75,7 @@ class VersionedConfig(metaclass=__Meta):
                     break
 
         if version_after_migration != version:
-            raise ValueError(f"Failed to migrate from version {version_before_migration} to {version}")
+            raise LoadConfigError(f"Failed to migrate from version {version_before_migration} to {version}")
 
         return attrs
 
