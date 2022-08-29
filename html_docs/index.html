@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to versionedconfig’s documentation! &mdash; versionedconfig v0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="versionedconfig" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> versionedconfig
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">versionedconfig</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">versionedconfig</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>Welcome to versionedconfig’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="welcome-to-versionedconfig-s-documentation">
+<h1>Welcome to versionedconfig’s documentation!<a class="headerlink" href="#welcome-to-versionedconfig-s-documentation" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">versionedconfig</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="versionedconfig.html">versionedconfig package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="versioned-config-file-class-for-python-3x">
+<h1>Versioned config file class for python 3x<a class="headerlink" href="#versioned-config-file-class-for-python-3x" title="Permalink to this headline"></a></h1>
+<p>This package provides an easy way to define nested configuration data structures
+in python, save/load them to/from JSON files, and migrate older versions of your config
+file to the latest version.</p>
+<div class="section" id="config-file-example">
+<h2>Config file example<a class="headerlink" href="#config-file-example" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig.config</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+
+<span class="c1"># Nested config object</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
+    <span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;1920x1080&quot;</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.66</span>
+
+<span class="c1"># Top-level config object with another nested config object</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
+    <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
+    <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span>
+
+<span class="c1"># Change some values</span>
+<span class="n">UserConfig</span><span class="o">.</span><span class="n">display_config</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">UserConfig</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;jane doe&quot;</span>
+
+<span class="c1"># Save to JSON file</span>
+<span class="n">UserConfig</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Load from JSON file</span>
+<span class="n">UserConfig</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also just get the config data as a string:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">UserConfig</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="go">{</span>
+<span class="go">    &quot;version&quot;: &quot;v1.0.0&quot;,</span>
+<span class="go">    &quot;username&quot;: &quot;jane doe&quot;,</span>
+<span class="go">    &quot;friend_list&quot;: [</span>
+<span class="go">            &quot;user1&quot;,</span>
+<span class="go">            &quot;user2&quot;,</span>
+<span class="go">            &quot;user3&quot;</span>
+<span class="go">    ],</span>
+<span class="go">    &quot;display_config&quot;: {</span>
+<span class="go">        &quot;display_mode&quot;: &quot;windowed&quot;,</span>
+<span class="go">        &quot;resolution&quot;: &quot;1920x1080&quot;,</span>
+<span class="go">        &quot;volume&quot;: 1.0</span>
+<span class="go">    }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="migrations-making-use-of-the-version-number">
+<h2>Migrations – making use of the version number<a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
+<p>Any VersionedConfig object can have a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute, which can be any object,
+although it is typically a string (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;v1.2.3&quot;</span></code>). This version attribute can be
+used to support migrations for older config files, in the event that you need to
+change the format of your config file.</p>
+<p>Let’s take the same config file definition from the previous example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig.config</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+
+<span class="c1"># Nested config object</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
+    <span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;1920x1080&quot;</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.66</span>
+
+<span class="c1"># Top-level config object with another nested config object</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
+    <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
+    <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span>
+</pre></div>
+</div>
+<p>Imagine we’ve already released this code out into the world. People are already
+using it, and they have JSON files generated by the <code class="docutils literal notranslate"><span class="pre">UserConfig</span></code> class sitting
+on their computers.</p>
+<p>Now, imagine you are making a new release of your software, and some new features
+require you to make the following changes to the config file structure:</p>
+<ul class="simple">
+<li><p>remove the the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.resolution</span></code> field entirely</p></li>
+<li><p>change the name of <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volume</span></code> to <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code></p></li>
+<li><p>change the value of <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code> from a float to a list</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig.config</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+
+<span class="c1"># Nested config object</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
+    <span class="c1"># &#39;resolution&#39; field is deleted</span>
+    <span class="n">volumes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># &#39;volume&#39; is now called &#39;volumes&#39;, and is a list</span>
+
+<span class="c1"># Top-level config object with another nested config object</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
+    <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
+    <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span>
+</pre></div>
+</div>
+<p>Now, if you send this updated UserConfig class to your existing users, it will fail
+to load their existing JSON files with version <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>, since those files will contain
+the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.resolution</span></code> field that we deleted in <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">DisplayConfig.volume</span></code> will similarly be gone, having been replaced with
+<code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code>. This situation is what migrations are for.</p>
+<p>The solution is to:</p>
+<ol class="arabic simple">
+<li><p>Change the version number to something new, e.g. <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> becomes <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code></p></li>
+<li><p>Write a migration function to transform <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> config data into <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code> config data</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig.config</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+
+<span class="c1"># Nested config object</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
+    <span class="c1"># &#39;resolution&#39; field is deleted</span>
+    <span class="n">volumes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># &#39;volume&#39; is now called &#39;volumes&#39;, and is a list</span>
+
+<span class="c1"># Top-level config object with another nested config object</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.1&quot;</span> <span class="c1"># Version has been updated to 1.0.1</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
+    <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
+    <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span>
+
+<span class="c1"># Create the migration function for v1.0.0 to v1.0.1</span>
+<span class="k">def</span> <span class="nf">migrate_100_to_101</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
+    <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;display_config&#39;</span><span class="p">][</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>        <span class="c1"># Delete resolution field</span>
+    <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;display_config&#39;</span><span class="p">][</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span>            <span class="c1"># Delete volume field</span>
+    <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;display_config&#39;</span><span class="p">][</span><span class="s1">&#39;volumes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># Add defaults for new volume values</span>
+    <span class="k">return</span> <span class="n">attrs</span>                                     <span class="c1"># Return modified data (important!)</span>
+
+<span class="c1"># Add the migration function for v1.0.0 to v1.0.1</span>
+<span class="n">UserConfig</span><span class="o">.</span><span class="n">add_migration</span><span class="p">(</span><span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;v1.0.1&quot;</span><span class="p">,</span> <span class="n">migrate_100_to_101</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, JSON files with version <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> will be migrated to version <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, and when you do
+<code class="docutils literal notranslate"><span class="pre">UserConfig.to_json</span></code> or <code class="docutils literal notranslate"><span class="pre">UserConfig.to_file</span></code>, the new migrated version will be written
+out.</p>
+<p>The downside to this approach, is that you have to manually bump the version number,
+and write a new migration function, anytime the structure of your config data changes.</p>
+<p>The upside, of course, is that you can relatively easily support migrating any older
+version of your config file to the current version.</p>
+<p>If you don’t need the versioning/migration functionality, just never change your version
+number, or don’t create a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute on your <code class="docutils literal notranslate"><span class="pre">VersionedConfig</span></code> classes.</p>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-right" title="versionedconfig" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Erik K. Nyquist.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
