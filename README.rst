@@ -1,4 +1,4 @@
-Versioned config file class for python 3+
+Versioned config file class for python 3x
 =========================================
 
 This package provides an easy way to define nested configuration data structures
@@ -61,9 +61,9 @@ Migrations -- making use of the version number
 ----------------------------------------------
 
 Any VersionedConfig object can have a ``version`` attribute, which can be any object,
-although it is typically a string (e.g. ``"v1.2.3"``). This can be used to support
-migrations for older config files, in the event that you need to change the format
-of your config file.
+although it is typically a string (e.g. ``"v1.2.3"``). This version attribute can be
+used to support migrations for older config files, in the event that you need to
+change the format of your config file.
 
 Let's take the same config file definition from the previous example:
 
