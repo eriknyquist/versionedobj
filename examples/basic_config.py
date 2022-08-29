@@ -1,4 +1,4 @@
-from versionedconfig.config import VersionedConfig
+from versionedconfig import VersionedConfig
 
 # Nested config object
 class DisplayConfig(VersionedConfig):

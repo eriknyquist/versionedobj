@@ -1,17 +1,60 @@
 import inspect
 import json
+from json.decoder import JSONDecodeError
+
+
+class LoadConfigError(Exception):
+    """
+    Exception raised whenever saved config data cannot be loaded, either because of
+    a JSON parser error, or because of unrecognized/invalid fields
+    """
+    pass
+
+
+class CustomValue(object):
+    """
+    Abstract class that can be sub-classed if you want to serialize/deserialize
+    a custom class that the standard JSON parser is not handling the way you want
+    """
+    def to_dict(self):
+        """
+        Convert this object instance to something that is suitable for json.dump
+
+        :return: object instance data as a dict, or a single value
+        :rtype: any object
+        """
+        raise NotImplementedError()
+
+    def from_dict(self, attrs):
+        """
+        Load this object instance with values from a dict returned by json.load
+
+        :param dict attrs: object instance data
+        """
+        raise NotImplementedError()
 
 
 class __Meta(type):
+    """
+    Metaclass for VersionedConfig, creates the 'migrations' class attribute
+    """
     def __init__(cls, name, bases, dct):
         cls.migrations = []
 
-
 class VersionedConfig(metaclass=__Meta):
+    """
+    Versioned config class supporting saving/loading to/from JSON files, and
+    migrating older files to the current version
+    """
     @classmethod
     def _load_attr(cls, name, value):
         attr = cls.__dict__.get(name, None)
-        if inspect.isclass(attr) and issubclass(attr, VersionedConfig):
+        if attr is None:
+            raise LoadConfigError(f"Unrecognized attribute name '{name}'")
+
+        nested_config = inspect.isclass(attr) and issubclass(attr, VersionedConfig)
+
+        if nested_config or isinstance(value, CustomValue):
             attr.from_dict(value)
         else:
             setattr(cls, name, value)
@@ -53,7 +96,9 @@ class VersionedConfig(metaclass=__Meta):
                 continue
 
             value = cls.__dict__[n]
-            if inspect.isclass(value) and issubclass(value, VersionedConfig):
+            nested_config = inspect.isclass(value) and issubclass(value, VersionedConfig)
+
+            if nested_config or isinstance(value, CustomValue):
                 ret[n] = value.to_dict()
             else:
                 ret[n] = value
@@ -100,7 +145,12 @@ class VersionedConfig(metaclass=__Meta):
 
         :param str jsonstr: JSON string to load
         """
-        self.from_dict(json.loads(jsonstr))
+        try:
+            d = json.loads(jsonstr)
+        except JSONDecodeError:
+            raise LoadConfigError("JSON decode failure")
+
+        self.from_dict(d)
 
     @classmethod
     def to_file(self, filename, indent=None):
