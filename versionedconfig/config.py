@@ -7,11 +7,11 @@ class __Meta(type):
         cls.migrations = []
 
 
-class EasyConfig(metaclass=__Meta):
+class VersionedConfig(metaclass=__Meta):
     @classmethod
     def _load_attr(cls, name, value):
         attr = cls.__dict__.get(name, None)
-        if inspect.isclass(attr) and issubclass(attr, EasyConfig):
+        if inspect.isclass(attr) and issubclass(attr, VersionedConfig):
             attr.from_dict(value)
         else:
             setattr(cls, name, value)
@@ -53,7 +53,7 @@ class EasyConfig(metaclass=__Meta):
                 continue
 
             value = cls.__dict__[n]
-            if inspect.isclass(value) and issubclass(value, EasyConfig):
+            if inspect.isclass(value) and issubclass(value, VersionedConfig):
                 ret[n] = value.to_dict()
             else:
                 ret[n] = value
