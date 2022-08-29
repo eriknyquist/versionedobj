@@ -188,3 +188,92 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(8888, TestConfig.value1)
         self.assertEqual(1234, TestConfig.value2)
         self.assertEqual('1.0.22', TestConfig.version)
+
+    def test_load_dict_deeper_nesting(self):
+        class Level4(VersionedConfig):
+            val1 = True
+            val2 = False
+
+        class Level3(VersionedConfig):
+            val1 = 66.6
+            val2 = Level4
+
+        class Level2(VersionedConfig):
+            val1 = "gg"
+            val2 = Level3
+
+        class Level1(VersionedConfig):
+            val1 = 3
+            val2 = Level2
+
+        d = Level1.to_dict()
+
+        self.assertEqual(3, d['val1'])
+        self.assertEqual('gg', d['val2']['val1'])
+        self.assertEqual(66.6, d['val2']['val2']['val1'])
+        self.assertEqual(True, d['val2']['val2']['val2']['val1'])
+        self.assertEqual(False, d['val2']['val2']['val2']['val2'])
+
+        d['val2']['val1'] = "changed"
+        Level1.from_dict(d)
+
+        self.assertEqual(3, Level1.val1)
+        self.assertEqual('changed', Level1.val2.val1)
+        self.assertEqual(66.6, Level1.val2.val2.val1)
+        self.assertEqual(True, Level1.val2.val2.val2.val1)
+        self.assertEqual(False, Level1.val2.val2.val2.val2)
+
+    def test_load_json_deeper_nesting(self):
+        class Level4(VersionedConfig):
+            val1 = True
+            val2 = False
+
+        class Level3(VersionedConfig):
+            val1 = 66.6
+            val2 = Level4
+
+        class Level2(VersionedConfig):
+            val1 = "gg"
+            val2 = Level3
+
+        class Level1(VersionedConfig):
+            val1 = 3
+            val2 = Level2
+
+        d = Level1.to_json()
+        Level1.from_json(d)
+
+        self.assertEqual(3, Level1.val1)
+        self.assertEqual('gg', Level1.val2.val1)
+        self.assertEqual(66.6, Level1.val2.val2.val1)
+        self.assertEqual(True, Level1.val2.val2.val2.val1)
+        self.assertEqual(False, Level1.val2.val2.val2.val2)
+
+    def test_load_file_deeper_nesting(self):
+        class Level4(VersionedConfig):
+            val1 = True
+            val2 = False
+
+        class Level3(VersionedConfig):
+            val1 = 66.6
+            val2 = Level4
+
+        class Level2(VersionedConfig):
+            val1 = "gg"
+            val2 = Level3
+
+        class Level1(VersionedConfig):
+            val1 = 3
+            val2 = Level2
+
+        filename = "__test_cfg.txt"
+        Level1.to_file(filename)
+        Level1.from_file(filename)
+
+        self.assertEqual(3, Level1.val1)
+        self.assertEqual('gg', Level1.val2.val1)
+        self.assertEqual(66.6, Level1.val2.val2.val1)
+        self.assertEqual(True, Level1.val2.val2.val2.val1)
+        self.assertEqual(False, Level1.val2.val2.val2.val2)
+
+        os.remove(filename)
