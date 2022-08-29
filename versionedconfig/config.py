@@ -176,7 +176,7 @@ class VersionedConfig(metaclass=__Meta):
     @classmethod
     def add_migration(cls, from_version, to_version, migration_func):
         """
-        Add a function for migration config data from an earlier version to a later version
+        Add a function to migrate config data from an earlier version to a later version
 
         :param from_version: Version to migrate from
         :param to_version: Version to migrate to
