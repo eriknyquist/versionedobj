@@ -12,7 +12,7 @@ Config file example
 
 .. code:: python
 
-    from versionedconfig.config import VersionedConfig
+    from versionedconfig import VersionedConfig
 
     # Nested config object
     class DisplayConfig(VersionedConfig):
@@ -71,7 +71,7 @@ Let's take the same config file definition from the previous example:
 
 .. code:: python
 
-    from versionedconfig.config import VersionedConfig
+    from versionedconfig import VersionedConfig
 
     # Nested config object
     class DisplayConfig(VersionedConfig):
@@ -100,7 +100,7 @@ require you to make the following changes to the config file structure:
 
 .. code:: python
 
-    from versionedconfig.config import VersionedConfig
+    from versionedconfig import VersionedConfig
 
     # Nested config object
     class DisplayConfig(VersionedConfig):
@@ -128,7 +128,7 @@ The solution is to:
 
 .. code:: python
 
-    from versionedconfig.config import VersionedConfig
+    from versionedconfig import VersionedConfig
 
     # Nested config object
     class DisplayConfig(VersionedConfig):
