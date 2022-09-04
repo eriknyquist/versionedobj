@@ -25,13 +25,9 @@ Example-- VersionedObject as a configuration file
         friend_list = ["user1", "user2", "user3"]
         display_config = DisplayConfig() # VersionedObjects can be nested
 
-    # Create an instance of your object (instance attributes will match class attributes)
+    # Create an instance of your object (instance attributes will match class attributes,
+    # and the initial values will be whatever values you set on the class attributes)
     cfg = UserConfig()
-    # cfg.version == "v1.0.0"
-    # cfg.username == "john smith"
-    # cfg.friend_list == ["user1", "user2", "user3"]
-    # cfg.display_config.display_mode == "windowed"
-    # ... etc
 
     # Change some values on the object instance
     cfg.display_config.volume = 1.0

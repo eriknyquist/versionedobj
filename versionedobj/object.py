@@ -226,10 +226,22 @@ class VersionedObject(metaclass=__Meta):
     Versioned object class supporting saving/loading to/from JSON files, and
     migrating older files to the current version
     """
-    def __init__(self):
+    def __init__(self, initial_values={}):
+        """
+        :param dict: map of initial values. Keys are the field name, and values are\
+            the initial values to set.
+        """
+        # Set all class attributes as instance attributes
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
             setattr(self, n, val)
+
+        # Set alternate initial values, if any
+        for field in _walk_obj_attrs(self):
+            dotname = field.dot_name()
+            if dotname in initial_values:
+                field.value = initial_values[dotname]
+                field.set_obj_field(self)
 
     @classmethod
     def add_migration(cls, from_version, to_version, migration_func):

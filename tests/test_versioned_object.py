@@ -759,3 +759,20 @@ class TestVersionedObject(TestCase):
         self.assertEqual("hello", cfg.var2.var1)
         self.assertEqual(55.5, cfg.var2.var2)
         self.assertEqual(True, cfg.var3)
+
+    def test_instantiation_with_initial_values(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hello"
+            var2 = 55.5
+
+        class TestConfig(VersionedObject):
+            var1 = 4
+            var2 = NestedConfig()
+            var3 = True
+
+        cfg = TestConfig(initial_values={'var1': 99, 'var2.var2': "changed"})
+
+        self.assertEqual(99, cfg.var1)
+        self.assertEqual("hello", cfg.var2.var1)
+        self.assertEqual("changed", cfg.var2.var2)
+        self.assertEqual(True, cfg.var3)

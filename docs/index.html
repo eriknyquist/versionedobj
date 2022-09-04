@@ -97,13 +97,9 @@ saved/loaded to/from strings or JSON files, and easily migrated from older objec
     <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
     <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span><span class="p">()</span> <span class="c1"># VersionedObjects can be nested</span>
 
-<span class="c1"># Create an instance of your object (instance attributes will match class attributes)</span>
+<span class="c1"># Create an instance of your object (instance attributes will match class attributes,</span>
+<span class="c1"># and the initial values will be whatever values you set on the class attributes)</span>
 <span class="n">cfg</span> <span class="o">=</span> <span class="n">UserConfig</span><span class="p">()</span>
-<span class="c1"># cfg.version == &quot;v1.0.0&quot;</span>
-<span class="c1"># cfg.username == &quot;john smith&quot;</span>
-<span class="c1"># cfg.friend_list == [&quot;user1&quot;, &quot;user2&quot;, &quot;user3&quot;]</span>
-<span class="c1"># cfg.display_config.display_mode == &quot;windowed&quot;</span>
-<span class="c1"># ... etc</span>
 
 <span class="c1"># Change some values on the object instance</span>
 <span class="n">cfg</span><span class="o">.</span><span class="n">display_config</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -116,8 +112,9 @@ saved/loaded to/from strings or JSON files, and easily migrated from older objec
 <span class="n">cfg</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can also just get the object data as a string:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<p>You can also save/load object data as a JSON string:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_json</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># Serialize to JSON string</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_json</span>                         <span class="c1"># Print JSON string</span>
 
 <span class="go">{</span>
 <span class="go">    &quot;version&quot;: &quot;v1.0.0&quot;,</span>
@@ -133,6 +130,17 @@ saved/loaded to/from strings or JSON files, and easily migrated from older objec
 <span class="go">        &quot;volume&quot;: 1.0</span>
 <span class="go">    }</span>
 <span class="go">}</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">obj_as_json</span><span class="p">)</span>          <span class="c1"># Load from JSON string</span>
+</pre></div>
+</div>
+<p>Or, as a dict:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_dict</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>   <span class="c1"># Serialize to dict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_dict</span>                   <span class="c1"># Print dict</span>
+
+<span class="go">{&#39;version&#39;: &#39;1.0.0&#39;, &#39;username&#39;: &#39;jane doe&#39;, &#39;friend_list&#39;: [&#39;user1&#39;, &#39;user2&#39;, &#39;user3&#39;], &#39;display_config&#39;: {&#39;display_mode&#39;: &#39;windowed&#39;, &#39;resolution&#39;: &#39;1920x1080&#39;, &#39;volume&#39;: 1.0}}</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">obj_as_dict</span><span class="p">)</span>    <span class="c1"># Load from dict</span>
 </pre></div>
 </div>
 </div>

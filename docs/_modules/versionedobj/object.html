@@ -292,10 +292,22 @@
 <span class="sd">    Versioned object class supporting saving/loading to/from JSON files, and</span>
 <span class="sd">    migrating older files to the current version</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VersionedObject.__init__"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_values</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param dict: map of initial values. Keys are the field name, and values are\</span>
+<span class="sd">            the initial values to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set all class attributes as instance attributes</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_iter_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="c1"># Set alternate initial values, if any</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">dotname</span> <span class="ow">in</span> <span class="n">initial_values</span><span class="p">:</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">initial_values</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VersionedObject.add_migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.add_migration">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">):</span>

@@ -130,10 +130,20 @@ a JSON parser error, or because of unrecognized/invalid fields</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">VersionedObject</span></span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">VersionedObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Versioned object class supporting saving/loading to/from JSON files, and
 migrating older files to the current version</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.object.VersionedObject.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dict</strong> – map of initial values. Keys are the field name, and values are            the initial values to set.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.add_migration">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migration_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.add_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.add_migration" title="Permalink to this definition"></a></dt>
