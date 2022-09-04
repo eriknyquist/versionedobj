@@ -69,6 +69,13 @@
 <span class="kn">from</span> <span class="nn">json.decoder</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
 
 
+<div class="viewcode-block" id="InvalidFilterError"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.InvalidFilterError">[docs]</a><span class="k">class</span> <span class="nc">InvalidFilterError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised whenever &#39;only&#39; and &#39;ignore&#39; filters are used at the same time</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
 <div class="viewcode-block" id="LoadConfigError"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.LoadConfigError">[docs]</a><span class="k">class</span> <span class="nc">LoadConfigError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised whenever saved config data cannot be loaded, either because of</span>
@@ -107,137 +114,129 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">migrations</span> <span class="o">=</span> <span class="p">[]</span>
 
+
+<div class="viewcode-block" id="ConfigField"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.ConfigField">[docs]</a><span class="k">class</span> <span class="nc">ConfigField</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">=</span> <span class="n">fieldname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Field(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ConfigField.dot_name"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.ConfigField.dot_name">[docs]</a>    <span class="k">def</span> <span class="nf">dot_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="ConfigField.get_obj_field"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.ConfigField.get_obj_field">[docs]</a>    <span class="k">def</span> <span class="nf">get_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">parent_obj</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+                <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConfigField.set_obj_field"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.ConfigField.set_obj_field">[docs]</a>    <span class="k">def</span> <span class="nf">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">,</span> <span class="n">create_nonexistent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">parent_obj</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">create_nonexistent</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">,</span> <span class="nb">object</span><span class="p">())</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+                <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConfigField.set_dict_field"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.ConfigField.set_dict_field">[docs]</a>    <span class="k">def</span> <span class="nf">set_dict_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">):</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="n">parent_attrs</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+                    <span class="n">attrs</span><span class="p">[</span><span class="n">pname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">pname</span><span class="p">]</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">parent_attrs</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_iter_obj_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="s1">&#39;migrations&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">yield</span> <span class="n">n</span>
+
+
+<span class="k">def</span> <span class="nf">_walk_obj_attrs</span><span class="p">(</span><span class="n">parent_obj</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">obj_stack</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">)]</span>
+
+    <span class="k">while</span> <span class="n">obj_stack</span><span class="p">:</span>
+        <span class="n">fieldname</span><span class="p">,</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">obj_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fieldname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_iter_obj_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">ConfigField</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">VersionedConfig</span><span class="p">):</span>
+                <span class="n">obj_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="n">only</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">in</span> <span class="n">only</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">field</span>
+
+
+<span class="k">def</span> <span class="nf">_walk_dict_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">attrs_stack</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">)]</span>
+
+    <span class="k">while</span> <span class="n">attrs_stack</span><span class="p">:</span>
+        <span class="n">fieldname</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fieldname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">ConfigField</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+            <span class="n">field_value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_obj_field</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">VersionedConfig</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">)):</span>
+                <span class="n">attrs_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="n">only</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">in</span> <span class="n">only</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">field</span>
+
+
 <div class="viewcode-block" id="VersionedConfig"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig">[docs]</a><span class="k">class</span> <span class="nc">VersionedConfig</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">__Meta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Versioned config class supporting saving/loading to/from JSON files, and</span>
 <span class="sd">    migrating older files to the current version</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_load_attr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">attr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">attr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-
-        <span class="n">nested_config</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">VersionedConfig</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">nested_config</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CustomValue</span><span class="p">):</span>
-            <span class="n">attr</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_migrate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
-        <span class="n">version_before_migration</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
-        <span class="n">version_after_migration</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
-        
-        <span class="k">if</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
-            <span class="c1"># Attempt migrations</span>
-            <span class="k">for</span> <span class="n">fromversion</span><span class="p">,</span> <span class="n">toversion</span><span class="p">,</span> <span class="n">migrate</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">migrations</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">fromversion</span> <span class="o">==</span> <span class="n">version_after_migration</span><span class="p">:</span>
-                    <span class="n">attrs</span> <span class="o">=</span> <span class="n">migrate</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
-
-                <span class="n">version_after_migration</span> <span class="o">=</span> <span class="n">toversion</span>
-                <span class="k">if</span> <span class="n">toversion</span> <span class="o">==</span> <span class="n">version</span><span class="p">:</span>
-                    <span class="k">break</span>
-
-        <span class="k">if</span> <span class="n">version_after_migration</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to migrate from version </span><span class="si">{</span><span class="n">version_before_migration</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">attrs</span>
-
-<div class="viewcode-block" id="VersionedConfig.to_dict"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.to_dict">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convert config object to a dict, suitable for passing to the json library</span>
-
-<span class="sd">        :return: config data as a dict</span>
-<span class="sd">        :rtype: dict</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
-                <span class="k">continue</span>
-
-            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="s1">&#39;migrations&#39;</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-            <span class="n">nested_config</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">VersionedConfig</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">nested_config</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CustomValue</span><span class="p">):</span>
-                <span class="n">ret</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ret</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-        <span class="k">return</span> <span class="n">ret</span></div>
-
-<div class="viewcode-block" id="VersionedConfig.from_dict"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load config data from a dict</span>
-
-<span class="sd">        :param dict attrs: dict containing config data</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Config is versioned, check if migrations are needed</span>
-            <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Config should be versioned, but version not found in loaded data&quot;</span><span class="p">)</span>
-
-            <span class="n">attrs</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_migrate</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="s1">&#39;version&#39;</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_load_attr</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="n">n</span><span class="p">])</span></div>
-
-<div class="viewcode-block" id="VersionedConfig.to_json"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.to_json">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generate a JSON string containing all config data</span>
-
-<span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
-
-<span class="sd">        :return: Config data as a JSON string</span>
-<span class="sd">        :rtype: str</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="VersionedConfig.from_json"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.from_json">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load config data from a JSON string</span>
-
-<span class="sd">        :param str jsonstr: JSON string to load</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">JSONDecodeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="s2">&quot;JSON decode failure&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="VersionedConfig.to_file"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.to_file">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save config data to a JSON file</span>
-
-<span class="sd">        :param str filename: Name of file to write</span>
-<span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="VersionedConfig.from_file"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.from_file">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load config data from a JSON file</span>
-
-<span class="sd">        :param str filename: Name of file to load</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_iter_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
 <div class="viewcode-block" id="VersionedConfig.add_migration"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.add_migration">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">):</span>
@@ -256,7 +255,129 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot add migration to un-versioned config object. Add a &#39;version&#39; attribute.&quot;</span><span class="p">)</span>
 
-        <span class="bp">cls</span><span class="o">.</span><span class="n">migrations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">))</span></div></div>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">migrations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">))</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_migrate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="n">version_before_migration</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+        <span class="n">version_after_migration</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
+            <span class="c1"># Attempt migrations</span>
+            <span class="k">for</span> <span class="n">fromversion</span><span class="p">,</span> <span class="n">toversion</span><span class="p">,</span> <span class="n">migrate</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">migrations</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fromversion</span> <span class="o">==</span> <span class="n">version_after_migration</span><span class="p">:</span>
+                    <span class="n">attrs</span> <span class="o">=</span> <span class="n">migrate</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+
+                <span class="n">version_after_migration</span> <span class="o">=</span> <span class="n">toversion</span>
+                <span class="k">if</span> <span class="n">toversion</span> <span class="o">==</span> <span class="n">version</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">version_after_migration</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to migrate from version </span><span class="si">{</span><span class="n">version_before_migration</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">attrs</span>
+
+<div class="viewcode-block" id="VersionedConfig.to_dict"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert config object to a dict, suitable for passing to the json library</span>
+
+<span class="sd">        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :return: config data as a dict</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">CustomValue</span><span class="p">):</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">set_dict_field</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="VersionedConfig.from_dict"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load config data from a dict</span>
+
+<span class="sd">        :param dict attrs: dict containing config data</span>
+<span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Config is versioned, check if migrations are needed</span>
+            <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Config should be versioned, but version not found in loaded data&quot;</span><span class="p">)</span>
+
+            <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrate</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+            <span class="c1"># Migration successful or not required, delete version field</span>
+            <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_dict_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">CustomValue</span><span class="p">):</span>
+                <span class="n">val</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VersionedConfig.to_json"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a JSON string containing all config data</span>
+
+<span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
+<span class="sd">        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :return: Config data as a JSON string</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VersionedConfig.from_json"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load config data from a JSON string</span>
+
+<span class="sd">        :param str jsonstr: JSON string to load</span>
+<span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">LoadConfigError</span><span class="p">(</span><span class="s2">&quot;JSON decode failure&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VersionedConfig.to_file"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.to_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save config data to a JSON file</span>
+
+<span class="sd">        :param str filename: Name of file to write</span>
+<span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
+<span class="sd">        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VersionedConfig.from_file"><a class="viewcode-back" href="../../versionedconfig.html#versionedconfig.config.VersionedConfig.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load config data from a JSON file</span>
+
+<span class="sd">        :param str filename: Name of file to load</span>
+<span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
