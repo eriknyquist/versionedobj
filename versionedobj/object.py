@@ -12,7 +12,7 @@ class InvalidFilterError(Exception):
 
 class LoadObjError(Exception):
     """
-    Exception raised whenever saved config data cannot be loaded, either because of
+    Exception raised whenever saved object data cannot be loaded, either because of
     a JSON parser error, or because of unrecognized/invalid fields
     """
     pass
@@ -175,19 +175,19 @@ class VersionedObject(metaclass=__Meta):
     @classmethod
     def add_migration(cls, from_version, to_version, migration_func):
         """
-        Add a function to migrate config data from an earlier version to a later version
+        Add a function to migrate object data from an earlier version to a later version
 
         :param from_version: Version to migrate from
         :param to_version: Version to migrate to
         :param migration_func: Function to perform the migration. The function should\
-            accept one argument, which will be the config data as a dict, and the function\
+            accept one argument, which will be the object data as a dict, and the function\
             should do whatever transformations on the dict that are required for the\
-            migration, and return the transformed dict.
+            migration, and then return the transformed dict.
         """
         try:
             version = cls.__dict__['version']
         except KeyError:
-            raise ValueError("Cannot add migration to un-versioned config object. Add a 'version' attribute.")
+            raise ValueError("Cannot add migration to un-versioned object. Add a 'version' attribute.")
 
         cls.migrations.append((from_version, to_version, migration_func))
 
@@ -213,12 +213,12 @@ class VersionedObject(metaclass=__Meta):
 
     def to_dict(self, only=[], ignore=[]):
         """
-        Convert config object to a dict, suitable for passing to the json library
+        Convert object to a dict, suitable for passing to the json library
 
         :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
-        :return: config data as a dict
+        :return: object data as a dict
         :rtype: dict
         """
         if only and ignore:
@@ -235,9 +235,9 @@ class VersionedObject(metaclass=__Meta):
 
     def from_dict(self, attrs, only=[], ignore=[]):
         """
-        Load config data from a dict
+        Load object data from a dict
 
-        :param dict attrs: dict containing config data
+        :param dict attrs: dict containing object data
         :param list only: Whitelist of field names to load (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
         """
@@ -264,7 +264,7 @@ class VersionedObject(metaclass=__Meta):
 
     def to_json(self, indent=None, only=[], ignore=[]):
         """
-        Generate a JSON string containing all config data
+        Generate a JSON string containing all object data
 
         :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
         :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
@@ -277,7 +277,7 @@ class VersionedObject(metaclass=__Meta):
 
     def from_json(self, jsonstr, only=[], ignore=[]):
         """
-        Load config data from a JSON string
+        Load object data from a JSON string
 
         :param str jsonstr: JSON string to load
         :param list only: Whitelist of field names to load (cannot be used with blacklist)
@@ -292,7 +292,7 @@ class VersionedObject(metaclass=__Meta):
 
     def to_file(self, filename, indent=None, only=[], ignore=[]):
         """
-        Save config data to a JSON file
+        Save object data to a JSON file
 
         :param str filename: Name of file to write
         :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
@@ -304,7 +304,7 @@ class VersionedObject(metaclass=__Meta):
 
     def from_file(self, filename, only=[], ignore=[]):
         """
-        Load config data from a JSON file
+        Load object data from a JSON file
 
         :param str filename: Name of file to load
         :param list only: Whitelist of field names to load (cannot be used with blacklist)
