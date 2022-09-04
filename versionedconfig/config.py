@@ -157,12 +157,7 @@ class VersionedConfig(metaclass=__Meta):
     def __init__(self):
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
-            if inspect.isclass(val) and issubclass(val, VersionedConfig):
-                val_to_set = val()
-            else:
-                val_to_set = val
-
-            setattr(self, n, val_to_set)
+            setattr(self, n, val)
 
     @classmethod
     def add_migration(cls, from_version, to_version, migration_func):
