@@ -116,6 +116,10 @@
 
 
 <span class="k">class</span> <span class="nc">_ObjField</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a dynamic view of a single field in a versioned object. Can be used</span>
+<span class="sd">    to access the same field in either a VersionedConfig instance, or a dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">=</span> <span class="n">fieldname</span>
@@ -128,9 +132,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">dot_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the full object name, with sub-object names separated by dots</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">get_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the field value from the provided VersionedObject instance</span>
+
+<span class="sd">        :param parent_obj: object instance to read field from</span>
+
+<span class="sd">        :return: field value from object instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">parent_obj</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
@@ -146,6 +160,11 @@
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">,</span> <span class="n">create_nonexistent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the field value on the provided VersionedObject instance</span>
+
+<span class="sd">        :param parent_obj: object instance to set field on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">parent_obj</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
@@ -161,6 +180,11 @@
         <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_dict_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the field on the provided dict</span>
+
+<span class="sd">        :param parent_attrs: dict to set field on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="n">parent_attrs</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
@@ -184,8 +208,35 @@
 
         <span class="k">yield</span> <span class="n">n</span>
 
+<span class="k">def</span> <span class="nf">_field_should_be_skipped</span><span class="p">(</span><span class="n">dotname</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a field should be skipped based on &#39;only&#39; and &#39;ignore&#39; parameters</span>
+
+<span class="sd">    :param list only: List of &#39;only&#39; names</span>
+<span class="sd">    :param list ignore: List of &#39;ignore&#39; names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">only</span><span class="p">:</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">only</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dotname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">found</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dotname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
 
 <span class="k">def</span> <span class="nf">_walk_obj_attrs</span><span class="p">(</span><span class="n">parent_obj</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Walk all fields (including nested fields) in a versioned object, and</span>
+<span class="sd">    generate an _ObjField instance for each field</span>
+
+<span class="sd">    :param parent_obj: Versioned object to walk</span>
+<span class="sd">    :param list only: List of &#39;only&#39; names</span>
+<span class="sd">    :param list ignore: List of &#39;ignore&#39; names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">obj_stack</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">)]</span>
 
@@ -202,11 +253,19 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">VersionedObject</span><span class="p">):</span>
                 <span class="n">obj_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="n">only</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">in</span> <span class="n">only</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_field_should_be_skipped</span><span class="p">(</span><span class="n">dotname</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">field</span>
 
 
 <span class="k">def</span> <span class="nf">_walk_dict_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Walk all fields (including nested fields) in a versioned object as a dict, and</span>
+<span class="sd">    generate an _ObjField instance for each field</span>
+
+<span class="sd">    :param parent_attrs: Dict to walk</span>
+<span class="sd">    :param list only: List of &#39;only&#39; names</span>
+<span class="sd">    :param list ignore: List of &#39;ignore&#39; names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">attrs_stack</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">)]</span>
 
@@ -224,7 +283,7 @@
             <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">VersionedObject</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">)):</span>
                 <span class="n">attrs_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">((</span><span class="ow">not</span> <span class="n">only</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">in</span> <span class="n">only</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dotname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_field_should_be_skipped</span><span class="p">(</span><span class="n">dotname</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">field</span>
 
 
