@@ -18,7 +18,7 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'versionedconfig'
+project = 'versionedobj'
 copyright = '2022, Erik K. Nyquist'
 author = 'Erik K. Nyquist'
 
