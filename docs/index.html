@@ -70,7 +70,7 @@
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">versionedconfig</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="versionedconfig.html">versionedobj package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="versionedobj.html">versionedobj package</a></li>
 </ul>
 </li>
 </ul>
@@ -85,30 +85,34 @@ saved/loaded to/from strings or JSON files, and easily migrated from older objec
 <h2>Example– VersionedObject as a configuration file<a class="headerlink" href="#example-versionedobject-as-a-configuration-file" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
-<span class="c1"># Nested config object</span>
 <span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
     <span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;1920x1080&quot;</span>
     <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.66</span>
 
-<span class="c1"># Top-level config object with another nested config object</span>
+<span class="c1"># Populate class attributes to build your object</span>
 <span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
     <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
     <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
-    <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span><span class="p">()</span>
+    <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span><span class="p">()</span> <span class="c1"># VersionedObjects can be nested</span>
 
-<span class="c1"># Create an instance of the top-level object</span>
+<span class="c1"># Create an instance of your object (instance attributes will match class attributes)</span>
 <span class="n">cfg</span> <span class="o">=</span> <span class="n">UserConfig</span><span class="p">()</span>
+<span class="c1"># cfg.version == &quot;v1.0.0&quot;</span>
+<span class="c1"># cfg.username == &quot;john smith&quot;</span>
+<span class="c1"># cfg.friend_list == [&quot;user1&quot;, &quot;user2&quot;, &quot;user3&quot;]</span>
+<span class="c1"># cfg.display_config.display_mode == &quot;windowed&quot;</span>
+<span class="c1"># ... etc</span>
 
-<span class="c1"># Change some values</span>
+<span class="c1"># Change some values on the object instance</span>
 <span class="n">cfg</span><span class="o">.</span><span class="n">display_config</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">cfg</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;jane doe&quot;</span>
 
-<span class="c1"># Save to JSON file</span>
+<span class="c1"># Save object instance to JSON file</span>
 <span class="n">cfg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-<span class="c1"># Load from JSON file</span>
+<span class="c1"># Load object instance from JSON file</span>
 <span class="n">cfg</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -132,12 +136,67 @@ saved/loaded to/from strings or JSON files, and easily migrated from older objec
 </pre></div>
 </div>
 </div>
+<div class="section" id="filtering-output">
+<h2>Filtering output<a class="headerlink" href="#filtering-output" title="Permalink to this headline"></a></h2>
+<div class="section" id="whitelisting-output-input-by-field-name">
+<h3>Whitelisting output/input by field name<a class="headerlink" href="#whitelisting-output-input-by-field-name" title="Permalink to this headline"></a></h3>
+<p>When serializing, if you only want to output certain fields, you can use the ‘only’
+parameter to specify which fields should be output (effectively a whitelist by field name):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.resolution&#39;</span><span class="p">])</span>
+
+<span class="c1"># Output looks like this:</span>
+<span class="c1">#</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;version&quot;: &quot;v1.0.0&quot;,</span>
+<span class="c1">#     &quot;username&quot;: &quot;jane doe&quot;,</span>
+<span class="c1">#     &quot;display_config&quot;: {</span>
+<span class="c1">#         &quot;resolution&quot;: &quot;1920x1080&quot;,</span>
+<span class="c1">#     }</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+<p>The same parameter can be used for de-serializing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;display_config.display_mode&#39;</span><span class="p">])</span>
+
+<span class="c1"># Only the &#39;display_config.display_mode&#39; field is loaded from the file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="blacklisting-output-input-by-field-name">
+<h3>Blacklisting output/input by field name<a class="headerlink" href="#blacklisting-output-input-by-field-name" title="Permalink to this headline"></a></h3>
+<p>When serializing, if you <em>don’t</em> want to output certain fields, you can use the ‘ignore’
+parameter to specify which fields should be excluded from output (effectively a blacklist
+by field name):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.volume&#39;</span><span class="p">])</span>
+
+<span class="c1"># Output looks like this:</span>
+<span class="c1">#</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;version&quot;: &quot;v1.0.0&quot;,</span>
+<span class="c1">#     &quot;username&quot;: &quot;jane doe&quot;,</span>
+<span class="c1">#     &quot;display_config&quot;: {</span>
+<span class="c1">#         &quot;display_mode&quot;: &quot;windowed&quot;,</span>
+<span class="c1">#         &quot;resolution&quot;: &quot;1920x1080&quot;</span>
+<span class="c1">#     }</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+<p>The same parameter can be used for de-serializing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">])</span>
+
+<span class="c1"># Every field except for the &#39;friend_list&#39; field is loaded from the file</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="migrations-making-use-of-the-version-number">
 <h2>Migrations – making use of the version number<a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
 <p>Any VersionedObject object can have a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute, which can be any object,
 although it is typically a string (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;v1.2.3&quot;</span></code>). This version attribute can be
 used to support migrations for older objects, in the event that you need to
 change the format of your object.</p>
+<div class="section" id="example-scenario-part-1-you-have-created-a-beautiful-versioned-object">
+<h3>Example scenario, part 1: you have created a beautiful versioned object<a class="headerlink" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Let’s take the same config file definition from the previous example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
@@ -155,11 +214,14 @@ change the format of your object.</p>
     <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Imagine we’ve already released this code out into the world. People are already
-using it, and they have JSON files generated by the <code class="docutils literal notranslate"><span class="pre">UserConfig</span></code> class sitting
+<p>Imagine you’ve already released this code out into the world. People are already
+using it, and they have JSON files generated by your <code class="docutils literal notranslate"><span class="pre">UserConfig</span></code> class sitting
 on their computers.</p>
+</div>
+<div class="section" id="example-scenario-part-2-you-update-your-software-modifying-the-versioned-object">
+<h3>Example scenario, part 2: you update your software, modifying the versioned object<a class="headerlink" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Now, imagine you are making a new release of your software, and some new features
-require you to make the following changes to the config file structure:</p>
+require you to make the following changes to your versioned object:</p>
 <ul class="simple">
 <li><p>remove the the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.resolution</span></code> field entirely</p></li>
 <li><p>change the name of <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volume</span></code> to <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code></p></li>
@@ -181,11 +243,17 @@ require you to make the following changes to the config file structure:</p>
     <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="uh-oh-you-have-a-problem">
+<h3>Uh-oh, you have a problem…<a class="headerlink" href="#uh-oh-you-have-a-problem" title="Permalink to this headline"></a></h3>
 <p>Right now, if you send this updated UserConfig class to your existing users, it will fail
 to load their existing JSON files with version <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>, since those files will contain
 the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.resolution</span></code> field that we deleted in <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volume</span></code> will similarly be gone, having been replaced with
 <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code>. This situation is what migrations are for.</p>
+</div>
+<div class="section" id="solution-migrations">
+<h3>Solution– migrations!<a class="headerlink" href="#solution-migrations" title="Permalink to this headline"></a></h3>
 <p>The solution is to:</p>
 <ol class="arabic simple">
 <li><p>Change the version number to something new, e.g. <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> becomes <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code></p></li>
@@ -225,6 +293,7 @@ and write a new migration function, anytime the structure of your config data ch
 version of your config file to the current version.</p>
 <p>If you don’t need the versioning/migration functionality, just never change your version
 number, or don’t create a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute on your <code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code> classes.</p>
+</div>
 </div>
 </div>
 <div class="section" id="indices-and-tables">

@@ -16,7 +16,8 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="versionedconfig" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,8 +36,16 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">versionedconfig</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">versionedconfig</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">versionedobj package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.object">versionedobj.object module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -53,6 +62,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">versionedconfig</a> &raquo;</li>
       <li>versionedobj package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/versionedobj.rst.txt" rel="nofollow"> View page source</a>
@@ -114,7 +124,7 @@ a custom class that the standard JSON parser is not handling the way you want</p
 <dt class="sig sig-object py" id="versionedobj.object.LoadObjError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">LoadObjError</span></span><a class="reference internal" href="_modules/versionedobj/object.html#LoadObjError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.LoadObjError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised whenever saved config data cannot be loaded, either because of
+<p>Exception raised whenever saved object data cannot be loaded, either because of
 a JSON parser error, or because of unrecognized/invalid fields</p>
 </dd></dl>
 
@@ -127,13 +137,13 @@ migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.add_migration">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">migration_func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.add_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.add_migration" title="Permalink to this definition"></a></dt>
-<dd><p>Add a function to migrate config data from an earlier version to a later version</p>
+<dd><p>Add a function to migrate object data from an earlier version to a later version</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_version</strong> – Version to migrate from</p></li>
 <li><p><strong>to_version</strong> – Version to migrate to</p></li>
-<li><p><strong>migration_func</strong> – Function to perform the migration. The function should            accept one argument, which will be the config data as a dict, and the function            should do whatever transformations on the dict that are required for the            migration, and return the transformed dict.</p></li>
+<li><p><strong>migration_func</strong> – Function to perform the migration. The function should            accept one argument, which will be the object data as a dict, and the function            should do whatever transformations on the dict that are required for the            migration, and then return the transformed dict.</p></li>
 </ul>
 </dd>
 </dl>
@@ -142,11 +152,11 @@ migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.from_dict">
 <span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.from_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Load config data from a dict</p>
+<dd><p>Load object data from a dict</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>attrs</strong> (<em>dict</em>) – dict containing config data</p></li>
+<li><p><strong>attrs</strong> (<em>dict</em>) – dict containing object data</p></li>
 <li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to load (cannot be used with blacklist)</p></li>
 <li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
 </ul>
@@ -157,7 +167,7 @@ migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.from_file">
 <span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.from_file" title="Permalink to this definition"></a></dt>
-<dd><p>Load config data from a JSON file</p>
+<dd><p>Load object data from a JSON file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -172,7 +182,7 @@ migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.from_json">
 <span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.from_json" title="Permalink to this definition"></a></dt>
-<dd><p>Load config data from a JSON string</p>
+<dd><p>Load object data from a JSON string</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -192,7 +202,7 @@ migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.to_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Convert config object to a dict, suitable for passing to the json library</p>
+<dd><p>Convert object to a dict, suitable for passing to the json library</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -201,7 +211,7 @@ migrating older files to the current version</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>config data as a dict</p>
+<dd class="field-even"><p>object data as a dict</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>dict</p>
@@ -212,7 +222,7 @@ migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.to_file">
 <span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.to_file" title="Permalink to this definition"></a></dt>
-<dd><p>Save config data to a JSON file</p>
+<dd><p>Save object data to a JSON file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -228,7 +238,7 @@ migrating older files to the current version</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.to_json">
 <span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.to_json" title="Permalink to this definition"></a></dt>
-<dd><p>Generate a JSON string containing all config data</p>
+<dd><p>Generate a JSON string containing all object data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -257,7 +267,9 @@ migrating older files to the current version</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="versionedconfig" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

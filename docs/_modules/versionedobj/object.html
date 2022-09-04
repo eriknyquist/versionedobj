@@ -78,7 +78,7 @@
 
 <div class="viewcode-block" id="LoadObjError"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.LoadObjError">[docs]</a><span class="k">class</span> <span class="nc">LoadObjError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exception raised whenever saved config data cannot be loaded, either because of</span>
+<span class="sd">    Exception raised whenever saved object data cannot be loaded, either because of</span>
 <span class="sd">    a JSON parser error, or because of unrecognized/invalid fields</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
@@ -241,19 +241,19 @@
 <div class="viewcode-block" id="VersionedObject.add_migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.add_migration">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a function to migrate config data from an earlier version to a later version</span>
+<span class="sd">        Add a function to migrate object data from an earlier version to a later version</span>
 
 <span class="sd">        :param from_version: Version to migrate from</span>
 <span class="sd">        :param to_version: Version to migrate to</span>
 <span class="sd">        :param migration_func: Function to perform the migration. The function should\</span>
-<span class="sd">            accept one argument, which will be the config data as a dict, and the function\</span>
+<span class="sd">            accept one argument, which will be the object data as a dict, and the function\</span>
 <span class="sd">            should do whatever transformations on the dict that are required for the\</span>
-<span class="sd">            migration, and return the transformed dict.</span>
+<span class="sd">            migration, and then return the transformed dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">version</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot add migration to un-versioned config object. Add a &#39;version&#39; attribute.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot add migration to un-versioned object. Add a &#39;version&#39; attribute.&quot;</span><span class="p">)</span>
 
         <span class="bp">cls</span><span class="o">.</span><span class="n">migrations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">))</span></div>
 
@@ -279,12 +279,12 @@
 
 <div class="viewcode-block" id="VersionedObject.to_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convert config object to a dict, suitable for passing to the json library</span>
+<span class="sd">        Convert object to a dict, suitable for passing to the json library</span>
 
 <span class="sd">        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)</span>
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
-<span class="sd">        :return: config data as a dict</span>
+<span class="sd">        :return: object data as a dict</span>
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
@@ -301,9 +301,9 @@
 
 <div class="viewcode-block" id="VersionedObject.from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load config data from a dict</span>
+<span class="sd">        Load object data from a dict</span>
 
-<span class="sd">        :param dict attrs: dict containing config data</span>
+<span class="sd">        :param dict attrs: dict containing object data</span>
 <span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -330,7 +330,7 @@
 
 <div class="viewcode-block" id="VersionedObject.to_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generate a JSON string containing all config data</span>
+<span class="sd">        Generate a JSON string containing all object data</span>
 
 <span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
 <span class="sd">        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)</span>
@@ -343,7 +343,7 @@
 
 <div class="viewcode-block" id="VersionedObject.from_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load config data from a JSON string</span>
+<span class="sd">        Load object data from a JSON string</span>
 
 <span class="sd">        :param str jsonstr: JSON string to load</span>
 <span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
@@ -358,7 +358,7 @@
 
 <div class="viewcode-block" id="VersionedObject.to_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.to_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save config data to a JSON file</span>
+<span class="sd">        Save object data to a JSON file</span>
 
 <span class="sd">        :param str filename: Name of file to write</span>
 <span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
@@ -370,7 +370,7 @@
 
 <div class="viewcode-block" id="VersionedObject.from_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load config data from a JSON file</span>
+<span class="sd">        Load object data from a JSON file</span>
 
 <span class="sd">        :param str filename: Name of file to load</span>
 <span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
