@@ -694,3 +694,68 @@ class TestVersionedObject(TestCase):
         self.assertEqual(2, len(d['var2']))
         self.assertEqual("hello", d['var2']['var1'])
         self.assertEqual(55.5, d['var2']['var2'])
+
+    def test_to_dict_ignore_subfields(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hello"
+            var2 = 55.5
+
+        class TestConfig(VersionedObject):
+            var1 = 4
+            var2 = NestedConfig()
+            var3 = True
+
+        cfg = TestConfig()
+        d = cfg.to_dict(ignore=['var2'])
+
+        self.assertEqual(2, len(d))
+        self.assertEqual(4, d['var1'])
+        self.assertEqual(True, d['var3'])
+
+    def test_from_dict_only_subfields(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hello"
+            var2 = 55.5
+
+        class TestConfig(VersionedObject):
+            var1 = 4
+            var2 = NestedConfig()
+            var3 = True
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+
+        # Change the values we're ignoring
+        cfg.var1 = 99
+        cfg.var3 = "sgghr"
+
+        cfg.from_dict(d, only=['var2'])
+
+        self.assertEqual(99, cfg.var1)
+        self.assertEqual("hello", cfg.var2.var1)
+        self.assertEqual(55.5, cfg.var2.var2)
+        self.assertEqual("sgghr", cfg.var3)
+
+    def test_from_dict_ignore_subfields(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hello"
+            var2 = 55.5
+
+        class TestConfig(VersionedObject):
+            var1 = 4
+            var2 = NestedConfig()
+            var3 = True
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+
+        # Change the fields we're ignoring
+        d['var2']['var1'] = "xxx"
+        d['var2']['var2'] = 99
+
+        cfg.from_dict(d, ignore=['var2'])
+
+        self.assertEqual(4, cfg.var1)
+        self.assertEqual("hello", cfg.var2.var1)
+        self.assertEqual(55.5, cfg.var2.var2)
+        self.assertEqual(True, cfg.var3)
