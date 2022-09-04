@@ -44,11 +44,12 @@ Example-- VersionedObject as a configuration file
     cfg.from_file('user_config.json')
 
 
-You can also just get the object data as a string:
+You can also save/load object data as a JSON string:
 
 ::
 
-    >>> cfg.to_json(indent=4)
+    >>> obj_as_json = cfg.to_json(indent=4) # Serialize to JSON string
+    >>> obj_as_json                         # Print JSON string
 
     {
         "version": "v1.0.0",
@@ -64,6 +65,19 @@ You can also just get the object data as a string:
             "volume": 1.0
         }
     }
+
+    >>> cfg.from_json(obj_as_json)          # Load from JSON string
+
+Or, as a dict:
+
+::
+
+    >>> obj_as_dict = cfg.to_dict()   # Serialize to dict
+    >>> obj_as_dict                   # Print dict
+
+    {'version': '1.0.0', 'username': 'jane doe', 'friend_list': ['user1', 'user2', 'user3'], 'display_config': {'display_mode': 'windowed', 'resolution': '1920x1080', 'volume': 1.0}}
+
+    >>> cfg.from_dict(obj_as_dict)    # Load from dict
 
 Filtering output
 ----------------
