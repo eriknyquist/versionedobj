@@ -644,3 +644,35 @@ class TestVersionedObject(TestCase):
         self.assertEqual(99, cfg.var2)
         self.assertEqual(3, cfg.var3)
         os.remove(filename)
+
+    def test_to_from_dict_two_instances_of_same_object(self):
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = 2
+
+        cfg1 = TestConfig()
+        cfg2 = TestConfig()
+
+        cfg1.var1 = 99
+        cfg1.var2 = 99
+        cfg2.var1 = 100
+        cfg2.var2 = 100
+
+        self.assertEqual(99, cfg1.var1)
+        self.assertEqual(99, cfg1.var2)
+        self.assertEqual(100, cfg2.var1)
+        self.assertEqual(100, cfg2.var2)
+
+        d1 = cfg1.to_dict()
+        d2 = cfg2.to_dict()
+
+        d1['var1'] = 88
+        d2['var1'] = 77
+
+        cfg1.from_dict(d1)
+        cfg2.from_dict(d2)
+
+        self.assertEqual(88, cfg1.var1)
+        self.assertEqual(99, cfg1.var2)
+        self.assertEqual(77, cfg2.var1)
+        self.assertEqual(100, cfg2.var2)
