@@ -1,12 +1,12 @@
 import os
 from unittest import TestCase
 
-from versionedconfig import VersionedConfig, LoadConfigError, InvalidFilterError, CustomValue
+from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, CustomValue
 
 
-class TestVersionedConfig(TestCase):
+class TestVersionedObject(TestCase):
     def test_basic_config_dict(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = 1
             val2 = 9.99
             val3 = "howdy"
@@ -31,7 +31,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual({"a": 5, "b": 55.5}, cfg.val5)
 
     def test_basic_config_dict_change(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = 1
             val2 = 9.99
             val3 = "howdy"
@@ -57,7 +57,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual({"a": 5, "b": 55.5}, cfg.val5)
 
     def test_basic_config_json(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = 1
             val2 = 9.99
             val3 = "howdy"
@@ -75,7 +75,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual({"a": 5, "b": 55.5}, cfg.val5)
 
     def test_basic_config_file(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = 1
             val2 = 9.99
             val3 = "howdy"
@@ -96,11 +96,11 @@ class TestVersionedConfig(TestCase):
         os.remove(filename)
 
     def test_nested_config_dict(self):
-        class NestedConfig(VersionedConfig):
+        class NestedConfig(VersionedObject):
             val1 = 1
             val2 = 55.5
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = "a"
             val2 = NestedConfig()
 
@@ -118,11 +118,11 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(55.5, cfg.val2.val2)
 
     def test_nested_config_dict_change(self):
-        class NestedConfig(VersionedConfig):
+        class NestedConfig(VersionedObject):
             val1 = 1
             val2 = 55.5
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = "a"
             val2 = NestedConfig()
 
@@ -141,31 +141,31 @@ class TestVersionedConfig(TestCase):
         self.assertEqual("changed", cfg.val2.val2)
 
     def test_load_dict_invalid_attr(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = 1
 
         cfg = TestConfig()
-        self.assertRaises(LoadConfigError, cfg.from_dict, {"val2": 55})
+        self.assertRaises(LoadObjError, cfg.from_dict, {"val2": 55})
 
     def test_load_invalid_json(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = 1
 
         cfg = TestConfig()
-        self.assertRaises(LoadConfigError, cfg.from_json, "zsrg]s\er]gsegr")
+        self.assertRaises(LoadObjError, cfg.from_json, "zsrg]s\er]gsegr")
 
     def test_load_dict_migration_failure_no_migrations(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             version = "1.0.0"
             value = 2727
 
         fake_config = {'version': '1.0.22', 'value': 2727}
 
         cfg = TestConfig()
-        self.assertRaises(LoadConfigError, cfg.from_dict, fake_config)
+        self.assertRaises(LoadObjError, cfg.from_dict, fake_config)
 
     def test_load_dict_migration_failure_bad_migration(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             version = "1.0.22"
             value = 2727
 
@@ -177,10 +177,10 @@ class TestVersionedConfig(TestCase):
         TestConfig.add_migration('1.0.0', '1.0.21', bad_migration)
 
         cfg = TestConfig()
-        self.assertRaises(LoadConfigError, cfg.from_dict, fake_config)
+        self.assertRaises(LoadObjError, cfg.from_dict, fake_config)
 
     def test_load_dict_migration_success(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             version = '1.0.22'
             value1 = 2727
             value2 = 'hey'
@@ -201,19 +201,19 @@ class TestVersionedConfig(TestCase):
         self.assertEqual('1.0.22', cfg.version)
 
     def test_load_dict_deeper_nesting(self):
-        class Level4(VersionedConfig):
+        class Level4(VersionedObject):
             val1 = True
             val2 = False
 
-        class Level3(VersionedConfig):
+        class Level3(VersionedObject):
             val1 = 66.6
             val2 = Level4()
 
-        class Level2(VersionedConfig):
+        class Level2(VersionedObject):
             val1 = "gg"
             val2 = Level3()
 
-        class Level1(VersionedConfig):
+        class Level1(VersionedObject):
             val1 = 3
             val2 = Level2()
 
@@ -236,19 +236,19 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(False, cfg.val2.val2.val2.val2)
 
     def test_load_json_deeper_nesting(self):
-        class Level4(VersionedConfig):
+        class Level4(VersionedObject):
             val1 = True
             val2 = False
 
-        class Level3(VersionedConfig):
+        class Level3(VersionedObject):
             val1 = 66.6
             val2 = Level4()
 
-        class Level2(VersionedConfig):
+        class Level2(VersionedObject):
             val1 = "gg"
             val2 = Level3()
 
-        class Level1(VersionedConfig):
+        class Level1(VersionedObject):
             val1 = 3
             val2 = Level2()
 
@@ -263,19 +263,19 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(False, cfg.val2.val2.val2.val2)
 
     def test_load_file_deeper_nesting(self):
-        class Level4(VersionedConfig):
+        class Level4(VersionedObject):
             val1 = True
             val2 = False
 
-        class Level3(VersionedConfig):
+        class Level3(VersionedObject):
             val1 = 66.6
             val2 = Level4()
 
-        class Level2(VersionedConfig):
+        class Level2(VersionedObject):
             val1 = "gg"
             val2 = Level3()
 
-        class Level1(VersionedConfig):
+        class Level1(VersionedObject):
             val1 = 3
             val2 = Level2()
 
@@ -297,7 +297,7 @@ class TestVersionedConfig(TestCase):
             def from_dict(self, data):
                 pass
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = TestCustomValue()
 
         cfg = TestConfig()
@@ -308,7 +308,7 @@ class TestVersionedConfig(TestCase):
             def to_dict(self):
                 return {}
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = TestCustomValue()
 
         cfg = TestConfig()
@@ -331,7 +331,7 @@ class TestVersionedConfig(TestCase):
                 self.b = int(fields[1])
                 self.c = int(fields[2])
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             val1 = 10
             val2 = TestCustomValue(1, 2, 3)
 
@@ -354,7 +354,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(7, cfg.val2.c)
 
     def test_to_dict_only_filter_1(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -370,7 +370,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_to_dict_only_filter_2(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -387,13 +387,13 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_to_dict_only_filter_3(self):
-        class TestConfig2(VersionedConfig):
+        class TestConfig2(VersionedObject):
             var1 = "abc"
 
-        class TestConfig1(VersionedConfig):
+        class TestConfig1(VersionedObject):
             var1 = TestConfig2()
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = TestConfig1()
@@ -410,7 +410,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual("abc", cfg.var3.var1.var1)
 
     def test_to_dict_ignore_filter_1(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -427,7 +427,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_to_dict_ignore_filter_2(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -443,13 +443,13 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_to_dict_ignore_filter_3(self):
-        class TestConfig2(VersionedConfig):
+        class TestConfig2(VersionedObject):
             var1 = "abc"
 
-        class TestConfig1(VersionedConfig):
+        class TestConfig1(VersionedObject):
             var1 = TestConfig2()
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = TestConfig1()
@@ -466,7 +466,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual("abc", cfg.var3.var1.var1)
 
     def test_to_dict_ignore_and_only_error(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
 
@@ -474,7 +474,7 @@ class TestVersionedConfig(TestCase):
         self.assertRaises(InvalidFilterError, cfg.to_dict, ['var1'], ['var1'])
 
     def test_from_dict_only_filter_1(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -492,7 +492,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_from_dict_only_filter_2(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -509,13 +509,13 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_from_dict_only_filter_3(self):
-        class TestConfig2(VersionedConfig):
+        class TestConfig2(VersionedObject):
             var1 = "abc"
 
-        class TestConfig1(VersionedConfig):
+        class TestConfig1(VersionedObject):
             var1 = TestConfig2()
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = TestConfig1()
@@ -533,7 +533,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual("abc", cfg.var3.var1.var1)
 
     def test_from_dict_ignore_filter_1(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -550,7 +550,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_from_dict_ignore_filter_2(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -568,13 +568,13 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(3, cfg.var3)
 
     def test_from_dict_ignore_filter_3(self):
-        class TestConfig2(VersionedConfig):
+        class TestConfig2(VersionedObject):
             var1 = "abc"
 
-        class TestConfig1(VersionedConfig):
+        class TestConfig1(VersionedObject):
             var1 = TestConfig2()
 
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = TestConfig1()
@@ -593,7 +593,7 @@ class TestVersionedConfig(TestCase):
         self.assertEqual("abc", cfg.var3.var1.var1)
 
     def test_from_dict_ignore_and_only_error(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
 
@@ -602,7 +602,7 @@ class TestVersionedConfig(TestCase):
         self.assertRaises(InvalidFilterError, cfg.from_dict, d, ['var1'], ['var1'])
 
     def test_to_from_file_only_filter(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3
@@ -624,7 +624,7 @@ class TestVersionedConfig(TestCase):
         os.remove(filename)
 
     def test_to_from_file_ignore_filter(self):
-        class TestConfig(VersionedConfig):
+        class TestConfig(VersionedObject):
             var1 = 1
             var2 = 2
             var3 = 3

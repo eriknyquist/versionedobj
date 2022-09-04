@@ -3,7 +3,7 @@ import os
 from setuptools import setup
 from distutils.core import Command
 
-from versionedconfig import __version__
+from versionedobj import __version__
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 README = os.path.join(HERE, "README.rst")
@@ -21,7 +21,7 @@ classifiers = [
     'Programming Language :: Python :: 3',
 ]
 
-class RunVersionedConfigTests(Command):
+class RunVersionedObjTests(Command):
     user_options = []
 
     def initialize_options(self):
@@ -39,17 +39,17 @@ with open(README, 'r') as f:
     long_description = f.read()
 
 setup(
-    name='versionedconfig',
+    name='versionedobj',
     version=__version__,
-    description=('Easy versioned JSON config files'),
+    description=('Easy object serialization & versioning framework'),
     long_description=long_description,
-    url='http://github.com/eriknyquist/versionedconfig',
+    url='http://github.com/eriknyquist/versionedobj',
     author='Erik Nyquist',
     author_email='eknyquist@gmail.com',
     license='Apache 2.0',
-    packages=['versionedconfig'],
+    packages=['versionedobj'],
     classifiers = classifiers,
-    cmdclass={'test': RunVersionedConfigTests},
+    cmdclass={'test': RunVersionedObjTests},
     include_package_data=True,
     zip_safe=False
 )

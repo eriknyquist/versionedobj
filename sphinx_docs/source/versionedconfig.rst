@@ -1,13 +1,13 @@
-versionedconfig package
-=======================
+versionedobj package
+====================
 
 Submodules
 ----------
 
-versionedconfig.config module
------------------------------
+versionedobj.object module
+--------------------------
 
-.. automodule:: versionedconfig.config
+.. automodule:: versionedobj.object
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ versionedconfig.config module
 Module contents
 ---------------
 
-.. automodule:: versionedconfig
+.. automodule:: versionedobj
    :members:
    :undoc-members:
    :show-inheritance:

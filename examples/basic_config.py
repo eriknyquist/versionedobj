@@ -1,4 +1,4 @@
-from versionedconfig import VersionedConfig
+from versionedobj import VersionedObject
 
 # Nested config object
 class DisplayConfig(VersionedConfig):

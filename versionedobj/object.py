@@ -10,7 +10,7 @@ class InvalidFilterError(Exception):
     pass
 
 
-class LoadConfigError(Exception):
+class LoadObjError(Exception):
     """
     Exception raised whenever saved config data cannot be loaded, either because of
     a JSON parser error, or because of unrecognized/invalid fields
@@ -43,13 +43,13 @@ class CustomValue(object):
 
 class __Meta(type):
     """
-    Metaclass for VersionedConfig, creates the 'migrations' class attribute
+    Metaclass for VersionedObject, creates the 'migrations' class attribute
     """
     def __init__(cls, name, bases, dct):
         cls.migrations = []
 
 
-class ConfigField(object):
+class ObjField(object):
     def __init__(self, parents, fieldname, value):
         self.parents = parents
         self.fieldname = fieldname
@@ -70,12 +70,12 @@ class ConfigField(object):
         if self.parents:
             for pname in self.parents:
                 if not hasattr(obj, pname):
-                    raise LoadConfigError(f"Unrecognized attribute name '{pname}'")
+                    raise LoadObjError(f"Unrecognized attribute name '{pname}'")
 
                 obj = getattr(obj, pname)
 
         if not hasattr(obj, self.fieldname):
-            raise LoadConfigError(f"Unrecognized attribute name '{self.fieldname}'")
+            raise LoadObjError(f"Unrecognized attribute name '{self.fieldname}'")
 
         return getattr(obj, self.fieldname)
 
@@ -88,7 +88,7 @@ class ConfigField(object):
                     if create_nonexistent:
                         setattr(obj, pname, object())
                     else:
-                        raise LoadConfigError(f"Unrecognized attribute name '{pname}'")
+                        raise LoadObjError(f"Unrecognized attribute name '{pname}'")
 
                 obj = getattr(obj, pname)
 
@@ -130,10 +130,10 @@ def _walk_obj_attrs(parent_obj, only=[], ignore=[]):
 
         for n in _iter_obj_attrs(obj):
             value = obj.__dict__[n]
-            field = ConfigField(parents, n, value)
+            field = ObjField(parents, n, value)
             dotname = field.dot_name()
 
-            if isinstance(value, VersionedConfig):
+            if isinstance(value, VersionedObject):
                 obj_stack.append((n, value))
             else:
                 if ((not only) or (dotname in only)) and (dotname not in ignore):
@@ -151,20 +151,20 @@ def _walk_dict_attrs(obj, parent_attrs, only=[], ignore=[]):
 
         for n in attrs:
             value = attrs[n]
-            field = ConfigField(parents, n, value)
+            field = ObjField(parents, n, value)
             dotname = field.dot_name()
             field_value = field.get_obj_field(obj)
 
-            if (isinstance(field_value, VersionedConfig) and (type(value) == dict)):
+            if (isinstance(field_value, VersionedObject) and (type(value) == dict)):
                 attrs_stack.append((n, value))
             else:
                 if ((not only) or (dotname in only)) and (dotname not in ignore):
                     yield field
 
 
-class VersionedConfig(metaclass=__Meta):
+class VersionedObject(metaclass=__Meta):
     """
-    Versioned config class supporting saving/loading to/from JSON files, and
+    Versioned object class supporting saving/loading to/from JSON files, and
     migrating older files to the current version
     """
     def __init__(self):
@@ -207,7 +207,7 @@ class VersionedConfig(metaclass=__Meta):
                     break
 
         if version_after_migration != version:
-            raise LoadConfigError(f"Failed to migrate from version {version_before_migration} to {version}")
+            raise LoadObjError(f"Failed to migrate from version {version_before_migration} to {version}")
 
         return attrs
 
@@ -246,9 +246,9 @@ class VersionedConfig(metaclass=__Meta):
 
         version = self.__dict__.get('version', None)
         if version is not None:
-            # Config is versioned, check if migrations are needed
+            # Object is versioned, check if migrations are needed
             if 'version' not in attrs:
-                raise ValueError("Config should be versioned, but version not found in loaded data")
+                raise ValueError("Object should be versioned, but version not found in loaded data")
 
             attrs = self._migrate(version, attrs)
 
@@ -270,7 +270,7 @@ class VersionedConfig(metaclass=__Meta):
         :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
-        :return: Config data as a JSON string
+        :return: Object data as a JSON string
         :rtype: str
         """
         return json.dumps(self.to_dict(only, ignore), indent=indent)
@@ -286,7 +286,7 @@ class VersionedConfig(metaclass=__Meta):
         try:
             d = json.loads(jsonstr)
         except JSONDecodeError:
-            raise LoadConfigError("JSON decode failure")
+            raise LoadObjError("JSON decode failure")
 
         self.from_dict(d, only, ignore)
 
