@@ -50,6 +50,10 @@ class __Meta(type):
 
 
 class _ObjField(object):
+    """
+    Represents a dynamic view of a single field in a versioned object. Can be used
+    to access the same field in either a VersionedConfig instance, or a dict
+    """
     def __init__(self, parents, fieldname, value):
         self.parents = parents
         self.fieldname = fieldname
@@ -62,9 +66,19 @@ class _ObjField(object):
         return self.__str__()
 
     def dot_name(self):
+        """
+        Get the full object name, with sub-object names separated by dots
+        """
         return '.'.join(self.parents + [self.fieldname])
 
     def get_obj_field(self, parent_obj):
+        """
+        Read the field value from the provided VersionedObject instance
+
+        :param parent_obj: object instance to read field from
+
+        :return: field value from object instance
+        """
         obj = parent_obj
 
         if self.parents:
@@ -80,6 +94,11 @@ class _ObjField(object):
         return getattr(obj, self.fieldname)
 
     def set_obj_field(self, parent_obj, create_nonexistent=False):
+        """
+        Set the field value on the provided VersionedObject instance
+
+        :param parent_obj: object instance to set field on
+        """
         obj = parent_obj
 
         if self.parents:
@@ -95,6 +114,11 @@ class _ObjField(object):
         return setattr(obj, self.fieldname, self.value)
 
     def set_dict_field(self, parent_attrs):
+        """
+        Set the field on the provided dict
+
+        :param parent_attrs: dict to set field on
+        """
         attrs = parent_attrs
 
         if self.parents:
@@ -118,8 +142,35 @@ def _iter_obj_attrs(obj):
 
         yield n
 
+def _field_should_be_skipped(dotname, only, ignore):
+    """
+    Check if a field should be skipped based on 'only' and 'ignore' parameters
+
+    :param list only: List of 'only' names
+    :param list ignore: List of 'ignore' names
+    """
+    if only:
+        found = False
+        for n in only:
+            if dotname.startswith(n):
+                found = True
+                break
+
+        return not found
+
+    for n in ignore:
+        if dotname.startswith(n):
+            return True
 
 def _walk_obj_attrs(parent_obj, only=[], ignore=[]):
+    """
+    Walk all fields (including nested fields) in a versioned object, and
+    generate an _ObjField instance for each field
+
+    :param parent_obj: Versioned object to walk
+    :param list only: List of 'only' names
+    :param list ignore: List of 'ignore' names
+    """
     parents = []
     obj_stack = [(None, parent_obj)]
 
@@ -136,11 +187,19 @@ def _walk_obj_attrs(parent_obj, only=[], ignore=[]):
             if isinstance(value, VersionedObject):
                 obj_stack.append((n, value))
             else:
-                if ((not only) or (dotname in only)) and (dotname not in ignore):
+                if not _field_should_be_skipped(dotname, only, ignore):
                     yield field
 
 
 def _walk_dict_attrs(obj, parent_attrs, only=[], ignore=[]):
+    """
+    Walk all fields (including nested fields) in a versioned object as a dict, and
+    generate an _ObjField instance for each field
+
+    :param parent_attrs: Dict to walk
+    :param list only: List of 'only' names
+    :param list ignore: List of 'ignore' names
+    """
     parents = []
     attrs_stack = [(None, parent_attrs)]
 
@@ -158,7 +217,7 @@ def _walk_dict_attrs(obj, parent_attrs, only=[], ignore=[]):
             if (isinstance(field_value, VersionedObject) and (type(value) == dict)):
                 attrs_stack.append((n, value))
             else:
-                if ((not only) or (dotname in only)) and (dotname not in ignore):
+                if not _field_should_be_skipped(dotname, only, ignore):
                     yield field
 
 

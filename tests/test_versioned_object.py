@@ -676,3 +676,21 @@ class TestVersionedObject(TestCase):
         self.assertEqual(99, cfg1.var2)
         self.assertEqual(77, cfg2.var1)
         self.assertEqual(100, cfg2.var2)
+
+    def test_to_dict_only_subfields(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hello"
+            var2 = 55.5
+
+        class TestConfig(VersionedObject):
+            var1 = 4
+            var2 = NestedConfig()
+            var3 = True
+
+        cfg = TestConfig()
+        d = cfg.to_dict(only=['var2'])
+
+        self.assertEqual(1, len(d))
+        self.assertEqual(2, len(d['var2']))
+        self.assertEqual("hello", d['var2']['var1'])
+        self.assertEqual(55.5, d['var2']['var2'])
