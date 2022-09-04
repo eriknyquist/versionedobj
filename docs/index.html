@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to versionedconfig’s documentation! &mdash; versionedconfig v0.1.0 documentation</title>
+  <title>versionedobj &mdash; versionedconfig v0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -54,7 +54,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to versionedconfig’s documentation!</li>
+      <li>versionedobj</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -64,36 +64,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="welcome-to-versionedconfig-s-documentation">
-<h1>Welcome to versionedconfig’s documentation!<a class="headerlink" href="#welcome-to-versionedconfig-s-documentation" title="Permalink to this headline"></a></h1>
+  <div class="section" id="versionedobj">
+<h1>versionedobj<a class="headerlink" href="#versionedobj" title="Permalink to this headline"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">versionedconfig</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="versionedconfig.html">versionedconfig package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="versionedconfig.html">versionedobj package</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div class="section" id="versioned-config-file-class-for-python-3x">
-<h1>Versioned config file class for python 3x<a class="headerlink" href="#versioned-config-file-class-for-python-3x" title="Permalink to this headline"></a></h1>
-<p>This package provides an easy way to define nested configuration data structures
-in python, save/load them to/from JSON files, and migrate older versions of your config
-file to the latest version.</p>
-<p>See <a class="reference external" href="https://eriknyquist.github.io/versionedconfig/">API documentation</a></p>
-<div class="section" id="config-file-example">
-<h2>Config file example<a class="headerlink" href="#config-file-example" title="Permalink to this headline"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+<div class="section" id="object-serialization-versioning-framework-for-python-3x">
+<h1>Object serialization &amp; versioning framework for python 3x<a class="headerlink" href="#object-serialization-versioning-framework-for-python-3x" title="Permalink to this headline"></a></h1>
+<p>This package provides an easy way to define complex nested objects that can be
+saved/loaded to/from strings or JSON files, and easily migrated from older object versions.</p>
+<p>See <a class="reference external" href="https://eriknyquist.github.io/versionedobj/">API documentation</a></p>
+<div class="section" id="example-versionedobject-as-a-configuration-file">
+<h2>Example– VersionedObject as a configuration file<a class="headerlink" href="#example-versionedobject-as-a-configuration-file" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
 <span class="c1"># Nested config object</span>
-<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
     <span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;1920x1080&quot;</span>
     <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.66</span>
 
 <span class="c1"># Top-level config object with another nested config object</span>
-<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
     <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
     <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
@@ -113,7 +112,7 @@ file to the latest version.</p>
 <span class="n">cfg</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can also just get the config data as a string:</p>
+<p>You can also just get the object data as a string:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
 <span class="go">{</span>
@@ -135,21 +134,21 @@ file to the latest version.</p>
 </div>
 <div class="section" id="migrations-making-use-of-the-version-number">
 <h2>Migrations – making use of the version number<a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
-<p>Any VersionedConfig object can have a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute, which can be any object,
+<p>Any VersionedObject object can have a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute, which can be any object,
 although it is typically a string (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;v1.2.3&quot;</span></code>). This version attribute can be
-used to support migrations for older config files, in the event that you need to
-change the format of your config file.</p>
+used to support migrations for older objects, in the event that you need to
+change the format of your object.</p>
 <p>Let’s take the same config file definition from the previous example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
 <span class="c1"># Nested config object</span>
-<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
     <span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;1920x1080&quot;</span>
     <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.66</span>
 
 <span class="c1"># Top-level config object with another nested config object</span>
-<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
     <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
     <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
@@ -166,16 +165,16 @@ require you to make the following changes to the config file structure:</p>
 <li><p>change the name of <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volume</span></code> to <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code></p></li>
 <li><p>change the value of <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code> from a float to a list</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
 <span class="c1"># Nested config object</span>
-<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
     <span class="c1"># &#39;resolution&#39; field is deleted</span>
     <span class="n">volumes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># &#39;volume&#39; is now called &#39;volumes&#39;, and is a list</span>
 
 <span class="c1"># Top-level config object with another nested config object</span>
-<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
     <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
     <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
@@ -190,18 +189,18 @@ the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.r
 <p>The solution is to:</p>
 <ol class="arabic simple">
 <li><p>Change the version number to something new, e.g. <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> becomes <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code></p></li>
-<li><p>Write a migration function to transform <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> config data into <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code> config data</p></li>
+<li><p>Write a migration function to transform <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> object data into <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code> object data</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedconfig</span> <span class="kn">import</span> <span class="n">VersionedConfig</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
 <span class="c1"># Nested config object</span>
-<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
     <span class="c1"># &#39;resolution&#39; field is deleted</span>
     <span class="n">volumes</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># &#39;volume&#39; is now called &#39;volumes&#39;, and is a list</span>
 
 <span class="c1"># Top-level config object with another nested config object</span>
-<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedConfig</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.1&quot;</span> <span class="c1"># Version has been updated to 1.0.1</span>
     <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
     <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
@@ -225,7 +224,7 @@ and write a new migration function, anytime the structure of your config data ch
 <p>The upside, of course, is that you can relatively easily support migrating any older
 version of your config file to the current version.</p>
 <p>If you don’t need the versioning/migration functionality, just never change your version
-number, or don’t create a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute on your <code class="docutils literal notranslate"><span class="pre">VersionedConfig</span></code> classes.</p>
+number, or don’t create a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute on your <code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code> classes.</p>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
