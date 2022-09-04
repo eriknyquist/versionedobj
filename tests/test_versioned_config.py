@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedconfig import VersionedConfig, LoadConfigError, CustomValue
+from versionedconfig import VersionedConfig, LoadConfigError, InvalidFilterError, CustomValue
 
 
 class TestVersionedConfig(TestCase):
@@ -352,3 +352,251 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(5, cfg.val2.a)
         self.assertEqual(6, cfg.val2.b)
         self.assertEqual(7, cfg.val2.c)
+
+    def test_to_dict_only_filter_1(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict(only=['var2'])
+        self.assertEqual(1, len(d))
+        self.assertEqual(2, d['var2'])
+
+        cfg.from_dict(d)
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_to_dict_only_filter_2(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict(only=['var2', 'var3'])
+        self.assertEqual(2, len(d))
+        self.assertEqual(2, d['var2'])
+        self.assertEqual(3, d['var3'])
+
+        cfg.from_dict(d)
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_to_dict_only_filter_3(self):
+        class TestConfig2(VersionedConfig):
+            var1 = "abc"
+
+        class TestConfig1(VersionedConfig):
+            var1 = TestConfig2()
+
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = TestConfig1()
+
+        cfg = TestConfig()
+
+        d = cfg.to_dict(only=['var3.var1.var1'])
+        self.assertEqual(1, len(d))
+        self.assertEqual("abc", d['var3']['var1']['var1'])
+
+        cfg.from_dict(d)
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual("abc", cfg.var3.var1.var1)
+
+    def test_to_dict_ignore_filter_1(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict(ignore=['var2'])
+        self.assertEqual(2, len(d))
+        self.assertEqual(1, d['var1'])
+        self.assertEqual(3, d['var3'])
+
+        cfg.from_dict(d)
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_to_dict_ignore_filter_2(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict(ignore=['var1', 'var2'])
+        self.assertEqual(1, len(d))
+        self.assertEqual(3, d['var3'])
+
+        cfg.from_dict(d)
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_to_dict_ignore_filter_3(self):
+        class TestConfig2(VersionedConfig):
+            var1 = "abc"
+
+        class TestConfig1(VersionedConfig):
+            var1 = TestConfig2()
+
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = TestConfig1()
+
+        cfg = TestConfig()
+
+        d = cfg.to_dict(ignore=['var1', 'var3.var1.var1'])
+        self.assertEqual(1, len(d))
+        self.assertEqual(2, d['var2'])
+
+        cfg.from_dict(d)
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual("abc", cfg.var3.var1.var1)
+
+    def test_to_dict_ignore_and_only_error(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+
+        cfg = TestConfig()
+        self.assertRaises(InvalidFilterError, cfg.to_dict, ['var1'], ['var1'])
+
+    def test_from_dict_only_filter_1(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+
+        # Change the values we're not loading
+        d['var1'] = 99
+        d['var2'] = 99
+
+        cfg.from_dict(d, only=['var3'])
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_from_dict_only_filter_2(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+
+        # Change the value we're not loading
+        d['var2'] = 99
+
+        cfg.from_dict(d, only=['var1', 'var3'])
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_from_dict_only_filter_3(self):
+        class TestConfig2(VersionedConfig):
+            var1 = "abc"
+
+        class TestConfig1(VersionedConfig):
+            var1 = TestConfig2()
+
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = TestConfig1()
+
+        cfg = TestConfig()
+
+        d = cfg.to_dict()
+
+        # Change the value we're not loading
+        d["var1"] = 99
+
+        cfg.from_dict(d, only=['var2', 'var3.var1.var1'])
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual("abc", cfg.var3.var1.var1)
+
+    def test_from_dict_ignore_filter_1(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+
+        # Change the value we're ignoring
+        d['var1'] = 99
+
+        cfg.from_dict(d, ignore=['var1'])
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_from_dict_ignore_filter_2(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+
+        # Change the values we're ignoring
+        d['var1'] = 99
+        d['var2'] = 99
+
+        cfg.from_dict(d, ignore=['var1', 'var2'])
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+
+    def test_from_dict_ignore_filter_3(self):
+        class TestConfig2(VersionedConfig):
+            var1 = "abc"
+
+        class TestConfig1(VersionedConfig):
+            var1 = TestConfig2()
+
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = TestConfig1()
+
+        cfg = TestConfig()
+
+        d = cfg.to_dict()
+
+        # Change the values we're ignoring
+        d['var1'] = 99
+        d['var3']['var1']['var1'] = "xxx"
+
+        cfg.from_dict(d, ignore=['var1', 'var3.var1.var1'])
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual("abc", cfg.var3.var1.var1)
+
+    def test_from_dict_ignore_and_only_error(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+        self.assertRaises(InvalidFilterError, cfg.from_dict, d, ['var1'], ['var1'])

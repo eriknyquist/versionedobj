@@ -3,6 +3,13 @@ import json
 from json.decoder import JSONDecodeError
 
 
+class InvalidFilterError(Exception):
+    """
+    Exception raised whenever 'only' and 'ignore' filters are used at the same time
+    """
+    pass
+
+
 class LoadConfigError(Exception):
     """
     Exception raised whenever saved config data cannot be loaded, either because of
@@ -53,6 +60,9 @@ class ConfigField(object):
 
     def __repr__(self):
         return self.__str__()
+
+    def dot_name(self):
+        return '.'.join(self.parents + [self.fieldname])
 
     def get_obj_field(self, parent_obj):
         obj = parent_obj
@@ -109,7 +119,7 @@ def _iter_obj_attrs(obj):
         yield n
 
 
-def _walk_obj_attrs(parent_obj):
+def _walk_obj_attrs(parent_obj, only=[], ignore=[]):
     parents = []
     obj_stack = [(None, parent_obj)]
 
@@ -120,14 +130,17 @@ def _walk_obj_attrs(parent_obj):
 
         for n in _iter_obj_attrs(obj):
             value = obj.__dict__[n]
+            field = ConfigField(parents, n, value)
+            dotname = field.dot_name()
 
             if isinstance(value, VersionedConfig):
                 obj_stack.append((n, value))
             else:
-                yield ConfigField(parents, n, value)
+                if ((not only) or (dotname in only)) and (dotname not in ignore):
+                    yield field
 
 
-def _walk_dict_attrs(obj, parent_attrs):
+def _walk_dict_attrs(obj, parent_attrs, only=[], ignore=[]):
     parents = []
     attrs_stack = [(None, parent_attrs)]
 
@@ -139,12 +152,14 @@ def _walk_dict_attrs(obj, parent_attrs):
         for n in attrs:
             value = attrs[n]
             field = ConfigField(parents, n, value)
+            dotname = field.dot_name()
             field_value = field.get_obj_field(obj)
 
             if (isinstance(field_value, VersionedConfig) and (type(value) == dict)):
                 attrs_stack.append((n, value))
             else:
-                yield field
+                if ((not only) or (dotname in only)) and (dotname not in ignore):
+                    yield field
 
 
 class VersionedConfig(metaclass=__Meta):
@@ -196,15 +211,21 @@ class VersionedConfig(metaclass=__Meta):
 
         return attrs
 
-    def to_dict(self):
+    def to_dict(self, only=[], ignore=[]):
         """
         Convert config object to a dict, suitable for passing to the json library
+
+        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :return: config data as a dict
         :rtype: dict
         """
+        if only and ignore:
+            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
         ret = {}
-        for field in _walk_obj_attrs(self):
+        for field in _walk_obj_attrs(self, only, ignore):
             if isinstance(field.value, CustomValue):
                 field.value = field.value.to_dict()
 
@@ -212,12 +233,17 @@ class VersionedConfig(metaclass=__Meta):
 
         return ret
 
-    def from_dict(self, attrs):
+    def from_dict(self, attrs, only=[], ignore=[]):
         """
         Load config data from a dict
 
         :param dict attrs: dict containing config data
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
         """
+        if only and ignore:
+            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
         version = self.__dict__.get('version', None)
         if version is not None:
             # Config is versioned, check if migrations are needed
@@ -229,52 +255,60 @@ class VersionedConfig(metaclass=__Meta):
             # Migration successful or not required, delete version field
             del attrs['version']
 
-        for field in _walk_dict_attrs(self, attrs):
+        for field in _walk_dict_attrs(self, attrs, only, ignore):
             val = field.get_obj_field(self)
             if isinstance(val, CustomValue):
                 val.from_dict(field.value)
             else:
                 field.set_obj_field(self)
 
-    def to_json(self, indent=None):
+    def to_json(self, indent=None, only=[], ignore=[]):
         """
         Generate a JSON string containing all config data
 
         :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
+        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :return: Config data as a JSON string
         :rtype: str
         """
-        return json.dumps(self.to_dict(), indent=indent)
+        return json.dumps(self.to_dict(only, ignore), indent=indent)
 
-    def from_json(self, jsonstr):
+    def from_json(self, jsonstr, only=[], ignore=[]):
         """
         Load config data from a JSON string
 
         :param str jsonstr: JSON string to load
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
         """
         try:
             d = json.loads(jsonstr)
         except JSONDecodeError:
             raise LoadConfigError("JSON decode failure")
 
-        self.from_dict(d)
+        self.from_dict(d, only, ignore)
 
-    def to_file(self, filename, indent=None):
+    def to_file(self, filename, indent=None, only=[], ignore=[]):
         """
         Save config data to a JSON file
 
         :param str filename: Name of file to write
         :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
+        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
         """
         with open(filename, 'w') as fh:
-            fh.write(self.to_json(indent=indent))
+            fh.write(self.to_json(indent, only, ignore))
 
-    def from_file(self, filename):
+    def from_file(self, filename, only=[], ignore=[]):
         """
         Load config data from a JSON file
 
         :param str filename: Name of file to load
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
         """
         with open(filename, 'r') as fh:
-            self.from_json(fh.read())
+            self.from_json(fh.read(), only, ignore)
