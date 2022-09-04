@@ -1,3 +1,6 @@
+.. toctree::
+ :maxdepth: 2
+
 Object serialization & versioning framework for python 3x
 =========================================================
 
