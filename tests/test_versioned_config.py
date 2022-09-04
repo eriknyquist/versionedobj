@@ -13,7 +13,8 @@ class TestVersionedConfig(TestCase):
             val4 = [2,3,4]
             val5 = {"a": 5, "b": 55.5}
 
-        d = TestConfig.to_dict()
+        cfg = TestConfig()
+        d = cfg.to_dict()
 
         self.assertEqual(1, d['val1'])
         self.assertEqual(9.99, d['val2'])
@@ -21,13 +22,13 @@ class TestVersionedConfig(TestCase):
         self.assertEqual([2, 3, 4], d['val4'])
         self.assertEqual({"a": 5, "b": 55.5}, d['val5'])
 
-        TestConfig.from_dict(d)
+        cfg.from_dict(d)
 
-        self.assertEqual(1, TestConfig.val1)
-        self.assertEqual(9.99, TestConfig.val2)
-        self.assertEqual("howdy", TestConfig.val3)
-        self.assertEqual([2, 3, 4], TestConfig.val4)
-        self.assertEqual({"a": 5, "b": 55.5}, TestConfig.val5)
+        self.assertEqual(1, cfg.val1)
+        self.assertEqual(9.99, cfg.val2)
+        self.assertEqual("howdy", cfg.val3)
+        self.assertEqual([2, 3, 4], cfg.val4)
+        self.assertEqual({"a": 5, "b": 55.5}, cfg.val5)
 
     def test_basic_config_dict_change(self):
         class TestConfig(VersionedConfig):
@@ -37,7 +38,8 @@ class TestVersionedConfig(TestCase):
             val4 = [2,3,4]
             val5 = {"a": 5, "b": 55.5}
 
-        d = TestConfig.to_dict()
+        cfg = TestConfig()
+        d = cfg.to_dict()
 
         self.assertEqual(1, d['val1'])
         self.assertEqual(9.99, d['val2'])
@@ -46,13 +48,13 @@ class TestVersionedConfig(TestCase):
         self.assertEqual({"a": 5, "b": 55.5}, d['val5'])
 
         d["val1"] = 12
-        TestConfig.from_dict(d)
+        cfg.from_dict(d)
 
-        self.assertEqual(12, TestConfig.val1)
-        self.assertEqual(9.99, TestConfig.val2)
-        self.assertEqual("howdy", TestConfig.val3)
-        self.assertEqual([2, 3, 4], TestConfig.val4)
-        self.assertEqual({"a": 5, "b": 55.5}, TestConfig.val5)
+        self.assertEqual(12, cfg.val1)
+        self.assertEqual(9.99, cfg.val2)
+        self.assertEqual("howdy", cfg.val3)
+        self.assertEqual([2, 3, 4], cfg.val4)
+        self.assertEqual({"a": 5, "b": 55.5}, cfg.val5)
 
     def test_basic_config_json(self):
         class TestConfig(VersionedConfig):
@@ -62,14 +64,15 @@ class TestVersionedConfig(TestCase):
             val4 = [2,3,4]
             val5 = {"a": 5, "b": 55.5}
 
-        d = TestConfig.to_json()
-        TestConfig.from_json(d)
+        cfg = TestConfig()
+        d = cfg.to_json()
+        cfg.from_json(d)
 
-        self.assertEqual(1, TestConfig.val1)
-        self.assertEqual(9.99, TestConfig.val2)
-        self.assertEqual("howdy", TestConfig.val3)
-        self.assertEqual([2, 3, 4], TestConfig.val4)
-        self.assertEqual({"a": 5, "b": 55.5}, TestConfig.val5)
+        self.assertEqual(1, cfg.val1)
+        self.assertEqual(9.99, cfg.val2)
+        self.assertEqual("howdy", cfg.val3)
+        self.assertEqual([2, 3, 4], cfg.val4)
+        self.assertEqual({"a": 5, "b": 55.5}, cfg.val5)
 
     def test_basic_config_file(self):
         class TestConfig(VersionedConfig):
@@ -79,15 +82,16 @@ class TestVersionedConfig(TestCase):
             val4 = [2,3,4]
             val5 = {"a": 5, "b": 55.5}
 
+        cfg = TestConfig()
         filename = "__test_file.txt"
-        TestConfig.to_file(filename)
-        TestConfig.from_file(filename)
+        cfg.to_file(filename)
+        cfg.from_file(filename)
 
-        self.assertEqual(1, TestConfig.val1)
-        self.assertEqual(9.99, TestConfig.val2)
-        self.assertEqual("howdy", TestConfig.val3)
-        self.assertEqual([2, 3, 4], TestConfig.val4)
-        self.assertEqual({"a": 5, "b": 55.5}, TestConfig.val5)
+        self.assertEqual(1, cfg.val1)
+        self.assertEqual(9.99, cfg.val2)
+        self.assertEqual("howdy", cfg.val3)
+        self.assertEqual([2, 3, 4], cfg.val4)
+        self.assertEqual({"a": 5, "b": 55.5}, cfg.val5)
 
         os.remove(filename)
 
@@ -98,19 +102,20 @@ class TestVersionedConfig(TestCase):
 
         class TestConfig(VersionedConfig):
             val1 = "a"
-            val2 = NestedConfig
+            val2 = NestedConfig()
 
-        d = TestConfig.to_dict()
+        cfg = TestConfig()
+        d = cfg.to_dict()
 
         self.assertEqual("a", d["val1"])
         self.assertEqual(1, d["val2"]["val1"])
         self.assertEqual(55.5, d["val2"]["val2"])
 
-        TestConfig.from_dict(d)
+        cfg.from_dict(d)
 
-        self.assertEqual("a", TestConfig.val1)
-        self.assertEqual(1, TestConfig.val2.val1)
-        self.assertEqual(55.5, TestConfig.val2.val2)
+        self.assertEqual("a", cfg.val1)
+        self.assertEqual(1, cfg.val2.val1)
+        self.assertEqual(55.5, cfg.val2.val2)
 
     def test_nested_config_dict_change(self):
         class NestedConfig(VersionedConfig):
@@ -119,32 +124,35 @@ class TestVersionedConfig(TestCase):
 
         class TestConfig(VersionedConfig):
             val1 = "a"
-            val2 = NestedConfig
+            val2 = NestedConfig()
 
-        d = TestConfig.to_dict()
+        cfg = TestConfig()
+        d = cfg.to_dict()
 
         self.assertEqual("a", d["val1"])
         self.assertEqual(1, d["val2"]["val1"])
         self.assertEqual(55.5, d["val2"]["val2"])
 
         d["val2"]["val2"] = "changed"
-        TestConfig.from_dict(d)
+        cfg.from_dict(d)
 
-        self.assertEqual("a", TestConfig.val1)
-        self.assertEqual(1, TestConfig.val2.val1)
-        self.assertEqual("changed", TestConfig.val2.val2)
+        self.assertEqual("a", cfg.val1)
+        self.assertEqual(1, cfg.val2.val1)
+        self.assertEqual("changed", cfg.val2.val2)
 
     def test_load_dict_invalid_attr(self):
         class TestConfig(VersionedConfig):
             val1 = 1
 
-        self.assertRaises(LoadConfigError, TestConfig.from_dict, {"val2": 55})
+        cfg = TestConfig()
+        self.assertRaises(LoadConfigError, cfg.from_dict, {"val2": 55})
 
     def test_load_invalid_json(self):
         class TestConfig(VersionedConfig):
             val1 = 1
 
-        self.assertRaises(LoadConfigError, TestConfig.from_json, "zsrg]s\er]gsegr")
+        cfg = TestConfig()
+        self.assertRaises(LoadConfigError, cfg.from_json, "zsrg]s\er]gsegr")
 
     def test_load_dict_migration_failure_no_migrations(self):
         class TestConfig(VersionedConfig):
@@ -153,7 +161,8 @@ class TestVersionedConfig(TestCase):
 
         fake_config = {'version': '1.0.22', 'value': 2727}
 
-        self.assertRaises(LoadConfigError, TestConfig.from_dict, fake_config)
+        cfg = TestConfig()
+        self.assertRaises(LoadConfigError, cfg.from_dict, fake_config)
 
     def test_load_dict_migration_failure_bad_migration(self):
         class TestConfig(VersionedConfig):
@@ -167,7 +176,8 @@ class TestVersionedConfig(TestCase):
 
         TestConfig.add_migration('1.0.0', '1.0.21', bad_migration)
 
-        self.assertRaises(LoadConfigError, TestConfig.from_dict, fake_config)
+        cfg = TestConfig()
+        self.assertRaises(LoadConfigError, cfg.from_dict, fake_config)
 
     def test_load_dict_migration_success(self):
         class TestConfig(VersionedConfig):
@@ -183,11 +193,12 @@ class TestVersionedConfig(TestCase):
 
         fake_config = {'version': '1.0.0', 'value1': 8888}
 
-        TestConfig.from_dict(fake_config)
+        cfg = TestConfig()
+        cfg.from_dict(fake_config)
 
-        self.assertEqual(8888, TestConfig.value1)
-        self.assertEqual(1234, TestConfig.value2)
-        self.assertEqual('1.0.22', TestConfig.version)
+        self.assertEqual(8888, cfg.value1)
+        self.assertEqual(1234, cfg.value2)
+        self.assertEqual('1.0.22', cfg.version)
 
     def test_load_dict_deeper_nesting(self):
         class Level4(VersionedConfig):
@@ -196,17 +207,18 @@ class TestVersionedConfig(TestCase):
 
         class Level3(VersionedConfig):
             val1 = 66.6
-            val2 = Level4
+            val2 = Level4()
 
         class Level2(VersionedConfig):
             val1 = "gg"
-            val2 = Level3
+            val2 = Level3()
 
         class Level1(VersionedConfig):
             val1 = 3
-            val2 = Level2
+            val2 = Level2()
 
-        d = Level1.to_dict()
+        cfg = Level1()
+        d = cfg.to_dict()
 
         self.assertEqual(3, d['val1'])
         self.assertEqual('gg', d['val2']['val1'])
@@ -215,13 +227,13 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(False, d['val2']['val2']['val2']['val2'])
 
         d['val2']['val1'] = "changed"
-        Level1.from_dict(d)
+        cfg.from_dict(d)
 
-        self.assertEqual(3, Level1.val1)
-        self.assertEqual('changed', Level1.val2.val1)
-        self.assertEqual(66.6, Level1.val2.val2.val1)
-        self.assertEqual(True, Level1.val2.val2.val2.val1)
-        self.assertEqual(False, Level1.val2.val2.val2.val2)
+        self.assertEqual(3, cfg.val1)
+        self.assertEqual('changed', cfg.val2.val1)
+        self.assertEqual(66.6, cfg.val2.val2.val1)
+        self.assertEqual(True, cfg.val2.val2.val2.val1)
+        self.assertEqual(False, cfg.val2.val2.val2.val2)
 
     def test_load_json_deeper_nesting(self):
         class Level4(VersionedConfig):
@@ -230,24 +242,25 @@ class TestVersionedConfig(TestCase):
 
         class Level3(VersionedConfig):
             val1 = 66.6
-            val2 = Level4
+            val2 = Level4()
 
         class Level2(VersionedConfig):
             val1 = "gg"
-            val2 = Level3
+            val2 = Level3()
 
         class Level1(VersionedConfig):
             val1 = 3
-            val2 = Level2
+            val2 = Level2()
 
-        d = Level1.to_json()
-        Level1.from_json(d)
+        cfg = Level1()
+        d = cfg.to_json()
+        cfg.from_json(d)
 
-        self.assertEqual(3, Level1.val1)
-        self.assertEqual('gg', Level1.val2.val1)
-        self.assertEqual(66.6, Level1.val2.val2.val1)
-        self.assertEqual(True, Level1.val2.val2.val2.val1)
-        self.assertEqual(False, Level1.val2.val2.val2.val2)
+        self.assertEqual(3, cfg.val1)
+        self.assertEqual('gg', cfg.val2.val1)
+        self.assertEqual(66.6, cfg.val2.val2.val1)
+        self.assertEqual(True, cfg.val2.val2.val2.val1)
+        self.assertEqual(False, cfg.val2.val2.val2.val2)
 
     def test_load_file_deeper_nesting(self):
         class Level4(VersionedConfig):
@@ -256,24 +269,25 @@ class TestVersionedConfig(TestCase):
 
         class Level3(VersionedConfig):
             val1 = 66.6
-            val2 = Level4
+            val2 = Level4()
 
         class Level2(VersionedConfig):
             val1 = "gg"
-            val2 = Level3
+            val2 = Level3()
 
         class Level1(VersionedConfig):
             val1 = 3
-            val2 = Level2
+            val2 = Level2()
 
+        cfg = Level1()
         filename = "__test_cfg.txt"
-        Level1.to_file(filename)
-        Level1.from_file(filename)
+        cfg.to_file(filename)
+        cfg.from_file(filename)
 
-        self.assertEqual(3, Level1.val1)
-        self.assertEqual('gg', Level1.val2.val1)
-        self.assertEqual(66.6, Level1.val2.val2.val1)
-        self.assertEqual(True, Level1.val2.val2.val2.val1)
-        self.assertEqual(False, Level1.val2.val2.val2.val2)
+        self.assertEqual(3, cfg.val1)
+        self.assertEqual('gg', cfg.val2.val1)
+        self.assertEqual(66.6, cfg.val2.val2.val1)
+        self.assertEqual(True, cfg.val2.val2.val2.val1)
+        self.assertEqual(False, cfg.val2.val2.val2.val2)
 
         os.remove(filename)

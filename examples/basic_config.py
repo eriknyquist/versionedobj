@@ -11,14 +11,17 @@ class UserConfig(VersionedConfig):
     version = "1.0.0"
     username = "john smith"
     friend_list = ["user1", "user2", "user3"]
-    display_config = DisplayConfig
+    display_config = DisplayConfig()
+
+# Create an instance of the top-level object
+cfg = UserConfig()
 
 # Change some values
-UserConfig.display_config.volume = 1.0
-UserConfig.username = "jane doe"
+cfg.display_config.volume = 1.0
+cfg.username = "jane doe"
 
 # Save to JSON file
-UserConfig.to_file('user_config.json', indent=4)
+cfg.to_file('user_config.json', indent=4)
 
 # Load from JSON file
-UserConfig.from_file('user_config.json')
+cfg.from_file('user_config.json')
