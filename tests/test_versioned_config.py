@@ -600,3 +600,47 @@ class TestVersionedConfig(TestCase):
         cfg = TestConfig()
         d = cfg.to_dict()
         self.assertRaises(InvalidFilterError, cfg.from_dict, d, ['var1'], ['var1'])
+
+    def test_to_from_file_only_filter(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        filename = "__test_config.txt"
+        cfg.to_file(filename)
+
+        # Change values in memory
+        cfg.var1 = 99
+        cfg.var2 = 99
+        cfg.var3 = 99
+
+        cfg.from_file(filename, only=['var1', 'var2'])
+
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(2, cfg.var2)
+        self.assertEqual(99, cfg.var3)
+        os.remove(filename)
+
+    def test_to_from_file_ignore_filter(self):
+        class TestConfig(VersionedConfig):
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        cfg = TestConfig()
+        filename = "__test_config.txt"
+        cfg.to_file(filename)
+
+        # Change values in memory
+        cfg.var1 = 99
+        cfg.var2 = 99
+        cfg.var3 = 99
+
+        cfg.from_file(filename, ignore=['var2'])
+
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual(99, cfg.var2)
+        self.assertEqual(3, cfg.var3)
+        os.remove(filename)
