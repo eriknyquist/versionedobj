@@ -49,7 +49,7 @@ class __Meta(type):
         cls.migrations = []
 
 
-class ObjField(object):
+class _ObjField(object):
     def __init__(self, parents, fieldname, value):
         self.parents = parents
         self.fieldname = fieldname
@@ -130,7 +130,7 @@ def _walk_obj_attrs(parent_obj, only=[], ignore=[]):
 
         for n in _iter_obj_attrs(obj):
             value = obj.__dict__[n]
-            field = ObjField(parents, n, value)
+            field = _ObjField(parents, n, value)
             dotname = field.dot_name()
 
             if isinstance(value, VersionedObject):
@@ -151,7 +151,7 @@ def _walk_dict_attrs(obj, parent_attrs, only=[], ignore=[]):
 
         for n in attrs:
             value = attrs[n]
-            field = ObjField(parents, n, value)
+            field = _ObjField(parents, n, value)
             dotname = field.dot_name()
             field_value = field.get_obj_field(obj)
 

@@ -115,7 +115,7 @@
         <span class="bp">cls</span><span class="o">.</span><span class="n">migrations</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-<div class="viewcode-block" id="ObjField"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.ObjField">[docs]</a><span class="k">class</span> <span class="nc">ObjField</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_ObjField</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">=</span> <span class="n">fieldname</span>
@@ -127,10 +127,10 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ObjField.dot_name"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.ObjField.dot_name">[docs]</a>    <span class="k">def</span> <span class="nf">dot_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">])</span></div>
+    <span class="k">def</span> <span class="nf">dot_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">])</span>
 
-<div class="viewcode-block" id="ObjField.get_obj_field"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.ObjField.get_obj_field">[docs]</a>    <span class="k">def</span> <span class="nf">get_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">parent_obj</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
@@ -143,9 +143,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ObjField.set_obj_field"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.ObjField.set_obj_field">[docs]</a>    <span class="k">def</span> <span class="nf">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">,</span> <span class="n">create_nonexistent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">,</span> <span class="n">create_nonexistent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">parent_obj</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
@@ -158,9 +158,9 @@
 
                 <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ObjField.set_dict_field"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.ObjField.set_dict_field">[docs]</a>    <span class="k">def</span> <span class="nf">set_dict_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_dict_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="n">parent_attrs</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
@@ -171,7 +171,7 @@
                 <span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">pname</span><span class="p">]</span>
 
         <span class="n">attrs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-        <span class="k">return</span> <span class="n">parent_attrs</span></div></div>
+        <span class="k">return</span> <span class="n">parent_attrs</span>
 
 
 <span class="k">def</span> <span class="nf">_iter_obj_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
@@ -196,7 +196,7 @@
 
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_iter_obj_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-            <span class="n">field</span> <span class="o">=</span> <span class="n">ObjField</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">_ObjField</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">VersionedObject</span><span class="p">):</span>
@@ -217,7 +217,7 @@
 
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-            <span class="n">field</span> <span class="o">=</span> <span class="n">ObjField</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">_ObjField</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
             <span class="n">field_value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_obj_field</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
