@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedconfig import VersionedConfig, LoadConfigError
+from versionedconfig import VersionedConfig, LoadConfigError, CustomValue
 
 
 class TestVersionedConfig(TestCase):
@@ -291,3 +291,64 @@ class TestVersionedConfig(TestCase):
         self.assertEqual(False, cfg.val2.val2.val2.val2)
 
         os.remove(filename)
+
+    def test_custom_value_to_dict_not_implemented(self):
+        class TestCustomValue(CustomValue):
+            def from_dict(self, data):
+                pass
+
+        class TestConfig(VersionedConfig):
+            val1 = TestCustomValue()
+
+        cfg = TestConfig()
+        self.assertRaises(NotImplementedError, cfg.to_dict)
+
+    def test_custom_value_from_dict_not_implemented(self):
+        class TestCustomValue(CustomValue):
+            def to_dict(self):
+                return {}
+
+        class TestConfig(VersionedConfig):
+            val1 = TestCustomValue()
+
+        cfg = TestConfig()
+        d = cfg.to_dict()
+        self.assertRaises(NotImplementedError, cfg.from_dict, d)
+
+    def test_custom_value_success(self):
+        class TestCustomValue(CustomValue):
+            def __init__(self, a, b, c):
+                self.a = a
+                self.b = b
+                self.c = c
+
+            def to_dict(self):
+                return f"{self.a}:{self.b}:{self.c}"
+
+            def from_dict(self, val):
+                fields = val.split(':')
+                self.a = int(fields[0])
+                self.b = int(fields[1])
+                self.c = int(fields[2])
+
+        class TestConfig(VersionedConfig):
+            val1 = 10
+            val2 = TestCustomValue(1, 2, 3)
+
+        cfg = TestConfig()
+
+        d = cfg.to_dict()
+
+        self.assertEqual(d['val2'], "1:2:3")
+
+        # Change values in dict
+        d['val2'] = "5:6:7"
+
+        # Load values from dict
+        cfg.from_dict(d)
+
+        # Verify loaded values
+        self.assertEqual(10, cfg.val1)
+        self.assertEqual(5, cfg.val2.a)
+        self.assertEqual(6, cfg.val2.b)
+        self.assertEqual(7, cfg.val2.c)

@@ -120,9 +120,8 @@ def _walk_obj_attrs(parent_obj):
 
         for n in _iter_obj_attrs(obj):
             value = obj.__dict__[n]
-            nested_config = isinstance(value, VersionedConfig)
 
-            if nested_config or isinstance(value, CustomValue):
+            if isinstance(value, VersionedConfig):
                 obj_stack.append((n, value))
             else:
                 yield ConfigField(parents, n, value)
@@ -141,9 +140,8 @@ def _walk_dict_attrs(obj, parent_attrs):
             value = attrs[n]
             field = ConfigField(parents, n, value)
             field_value = field.get_obj_field(obj)
-            nested_config = isinstance(field_value, VersionedConfig)
 
-            if (nested_config and (type(value) == dict)) or isinstance(field_value, CustomValue):
+            if (isinstance(field_value, VersionedConfig) and (type(value) == dict)):
                 attrs_stack.append((n, value))
             else:
                 yield field
@@ -207,6 +205,9 @@ class VersionedConfig(metaclass=__Meta):
         """
         ret = {}
         for field in _walk_obj_attrs(self):
+            if isinstance(field.value, CustomValue):
+                field.value = field.value.to_dict()
+
             ret = field.set_dict_field(ret)
 
         return ret
@@ -229,7 +230,11 @@ class VersionedConfig(metaclass=__Meta):
             del attrs['version']
 
         for field in _walk_dict_attrs(self, attrs):
-            field.set_obj_field(self)
+            val = field.get_obj_field(self)
+            if isinstance(val, CustomValue):
+                val.from_dict(field.value)
+            else:
+                field.set_obj_field(self)
 
     def to_json(self, indent=None):
         """
