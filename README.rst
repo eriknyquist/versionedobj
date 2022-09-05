@@ -9,7 +9,7 @@ structure across time, and to migrate between different object versions.
 
 See `API documentation <https://eriknyquist.github.io/versionedobj/>`_
 
-.. contents::
+.. contents:: **Table of Contents**
 
 Example-- VersionedObject as a configuration file
 -------------------------------------------------
