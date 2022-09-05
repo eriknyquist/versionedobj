@@ -1,8 +1,11 @@
 Object serialization & versioning framework for python 3x
 =========================================================
 
-This package provides an easy way to define complex nested objects that can be
-saved/loaded to/from strings or JSON files, and easily migrated from older object versions.
+**versionedobj** is a framework for creating complex python objects that can be
+serialized/deserialized to and from strings, or dicts, or JSON files.
+
+**versionedobj** also provides a versioning mechanism, to track changes in object
+structure across time, and to migrate between different object versions.
 
 See `API documentation <https://eriknyquist.github.io/versionedobj/>`_
 
@@ -242,7 +245,8 @@ The solution is to:
     UserConfig.add_migration("v1.0.0", "v1.0.1", migrate_100_to_101)
 
 after you add the migration function and update the version to ``v1.0.1``, JSON files
-loaded with version``v1.0.0`` will be migrated to version ``v1.0.1``.
+that are loaded and contain the version ``v1.0.0`` will be automatically migrated to version
+``v1.0.1`` using the migration function you added.
 
 The downside to this approach, is that you have to manually udpate the version number,
 and write a new migration function, anytime the structure of your config data changes.
@@ -252,3 +256,11 @@ version of your config file to the current version.
 
 If you don't need the versioning/migration functionality, just never change your version
 number, or don't create a ``version`` attribute on your ``VersionedObject`` classes.
+
+Contributions
+=============
+
+Contributions are welcome, please open a pull request and ensure that:
+
+#. All existing unit tests pass (run tests via ``python setup.py test``)
+#. New unit tests are added to cover any modified/new functionality
