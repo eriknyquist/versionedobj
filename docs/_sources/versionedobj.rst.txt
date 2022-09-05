@@ -12,6 +12,14 @@ versionedobj.object module
    :undoc-members:
    :show-inheritance:
 
+versionedobj.exceptions module
+------------------------------
+
+.. automodule:: versionedobj.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

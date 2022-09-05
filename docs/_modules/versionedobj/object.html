@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj.object &mdash; versionedobj v0.1.0 documentation</title>
+  <title>versionedobj.object &mdash; versionedobj v0.2.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -68,20 +68,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">json.decoder</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
 
-
-<div class="viewcode-block" id="InvalidFilterError"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.InvalidFilterError">[docs]</a><span class="k">class</span> <span class="nc">InvalidFilterError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exception raised whenever &#39;only&#39; and &#39;ignore&#39; filters are used at the same time</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="LoadObjError"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.LoadObjError">[docs]</a><span class="k">class</span> <span class="nc">LoadObjError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exception raised whenever saved object data cannot be loaded, either because of</span>
-<span class="sd">    a JSON parser error, or because of unrecognized/invalid fields</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
+<span class="kn">from</span> <span class="nn">versionedobj.exceptions</span> <span class="kn">import</span> <span class="n">InvalidFilterError</span><span class="p">,</span> <span class="n">LoadObjError</span><span class="p">,</span> <span class="n">InputValidationError</span>
 
 
 <div class="viewcode-block" id="CustomValue"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.CustomValue">[docs]</a><span class="k">class</span> <span class="nc">CustomValue</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -150,16 +137,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
                 <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">,</span> <span class="n">create_nonexistent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the field value on the provided VersionedObject instance</span>
 
@@ -170,10 +157,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">create_nonexistent</span><span class="p">:</span>
-                        <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">,</span> <span class="nb">object</span><span class="p">())</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
                 <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
 
@@ -372,19 +356,77 @@
 
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="VersionedObject.from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="VersionedObject.validate_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.validate_dict">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load object data from a dict</span>
+<span class="sd">        Validate a versioned object in dict form.</span>
+
+<span class="sd">        :param dict attrs: dict to validate</span>
+<span class="sd">        :param list only: Whitelist of attribute names to validate (cannot be used with &#39;ignore&#39;)</span>
+<span class="sd">        :param list ignore: Blacklist of attribute names to exclude from validation (cannot be used with &#39;only&#39;)</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InputValidationError: if the dict contains\</span>
+<span class="sd">            fields that are not found in this object, or if the dict is missing\</span>
+<span class="sd">            fields that are found in this object.</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create a map of all object attribute names, to track which attributes have</span>
+        <span class="c1"># also been seen in the dict</span>
+        <span class="n">obj_attrs_loaded</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="o">==</span> <span class="n">dotname</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">obj_attrs_loaded</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Now, walk through all attributes in the dict</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_dict_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="o">==</span> <span class="n">dotname</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">dotname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj_attrs_loaded</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">dotname</span><span class="si">}</span><span class="s2">&#39; in dict&quot;</span><span class="p">)</span>
+
+            <span class="n">obj_attrs_loaded</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># See if any fields were missing from the dict</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">obj_attrs_loaded</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_attrs_loaded</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+                <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attributes missing from dict: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VersionedObject.from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load object data from a dict.</span>
 
 <span class="sd">        :param dict attrs: dict containing object data</span>
+<span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
+<span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
+<span class="sd">            and don&#39;t want to mess with filtering.</span>
 <span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
 
         <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrate</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
 
         <span class="c1"># Delete version field from dict, if it exists</span>
         <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
@@ -410,20 +452,27 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VersionedObject.from_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="VersionedObject.from_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load object data from a JSON string</span>
+<span class="sd">        Load object data from a JSON string.</span>
 
 <span class="sd">        :param str jsonstr: JSON string to load</span>
+<span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
+<span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
+<span class="sd">            and don&#39;t want to mess with filtering.</span>
 <span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">JSONDecodeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="s2">&quot;JSON decode failure&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VersionedObject.to_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.to_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -437,16 +486,23 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="VersionedObject.from_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="VersionedObject.from_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load object data from a JSON file</span>
+<span class="sd">        Load object data from a JSON file.</span>
 
 <span class="sd">        :param str filename: Name of file to load</span>
+<span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
+<span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
+<span class="sd">            and don&#39;t want to mess with filtering.</span>
 <span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

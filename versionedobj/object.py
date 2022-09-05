@@ -2,20 +2,7 @@ import inspect
 import json
 from json.decoder import JSONDecodeError
 
-
-class InvalidFilterError(Exception):
-    """
-    Exception raised whenever 'only' and 'ignore' filters are used at the same time
-    """
-    pass
-
-
-class LoadObjError(Exception):
-    """
-    Exception raised whenever saved object data cannot be loaded, either because of
-    a JSON parser error, or because of unrecognized/invalid fields
-    """
-    pass
+from versionedobj.exceptions import InvalidFilterError, LoadObjError, InputValidationError
 
 
 class CustomValue(object):
@@ -84,16 +71,16 @@ class _ObjField(object):
         if self.parents:
             for pname in self.parents:
                 if not hasattr(obj, pname):
-                    raise LoadObjError(f"Unrecognized attribute name '{pname}'")
+                    raise InputValidationError(f"Unrecognized attribute name '{pname}'")
 
                 obj = getattr(obj, pname)
 
         if not hasattr(obj, self.fieldname):
-            raise LoadObjError(f"Unrecognized attribute name '{self.fieldname}'")
+            raise InputValidationError(f"Unrecognized attribute name '{self.fieldname}'")
 
         return getattr(obj, self.fieldname)
 
-    def set_obj_field(self, parent_obj, create_nonexistent=False):
+    def set_obj_field(self, parent_obj):
         """
         Set the field value on the provided VersionedObject instance
 
@@ -104,10 +91,7 @@ class _ObjField(object):
         if self.parents:
             for pname in self.parents:
                 if not hasattr(obj, pname):
-                    if create_nonexistent:
-                        setattr(obj, pname, object())
-                    else:
-                        raise LoadObjError(f"Unrecognized attribute name '{pname}'")
+                    raise InputValidationError(f"Unrecognized attribute name '{pname}'")
 
                 obj = getattr(obj, pname)
 
@@ -306,19 +290,77 @@ class VersionedObject(metaclass=__Meta):
 
         return ret
 
-    def from_dict(self, attrs, only=[], ignore=[]):
+    def validate_dict(self, attrs, only=[], ignore=[]):
         """
-        Load object data from a dict
+        Validate a versioned object in dict form.
+
+        :param dict attrs: dict to validate
+        :param list only: Whitelist of attribute names to validate (cannot be used with 'ignore')
+        :param list ignore: Blacklist of attribute names to exclude from validation (cannot be used with 'only')
+
+        :raises versionedobj.exceptions.InputValidationError: if the dict contains\
+            fields that are not found in this object, or if the dict is missing\
+            fields that are found in this object.
+
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        if only and ignore:
+            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
+        # Create a map of all object attribute names, to track which attributes have
+        # also been seen in the dict
+        obj_attrs_loaded = {}
+        for field in _walk_obj_attrs(self, only, ignore):
+            dotname = field.dot_name()
+            if 'version' == dotname:
+                continue
+
+            obj_attrs_loaded[dotname] = False
+
+        # Now, walk through all attributes in the dict
+        for field in _walk_dict_attrs(self, attrs, only, ignore):
+            dotname = field.dot_name()
+
+            if 'version' == dotname:
+                continue
+
+            if dotname not in obj_attrs_loaded:
+                raise InputValidationError(f"Unrecognized attribute name '{dotname}' in dict")
+
+            obj_attrs_loaded[dotname] = True
+
+        # See if any fields were missing from the dict
+        missing = []
+        for n in obj_attrs_loaded:
+            if not obj_attrs_loaded[n]:
+                missing.append(n)
+
+        if missing:
+            raise InputValidationError(f"Attributes missing from dict: {','.join(missing)}")
+
+    def from_dict(self, attrs, validate=True, only=[], ignore=[]):
+        """
+        Load object data from a dict.
 
         :param dict attrs: dict containing object data
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
         :param list only: Whitelist of field names to load (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         if only and ignore:
             raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
 
         version = self.__dict__.get('version', None)
         attrs = self._migrate(version, attrs)
+
+        if validate:
+            self.validate_dict(attrs, only, ignore)
 
         # Delete version field from dict, if it exists
         if 'version' in attrs:
@@ -344,20 +386,27 @@ class VersionedObject(metaclass=__Meta):
         """
         return json.dumps(self.to_dict(only, ignore), indent=indent)
 
-    def from_json(self, jsonstr, only=[], ignore=[]):
+    def from_json(self, jsonstr, validate=True, only=[], ignore=[]):
         """
-        Load object data from a JSON string
+        Load object data from a JSON string.
 
         :param str jsonstr: JSON string to load
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
         :param list only: Whitelist of field names to load (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         try:
             d = json.loads(jsonstr)
         except JSONDecodeError:
             raise LoadObjError("JSON decode failure")
 
-        self.from_dict(d, only, ignore)
+        self.from_dict(d, validate, only, ignore)
 
     def to_file(self, filename, indent=None, only=[], ignore=[]):
         """
@@ -371,13 +420,20 @@ class VersionedObject(metaclass=__Meta):
         with open(filename, 'w') as fh:
             fh.write(self.to_json(indent, only, ignore))
 
-    def from_file(self, filename, only=[], ignore=[]):
+    def from_file(self, filename, validate=True, only=[], ignore=[]):
         """
-        Load object data from a JSON file
+        Load object data from a JSON file.
 
         :param str filename: Name of file to load
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
         :param list only: Whitelist of field names to load (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         with open(filename, 'r') as fh:
-            self.from_json(fh.read(), only, ignore)
+            self.from_json(fh.read(), validate, only, ignore)

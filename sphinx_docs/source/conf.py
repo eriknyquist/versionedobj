@@ -23,7 +23,7 @@ copyright = '2022, Erik K. Nyquist'
 author = 'Erik K. Nyquist'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.1.0'
+release = 'v0.2.2'
 
 
 # -- General configuration ---------------------------------------------------

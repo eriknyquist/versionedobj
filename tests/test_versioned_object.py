@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, CustomValue
+from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, InputValidationError, CustomValue
 
 
 class TestVersionedObject(TestCase):
@@ -145,7 +145,26 @@ class TestVersionedObject(TestCase):
             val1 = 1
 
         cfg = TestConfig()
-        self.assertRaises(LoadObjError, cfg.from_dict, {"val2": 55})
+        self.assertRaises(InputValidationError, cfg.from_dict, {"val2": 55})
+
+    def test_load_dict_missing_attr(self):
+        class TestConfig(VersionedObject):
+            val1 = 1
+            val2 = 2
+
+        cfg = TestConfig()
+        self.assertRaises(InputValidationError, cfg.from_dict, {"val2": 55})
+
+    def test_load_dict_missing_attr_no_validation(self):
+        class TestConfig(VersionedObject):
+            val1 = 1
+            val2 = 2
+
+        cfg = TestConfig()
+        cfg.from_dict({"val2": 55}, validate=False)
+
+        self.assertEqual(1, cfg.val1)
+        self.assertEqual(55, cfg.val2)
 
     def test_load_invalid_json(self):
         class TestConfig(VersionedObject):
@@ -364,7 +383,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(2, d['var2'])
 
-        cfg.from_dict(d)
+        cfg.from_dict(d, only=['var2'])
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -381,7 +400,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(2, d['var2'])
         self.assertEqual(3, d['var3'])
 
-        cfg.from_dict(d)
+        cfg.from_dict(d, only=['var2', 'var3'])
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -404,7 +423,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual("abc", d['var3']['var1']['var1'])
 
-        cfg.from_dict(d)
+        cfg.from_dict(d, only=['var3.var1.var1'])
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -421,7 +440,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, d['var1'])
         self.assertEqual(3, d['var3'])
 
-        cfg.from_dict(d)
+        cfg.from_dict(d, ignore=['var2'])
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -437,7 +456,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(3, d['var3'])
 
-        cfg.from_dict(d)
+        cfg.from_dict(d, ignore=['var1', 'var2'])
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -460,7 +479,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(2, d['var2'])
 
-        cfg.from_dict(d)
+        cfg.from_dict(d, ignore=['var1', 'var3.var1.var1'])
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -599,7 +618,7 @@ class TestVersionedObject(TestCase):
 
         cfg = TestConfig()
         d = cfg.to_dict()
-        self.assertRaises(InvalidFilterError, cfg.from_dict, d, ['var1'], ['var1'])
+        self.assertRaises(InvalidFilterError, cfg.from_dict, d, ignore=['var1'], only=['var1'])
 
     def test_to_from_file_only_filter(self):
         class TestConfig(VersionedObject):
@@ -868,3 +887,71 @@ class TestVersionedObject(TestCase):
         self.assertEqual(14, cfg.var4)
         self.assertEqual(15, cfg.var5)
         self.assertEqual(16, cfg.var6)
+
+    def test_validate_dict_missing_from_dict(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = 8.8
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+        bad_config = {'var1': 1, 'var2': {'var1': "hey"}}
+
+        self.assertRaises(InputValidationError, cfg.validate_dict, bad_config)
+
+    def test_validate_dict_invalid_dict_field_1(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = 8.8
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+        bad_config = {'var1': 1, 'var2': {'var1': "hey", 'var2': 8.8, 'bad': 5}}
+
+        self.assertRaises(InputValidationError, cfg.validate_dict, bad_config)
+
+    def test_validate_dict_invalid_dict_field_2(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = 8.8
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+        bad_config = {'var1': 1, 'var2': {'var1': "hey", 'val2': 8.8}}
+
+        self.assertRaises(InputValidationError, cfg.validate_dict, bad_config)
+
+    def test_validate_dict_invalid_filter(self):
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = 2
+
+        cfg = TestConfig()
+        self.assertRaises(InvalidFilterError, cfg.validate_dict, {}, only=['a'], ignore=['b'])
+
+    def test_validate_dict_success(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = 8.8
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+        good_config = {'var1': 99, 'var2': {'var1': "heesgfsegy", 'var2': 10000}}
+        cfg.validate_dict(good_config)
+
+        # Verify values from dict were not loaded
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual("hey", cfg.var2.var1)
+        self.assertEqual(8.8, cfg.var2.var2)
