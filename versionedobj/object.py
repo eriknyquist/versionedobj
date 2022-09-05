@@ -52,6 +52,24 @@ class _ObjField(object):
     def __repr__(self):
         return self.__str__()
 
+    @classmethod
+    def from_dot_name(cls, dotname, parent_obj):
+        parents = []
+        fieldname = ""
+
+        fields = dotname.split('.')
+        if len(fields) == 0:
+            raise InputValidationError("Invalid dotname")
+        elif len(fields) == 1:
+            fieldname = fields[0]
+        else:
+            fieldname = fields[-1]
+            parents = fields[:-1]
+
+        ret = _ObjField(parents, fieldname, None)
+        ret.value = ret.get_obj_field(parent_obj)
+        return ret
+
     def dot_name(self):
         """
         Get the full object name, with sub-object names separated by dots
@@ -267,6 +285,15 @@ class VersionedObject(metaclass=__Meta):
             raise LoadObjError(f"Failed to migrate from version {version_before_migration} to {version}")
 
         return attrs
+
+    def __getitem__(self, key):
+        field = _ObjField.from_dot_name(key, self)
+        return field.get_obj_field(self)
+
+    def __setitem__(self, key, value):
+        field = _ObjField.from_dot_name(key, self)
+        field.value = value
+        field.set_obj_field(self)
 
     def to_dict(self, only=[], ignore=[]):
         """

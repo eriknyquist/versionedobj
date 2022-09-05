@@ -955,3 +955,60 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, cfg.var1)
         self.assertEqual("hey", cfg.var2.var1)
         self.assertEqual(8.8, cfg.var2.var2)
+
+    def test_access_by_dotname_1(self):
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = 2
+
+        cfg = TestConfig()
+
+        self.assertEqual(1, cfg['var1'])
+        self.assertEqual(2, cfg['var2'])
+
+    def test_access_by_dotname_2(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+
+        self.assertEqual(1, cfg['var1'])
+        self.assertEqual("hey", cfg['var2.var1'])
+        self.assertEqual(False, cfg['var2.var2'])
+
+    def test_write_by_dotname_1(self):
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = 2
+
+        cfg = TestConfig()
+
+        cfg['var1'] = 3
+        cfg['var2'] = 4
+
+        self.assertEqual(3, cfg['var1'])
+        self.assertEqual(4, cfg['var2'])
+
+    def test_write_by_dotname_2(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+
+        cfg['var1'] = 99
+        cfg['var2.var1'] = "xxx"
+        cfg['var2.var2'] = True
+
+        self.assertEqual(99, cfg['var1'])
+        self.assertEqual("xxx", cfg['var2.var1'])
+        self.assertEqual(True, cfg['var2.var2'])

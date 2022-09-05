@@ -65,7 +65,7 @@
            <div itemprop="articleBody">
              
   <div class="section" id="versionedobj">
-<h1>versionedobj<a class="headerlink" href="#versionedobj" title="Permalink to this headline"></a></h1>
+<h1><a class="toc-backref" href="#id1">versionedobj</a><a class="headerlink" href="#versionedobj" title="Permalink to this headline"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -77,12 +77,46 @@
 </div>
 </div>
 <div class="section" id="object-serialization-versioning-framework-for-python-3x">
-<h1>Object serialization &amp; versioning framework for python 3x<a class="headerlink" href="#object-serialization-versioning-framework-for-python-3x" title="Permalink to this headline"></a></h1>
-<p>This package provides an easy way to define complex nested objects that can be
-saved/loaded to/from strings or JSON files, and easily migrated from older object versions.</p>
+<h1><a class="toc-backref" href="#id2">Object serialization &amp; versioning framework for python 3x</a><a class="headerlink" href="#object-serialization-versioning-framework-for-python-3x" title="Permalink to this headline"></a></h1>
+<p><strong>versionedobj</strong> is a framework for creating complex python objects that can be
+serialized/deserialized to and from strings, or dicts, or JSON files.</p>
+<p><strong>versionedobj</strong> also provides a versioning mechanism, to track changes in object
+structure across time, and to migrate between different object versions.</p>
 <p>See <a class="reference external" href="https://eriknyquist.github.io/versionedobj/">API documentation</a></p>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title"><strong>Table of Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#versionedobj" id="id1">versionedobj</a></p></li>
+<li><p><a class="reference internal" href="#object-serialization-versioning-framework-for-python-3x" id="id2">Object serialization &amp; versioning framework for python 3x</a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-versionedobject-as-a-configuration-file" id="id3">Example– VersionedObject as a configuration file</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#accessing-versioned-object-instance-attributes" id="id4">Accessing versioned object instance attributes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#filtering-output-and-input" id="id5">Filtering output and input</a></p>
+<ul>
+<li><p><a class="reference internal" href="#whitelisting-output-input-by-field-name" id="id6">Whitelisting output/input by field name</a></p></li>
+<li><p><a class="reference internal" href="#blacklisting-output-input-by-field-name" id="id7">Blacklisting output/input by field name</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#migrations-making-use-of-the-version-number" id="id8">Migrations – making use of the version number</a></p>
+<ul>
+<li><p><a class="reference internal" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" id="id9">Example scenario, part 1: you have created a beautiful versioned object</a></p></li>
+<li><p><a class="reference internal" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" id="id10">Example scenario, part 2: you update your software, modifying the versioned object</a></p></li>
+<li><p><a class="reference internal" href="#uh-oh-you-have-a-problem" id="id11">Uh-oh, you have a problem…</a></p></li>
+<li><p><a class="reference internal" href="#solution-migrations" id="id12">Solution– migrations!</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id13">Validating input data without deserializing</a></p></li>
+<li><p><a class="reference internal" href="#contributions" id="id14">Contributions</a></p></li>
+<li><p><a class="reference internal" href="#indices-and-tables" id="id15">Indices and tables</a></p></li>
+</ul>
+</div>
 <div class="section" id="example-versionedobject-as-a-configuration-file">
-<h2>Example– VersionedObject as a configuration file<a class="headerlink" href="#example-versionedobject-as-a-configuration-file" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id3">Example– VersionedObject as a configuration file</a><a class="headerlink" href="#example-versionedobject-as-a-configuration-file" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
 <span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
@@ -144,10 +178,51 @@ saved/loaded to/from strings or JSON files, and easily migrated from older objec
 </pre></div>
 </div>
 </div>
-<div class="section" id="filtering-output">
-<h2>Filtering output<a class="headerlink" href="#filtering-output" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="accessing-versioned-object-instance-attributes">
+<h1><a class="toc-backref" href="#id4">Accessing versioned object instance attributes</a><a class="headerlink" href="#accessing-versioned-object-instance-attributes" title="Permalink to this headline"></a></h1>
+<p>When you create an instance of your VersionedObject class, the instance attributes
+will be automatically populated to match the class attributes you have created:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
+
+<span class="k">class</span> <span class="nc">AccountInfo</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">user_name</span> <span class="o">=</span> <span class="s2">&quot;john&quot;</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="mi">11223344</span>
+
+<span class="k">class</span> <span class="nc">Session</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">ip_addr</span> <span class="o">=</span> <span class="s2">&quot;255.255.255.255&quot;</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">account_info</span> <span class="o">=</span> <span class="n">AccountInfo</span><span class="p">()</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">ip_addr</span><span class="p">)</span>
+<span class="c1"># &quot;255.255.255.255&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">account_info</span><span class="o">.</span><span class="n">user_name</span><span class="p">)</span>
+<span class="c1"># &quot;john&quot;</span>
+
+<span class="n">session</span><span class="o">.</span><span class="n">account_info</span><span class="o">.</span><span class="n">user_name</span> <span class="o">=</span> <span class="s2">&quot;jane&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">account_info</span><span class="o">.</span><span class="n">user_name</span><span class="p">)</span>
+<span class="c1"># &quot;jane&quot;</span>
+</pre></div>
+</div>
+<p>Alternatively, you can treat a VersionedObject instance as a dict, and access
+attributes by passing their full name as the key:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;account_info.user_name&#39;</span><span class="p">])</span>
+<span class="c1"># &quot;jane&quot;</span>
+
+<span class="n">session</span><span class="p">[</span><span class="s1">&#39;account_info.user_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;jack&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;account_info.user_name&#39;</span><span class="p">])</span>
+<span class="c1"># &quot;jack&quot;</span>
+</pre></div>
+</div>
+<div class="section" id="filtering-output-and-input">
+<h2><a class="toc-backref" href="#id5">Filtering output and input</a><a class="headerlink" href="#filtering-output-and-input" title="Permalink to this headline"></a></h2>
 <div class="section" id="whitelisting-output-input-by-field-name">
-<h3>Whitelisting output/input by field name<a class="headerlink" href="#whitelisting-output-input-by-field-name" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id6">Whitelisting output/input by field name</a><a class="headerlink" href="#whitelisting-output-input-by-field-name" title="Permalink to this headline"></a></h3>
 <p>When serializing, if you only want to output certain fields, you can use the ‘only’
 parameter to specify which fields should be output (effectively a whitelist by field name):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.resolution&#39;</span><span class="p">])</span>
@@ -171,7 +246,7 @@ parameter to specify which fields should be output (effectively a whitelist by f
 </div>
 </div>
 <div class="section" id="blacklisting-output-input-by-field-name">
-<h3>Blacklisting output/input by field name<a class="headerlink" href="#blacklisting-output-input-by-field-name" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id7">Blacklisting output/input by field name</a><a class="headerlink" href="#blacklisting-output-input-by-field-name" title="Permalink to this headline"></a></h3>
 <p>When serializing, if you <em>don’t</em> want to output certain fields, you can use the ‘ignore’
 parameter to specify which fields should be excluded from output (effectively a blacklist
 by field name):</p>
@@ -198,13 +273,13 @@ by field name):</p>
 </div>
 </div>
 <div class="section" id="migrations-making-use-of-the-version-number">
-<h2>Migrations – making use of the version number<a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id8">Migrations – making use of the version number</a><a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
 <p>Any VersionedObject object can have a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute, which can be any object,
 although it is typically a string (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;v1.2.3&quot;</span></code>). This version attribute can be
 used to support migrations for older objects, in the event that you need to
 change the format of your object.</p>
 <div class="section" id="example-scenario-part-1-you-have-created-a-beautiful-versioned-object">
-<h3>Example scenario, part 1: you have created a beautiful versioned object<a class="headerlink" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id9">Example scenario, part 1: you have created a beautiful versioned object</a><a class="headerlink" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Let’s take the same config file definition from the previous example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
@@ -227,7 +302,7 @@ using it, and they have JSON files generated by your <code class="docutils liter
 on their computers.</p>
 </div>
 <div class="section" id="example-scenario-part-2-you-update-your-software-modifying-the-versioned-object">
-<h3>Example scenario, part 2: you update your software, modifying the versioned object<a class="headerlink" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id10">Example scenario, part 2: you update your software, modifying the versioned object</a><a class="headerlink" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Now, imagine you are making a new release of your software, and some new features
 require you to make the following changes to your versioned object:</p>
 <ul class="simple">
@@ -253,7 +328,7 @@ require you to make the following changes to your versioned object:</p>
 </div>
 </div>
 <div class="section" id="uh-oh-you-have-a-problem">
-<h3>Uh-oh, you have a problem…<a class="headerlink" href="#uh-oh-you-have-a-problem" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id11">Uh-oh, you have a problem…</a><a class="headerlink" href="#uh-oh-you-have-a-problem" title="Permalink to this headline"></a></h3>
 <p>Right now, if you send this updated UserConfig class to your existing users, it will fail
 to load their existing JSON files with version <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>, since those files will contain
 the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.resolution</span></code> field that we deleted in <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, and
@@ -261,7 +336,7 @@ the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.r
 <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code>. This situation is what migrations are for.</p>
 </div>
 <div class="section" id="solution-migrations">
-<h3>Solution– migrations!<a class="headerlink" href="#solution-migrations" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id12">Solution– migrations!</a><a class="headerlink" href="#solution-migrations" title="Permalink to this headline"></a></h3>
 <p>The solution is to:</p>
 <ol class="arabic simple">
 <li><p>Change the version number to something new, e.g. <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> becomes <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code></p></li>
@@ -294,7 +369,8 @@ the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.r
 </pre></div>
 </div>
 <p>after you add the migration function and update the version to <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, JSON files
-loaded with version``v1.0.0`` will be migrated to version <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>.</p>
+that are loaded and contain the version <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> will be automatically migrated to version
+<code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code> using the migration function you added.</p>
 <p>The downside to this approach, is that you have to manually udpate the version number,
 and write a new migration function, anytime the structure of your config data changes.</p>
 <p>The upside, of course, is that you can relatively easily support migrating any older
@@ -304,8 +380,37 @@ number, or don’t create a <code class="docutils literal notranslate"><span cla
 </div>
 </div>
 </div>
+<div class="section" id="validating-input-data-without-deserializing">
+<h1><a class="toc-backref" href="#id13">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h1>
+<p>You may want to validate some serialized object data without actually deserializing
+and loading the object values. You can use the <code class="docutils literal notranslate"><span class="pre">validate_dict</span></code> method for this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
+
+<span class="k">class</span> <span class="nc">Recipe</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">ingredient_1</span> <span class="o">=</span> <span class="s2">&quot;onions&quot;</span>
+    <span class="n">ingredient_2</span> <span class="o">=</span> <span class="s2">&quot;tomatoes&quot;</span>
+    <span class="n">ingredient_3</span> <span class="o">=</span> <span class="s2">&quot;garlic&quot;</span>
+
+<span class="n">rcp</span> <span class="o">=</span> <span class="n">Recipe</span><span class="p">()</span>
+
+<span class="n">rcp</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">({</span><span class="s2">&quot;ingredient_1&quot;</span><span class="p">:</span> <span class="s2">&quot;celery&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_2&quot;</span><span class="p">:</span> <span class="s2">&quot;carrots&quot;</span><span class="p">})</span>
+<span class="c1"># Raises versionedobj.exceptions.InputValidationError because &#39;ingredient_3&#39; is missing</span>
+
+<span class="n">rcp</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">({</span><span class="s2">&quot;ingredient_1&quot;</span><span class="p">:</span> <span class="s2">&quot;celery&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_2&quot;</span><span class="p">:</span> <span class="s2">&quot;carrots&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_12&quot;</span><span class="p">:</span> <span class="s2">&quot;cumin&quot;</span><span class="p">})</span>
+<span class="c1"># Raises versionedobj.exceptions.InputValidationError because &#39;ingredient_12&#39; is not a valid attribute</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="contributions">
+<h1><a class="toc-backref" href="#id14">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h1>
+<p>Contributions are welcome, please open a pull request and ensure that:</p>
+<ol class="arabic simple">
+<li><p>All existing unit tests pass (run tests via <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></code>)</p></li>
+<li><p>New unit tests are added to cover any modified/new functionality</p></li>
+</ol>
+</div>
 <div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<h1><a class="toc-backref" href="#id15">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>

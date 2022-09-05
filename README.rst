@@ -80,6 +80,51 @@ Or, as a dict:
 
     >>> cfg.from_dict(obj_as_dict)    # Load from dict
 
+Accessing versioned object instance attributes
+==============================================
+
+When you create an instance of your VersionedObject class, the instance attributes
+will be automatically populated to match the class attributes you have created:
+
+.. code:: python
+
+    from versionedobj import VersionedObject
+
+    class AccountInfo(VersionedObject):
+        user_name = "john"
+        user_id = 11223344
+
+    class Session(VersionedObject):
+        ip_addr = "255.255.255.255"
+        port = 22
+        account_info = AccountInfo()
+
+    session = Session()
+
+    print(session.ip_addr)
+    # "255.255.255.255"
+
+    print(session.account_info.user_name)
+    # "john"
+
+    session.account_info.user_name = "jane"
+
+    print(session.account_info.user_name)
+    # "jane"
+
+Alternatively, you can treat a VersionedObject instance as a dict, and access
+attributes by passing their full name as the key:
+
+.. code:: python
+
+    print(session['account_info.user_name'])
+    # "jane"
+
+    session['account_info.user_name'] = "jack"
+
+    print(session['account_info.user_name'])
+    # "jack"
+
 Filtering output and input
 --------------------------
 
