@@ -9,6 +9,8 @@ structure across time, and to migrate between different object versions.
 
 See `API documentation <https://eriknyquist.github.io/versionedobj/>`_
 
+.. contents::
+
 Example-- VersionedObject as a configuration file
 -------------------------------------------------
 
@@ -78,8 +80,8 @@ Or, as a dict:
 
     >>> cfg.from_dict(obj_as_dict)    # Load from dict
 
-Filtering output
-----------------
+Filtering output and input
+--------------------------
 
 Whitelisting output/input by field name
 ***************************************
@@ -256,6 +258,29 @@ version of your config file to the current version.
 
 If you don't need the versioning/migration functionality, just never change your version
 number, or don't create a ``version`` attribute on your ``VersionedObject`` classes.
+
+Validating input data without deserializing
+===========================================
+
+You may want to validate some serialized object data without actually deserializing
+and loading the object values. You can use the ``validate_dict`` method for this.
+
+.. code:: python
+
+    from versionedobj import VersionedObject
+
+    class Recipe(VersionedObject):
+        ingredient_1 = "onions"
+        ingredient_2 = "tomatoes"
+        ingredient_3 = "garlic"
+
+    rcp = Recipe()
+
+    rcp.validate_dict({"ingredient_1": "celery", "ingredient_2": "carrots"})
+    # Raises versionedobj.exceptions.InputValidationError because 'ingredient_3' is missing
+
+    rcp.validate_dict({"ingredient_1": "celery", "ingredient_2": "carrots", "ingredient_12": "cumin"})
+    # Raises versionedobj.exceptions.InputValidationError because 'ingredient_12' is not a valid attribute
 
 Contributions
 =============
