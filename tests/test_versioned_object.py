@@ -776,3 +776,13 @@ class TestVersionedObject(TestCase):
         self.assertEqual("hello", cfg.var2.var1)
         self.assertEqual("changed", cfg.var2.var2)
         self.assertEqual(True, cfg.var3)
+
+    def test_add_migration_to_unversioned_obj(self):
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = 2
+
+        def func(attrs):
+            return attrs
+
+        self.assertRaises(ValueError, TestConfig.add_migration, "a", "b", func)
