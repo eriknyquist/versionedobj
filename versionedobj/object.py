@@ -248,7 +248,8 @@ class VersionedObject(metaclass=__Meta):
         """
         Add a function to migrate object data from an earlier version to a later version
 
-        :param from_version: Version to migrate from
+        :param from_version: Version to migrate from. If you are migrating an object that\
+            previously had no version number, use 'None' here.
         :param to_version: Version to migrate to
         :param migration_func: Function to perform the migration. The function should\
             accept one argument, which will be the object data as a dict, and the function\
@@ -264,10 +265,11 @@ class VersionedObject(metaclass=__Meta):
 
     @classmethod
     def _migrate(cls, version, attrs):
-        version_before_migration = attrs['version']
-        version_after_migration = attrs['version']
+        old_version = attrs.get('version', None)
+        version_before_migration = old_version
+        version_after_migration = old_version
 
-        if attrs['version'] != version:
+        if old_version != version:
             # Attempt migrations
             for fromversion, toversion, migrate in cls.migrations:
                 if fromversion == version_after_migration:
@@ -316,14 +318,10 @@ class VersionedObject(metaclass=__Meta):
             raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
 
         version = self.__dict__.get('version', None)
-        if version is not None:
-            # Object is versioned, check if migrations are needed
-            if 'version' not in attrs:
-                raise ValueError("Object should be versioned, but version not found in loaded data")
+        attrs = self._migrate(version, attrs)
 
-            attrs = self._migrate(version, attrs)
-
-            # Migration successful or not required, delete version field
+        # Delete version field from dict, if it exists
+        if 'version' in attrs:
             del attrs['version']
 
         for field in _walk_dict_attrs(self, attrs, only, ignore):

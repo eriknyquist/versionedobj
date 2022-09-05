@@ -151,7 +151,7 @@ migrating older files to the current version</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>from_version</strong> – Version to migrate from</p></li>
+<li><p><strong>from_version</strong> – Version to migrate from. If you are migrating an object that            previously had no version number, use ‘None’ here.</p></li>
 <li><p><strong>to_version</strong> – Version to migrate to</p></li>
 <li><p><strong>migration_func</strong> – Function to perform the migration. The function should            accept one argument, which will be the object data as a dict, and the function            should do whatever transformations on the dict that are required for the            migration, and then return the transformed dict.</p></li>
 </ul>
