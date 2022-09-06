@@ -93,10 +93,7 @@ structure across time, and to migrate between different object versions.</p>
 <li><p><a class="reference internal" href="#object-serialization-versioning-framework-for-python-3x" id="id2">Object serialization &amp; versioning framework for python 3x</a></p>
 <ul>
 <li><p><a class="reference internal" href="#example-versionedobject-as-a-configuration-file" id="id3">Example– VersionedObject as a configuration file</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#accessing-versioned-object-instance-attributes" id="id4">Accessing versioned object instance attributes</a></p>
-<ul>
+<li><p><a class="reference internal" href="#accessing-versioned-object-instance-attributes" id="id4">Accessing versioned object instance attributes</a></p></li>
 <li><p><a class="reference internal" href="#filtering-output-and-input" id="id5">Filtering output and input</a></p>
 <ul>
 <li><p><a class="reference internal" href="#whitelisting-output-input-by-field-name" id="id6">Whitelisting output/input by field name</a></p></li>
@@ -111,10 +108,10 @@ structure across time, and to migrate between different object versions.</p>
 <li><p><a class="reference internal" href="#solution-migrations" id="id12">Solution– migrations!</a></p></li>
 </ul>
 </li>
-</ul>
-</li>
 <li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id13">Validating input data without deserializing</a></p></li>
 <li><p><a class="reference internal" href="#contributions" id="id14">Contributions</a></p></li>
+</ul>
+</li>
 <li><p><a class="reference internal" href="#indices-and-tables" id="id15">Indices and tables</a></p></li>
 </ul>
 </div>
@@ -150,7 +147,7 @@ structure across time, and to migrate between different object versions.</p>
 </pre></div>
 </div>
 <p>You can also save/load object data as a JSON string:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_json</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># Serialize to JSON string</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_json</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># Serialize to JSON string</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_json</span>                         <span class="c1"># Print JSON string</span>
 
 <span class="go">{</span>
@@ -172,7 +169,7 @@ structure across time, and to migrate between different object versions.</p>
 </pre></div>
 </div>
 <p>Or, as a dict:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_dict</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>   <span class="c1"># Serialize to dict</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_dict</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>   <span class="c1"># Serialize to dict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">obj_as_dict</span>                   <span class="c1"># Print dict</span>
 
 <span class="go">{&#39;version&#39;: &#39;1.0.0&#39;, &#39;username&#39;: &#39;jane doe&#39;, &#39;friend_list&#39;: [&#39;user1&#39;, &#39;user2&#39;, &#39;user3&#39;], &#39;display_config&#39;: {&#39;display_mode&#39;: &#39;windowed&#39;, &#39;resolution&#39;: &#39;1920x1080&#39;, &#39;volume&#39;: 1.0}}</span>
@@ -181,9 +178,8 @@ structure across time, and to migrate between different object versions.</p>
 </pre></div>
 </div>
 </div>
-</div>
 <div class="section" id="accessing-versioned-object-instance-attributes">
-<h1><a class="toc-backref" href="#id4">Accessing versioned object instance attributes</a><a class="headerlink" href="#accessing-versioned-object-instance-attributes" title="Permalink to this headline"></a></h1>
+<h2><a class="toc-backref" href="#id4">Accessing versioned object instance attributes</a><a class="headerlink" href="#accessing-versioned-object-instance-attributes" title="Permalink to this headline"></a></h2>
 <p>When you create an instance of your VersionedObject class, the instance attributes
 will be automatically populated to match the class attributes you have created:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
@@ -221,6 +217,7 @@ attributes by passing their full name as the key:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;account_info.user_name&#39;</span><span class="p">])</span>
 <span class="c1"># &quot;jack&quot;</span>
 </pre></div>
+</div>
 </div>
 <div class="section" id="filtering-output-and-input">
 <h2><a class="toc-backref" href="#id5">Filtering output and input</a><a class="headerlink" href="#filtering-output-and-input" title="Permalink to this headline"></a></h2>
@@ -382,9 +379,8 @@ version of your config file to the current version.</p>
 number, or don’t create a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute on your <code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code> classes.</p>
 </div>
 </div>
-</div>
 <div class="section" id="validating-input-data-without-deserializing">
-<h1><a class="toc-backref" href="#id13">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h1>
+<h2><a class="toc-backref" href="#id13">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h2>
 <p>You may want to validate some serialized object data without actually deserializing
 and loading the object values. You can use the <code class="docutils literal notranslate"><span class="pre">validate_dict</span></code> method for this.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
@@ -405,7 +401,7 @@ and loading the object values. You can use the <code class="docutils literal not
 </div>
 </div>
 <div class="section" id="contributions">
-<h1><a class="toc-backref" href="#id14">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h1>
+<h2><a class="toc-backref" href="#id14">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
 <p>Contributions are welcome, please open a pull request at <a class="reference external" href="https://github.com/eriknyquist/versionedobj">https://github.com/eriknyquist/versionedobj</a> and ensure that:</p>
 <ol class="arabic simple">
 <li><p>All existing unit tests pass (run tests via <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></code>)</p></li>
@@ -413,6 +409,7 @@ and loading the object values. You can use the <code class="docutils literal not
 </ol>
 <p>If you have any questions about / need help with contributions or unit tests, please
 contact Erik at <a class="reference external" href="mailto:eknyquist&#37;&#52;&#48;gmail&#46;com">eknyquist<span>&#64;</span>gmail<span>&#46;</span>com</a>.</p>
+</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h1><a class="toc-backref" href="#id15">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
