@@ -22,8 +22,10 @@ project = 'versionedobj'
 copyright = '2022, Erik K. Nyquist'
 author = 'Erik K. Nyquist'
 
+version = 'v0.2.3'
+
 # The full version, including alpha/beta/rc tags
-release = 'v0.2.2'
+release = version
 
 
 # -- General configuration ---------------------------------------------------
