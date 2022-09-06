@@ -1,5 +1,5 @@
-versionedconfig
-===============
+versionedobj
+============
 
 .. toctree::
    :maxdepth: 4
