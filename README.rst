@@ -47,7 +47,7 @@ Example-- VersionedObject as a configuration file
 
 You can also save/load object data as a JSON string:
 
-::
+.. code:: python
 
     >>> obj_as_json = cfg.to_json(indent=4) # Serialize to JSON string
     >>> obj_as_json                         # Print JSON string
@@ -71,7 +71,7 @@ You can also save/load object data as a JSON string:
 
 Or, as a dict:
 
-::
+.. code:: python
 
     >>> obj_as_dict = cfg.to_dict()   # Serialize to dict
     >>> obj_as_dict                   # Print dict
@@ -81,7 +81,7 @@ Or, as a dict:
     >>> cfg.from_dict(obj_as_dict)    # Load from dict
 
 Accessing versioned object instance attributes
-==============================================
+----------------------------------------------
 
 When you create an instance of your VersionedObject class, the instance attributes
 will be automatically populated to match the class attributes you have created:
@@ -305,7 +305,7 @@ If you don't need the versioning/migration functionality, just never change your
 number, or don't create a ``version`` attribute on your ``VersionedObject`` classes.
 
 Validating input data without deserializing
-===========================================
+-------------------------------------------
 
 You may want to validate some serialized object data without actually deserializing
 and loading the object values. You can use the ``validate_dict`` method for this.
@@ -328,7 +328,7 @@ and loading the object values. You can use the ``validate_dict`` method for this
     # Raises versionedobj.exceptions.InputValidationError because 'ingredient_12' is not a valid attribute
 
 Contributions
-=============
+-------------
 
 Contributions are welcome, please open a pull request at `<https://github.com/eriknyquist/versionedobj>`_ and ensure that:
 
