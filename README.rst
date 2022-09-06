@@ -330,7 +330,10 @@ and loading the object values. You can use the ``validate_dict`` method for this
 Contributions
 =============
 
-Contributions are welcome, please open a pull request and ensure that:
+Contributions are welcome, please open a pull request at `<https://github.com/eriknyquist/versionedobj>`_ and ensure that:
 
 #. All existing unit tests pass (run tests via ``python setup.py test``)
 #. New unit tests are added to cover any modified/new functionality
+
+If you have any questions about / need help with contributions or unit tests, please
+contact Erik at eknyquist@gmail.com.
