@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj package &mdash; versionedobj v0.2.3 documentation</title>
+  <title>versionedobj package &mdash; versionedobj v0.2.4 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="index.html" class="icon icon-home"> versionedobj
           </a>
               <div class="version">
-                v0.2.3
+                v0.2.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -221,6 +221,30 @@ migrating older files to the current version</p>
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.migrations">
 <span class="sig-name descname"><span class="pre">migrations</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#versionedobj.object.VersionedObject.migrations" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.object.VersionedObject.object_attributes">
+<span class="sig-name descname"><span class="pre">object_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.object_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.object_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a generator that generates all attribute names and values.
+Can be used to iterate over all object attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to generate (cannot be used with blacklist)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>generator for all attributes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Iterator[tuple(attribute_name, attribute_value)]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.to_dict">

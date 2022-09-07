@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj.object &mdash; versionedobj v0.2.3 documentation</title>
+  <title>versionedobj.object &mdash; versionedobj v0.2.4 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
             <a href="../../index.html" class="icon icon-home"> versionedobj
           </a>
               <div class="version">
-                v0.2.3
+                v0.2.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -157,13 +157,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-
                 <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span><span class="p">)</span>
 
@@ -177,8 +171,6 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
                 <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
 
@@ -308,11 +300,12 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
         <span class="c1"># Set alternate initial values, if any</span>
-        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">dotname</span> <span class="ow">in</span> <span class="n">initial_values</span><span class="p">:</span>
-                <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">initial_values</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span>
-                <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">initial_values</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">dotname</span> <span class="ow">in</span> <span class="n">initial_values</span><span class="p">:</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">initial_values</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VersionedObject.add_migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.add_migration">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">):</span>
@@ -364,6 +357,25 @@
         <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
         <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+<div class="viewcode-block" id="VersionedObject.object_attributes"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.object_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">object_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a generator that generates all attribute names and values.</span>
+<span class="sd">        Can be used to iterate over all object attributes.</span>
+
+<span class="sd">        :param list only: Whitelist of field names to generate (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :return: generator for all attributes</span>
+<span class="sd">        :rtype: Iterator[tuple(attribute_name, attribute_value)]</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">(),</span> <span class="n">field</span><span class="o">.</span><span class="n">get_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="VersionedObject.to_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert object to a dict, suitable for passing to the json library</span>
@@ -414,16 +426,19 @@
             <span class="n">obj_attrs_loaded</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Now, walk through all attributes in the dict</span>
-        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_dict_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
-            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_dict_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+                <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="o">==</span> <span class="n">dotname</span><span class="p">:</span>
-                <span class="k">continue</span>
+                <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="o">==</span> <span class="n">dotname</span><span class="p">:</span>
+                    <span class="k">continue</span>
 
-            <span class="k">if</span> <span class="n">dotname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj_attrs_loaded</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">dotname</span><span class="si">}</span><span class="s2">&#39; in dict&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dotname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj_attrs_loaded</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized attribute name &#39;</span><span class="si">{</span><span class="n">dotname</span><span class="si">}</span><span class="s2">&#39; in dict&quot;</span><span class="p">)</span>
 
-            <span class="n">obj_attrs_loaded</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">obj_attrs_loaded</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
         <span class="c1"># See if any fields were missing from the dict</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
