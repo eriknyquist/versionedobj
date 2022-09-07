@@ -1012,3 +1012,23 @@ class TestVersionedObject(TestCase):
         self.assertEqual(99, cfg['var1'])
         self.assertEqual("xxx", cfg['var2.var1'])
         self.assertEqual(True, cfg['var2.var2'])
+
+    def test_iter_object_attributes(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+        retrieved = {}
+
+        for name, val in cfg.object_attributes():
+            retrieved[name] = val
+
+        self.assertEqual(3, len(retrieved))
+        self.assertEqual(1, retrieved['var1'])
+        self.assertEqual("hey", retrieved['var2.var1'])
+        self.assertEqual(False, retrieved['var2.var2'])

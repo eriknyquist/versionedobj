@@ -296,6 +296,20 @@ class VersionedObject(metaclass=__Meta):
         field.value = value
         field.set_obj_field(self)
 
+    def object_attributes(self, only=[], ignore=[]):
+        """
+        Returns a generator that generates all attribute names and values.
+        Can be used to iterate over all object attributes.
+
+        :param list only: Whitelist of field names to generate (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :return: generator for all attributes
+        :rtype: Iterator[tuple(attribute_name, attribute_value)]
+        """
+        for field in _walk_obj_attrs(self, only, ignore):
+            yield (field.dot_name(), field.get_obj_field(self))
+
     def to_dict(self, only=[], ignore=[]):
         """
         Convert object to a dict, suitable for passing to the json library
