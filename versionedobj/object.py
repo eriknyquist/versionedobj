@@ -239,11 +239,12 @@ class VersionedObject(metaclass=__Meta):
             setattr(self, n, val)
 
         # Set alternate initial values, if any
-        for field in _walk_obj_attrs(self):
-            dotname = field.dot_name()
-            if dotname in initial_values:
-                field.value = initial_values[dotname]
-                field.set_obj_field(self)
+        if initial_values:
+            for field in _walk_obj_attrs(self):
+                dotname = field.dot_name()
+                if dotname in initial_values:
+                    field.value = initial_values[dotname]
+                    field.set_obj_field(self)
 
     @classmethod
     def add_migration(cls, from_version, to_version, migration_func):
