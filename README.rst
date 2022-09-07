@@ -7,7 +7,7 @@ serialized/deserialized to and from strings, or dicts, or JSON files.
 **versionedobj** also provides a versioning mechanism, to track changes in object
 structure across time, and to migrate between different object versions.
 
-See `API documentation <https://eriknyquist.github.io/versionedobj/>`_
+See `API documentation <https://eriknyquist.github.io/versionedobj/versionedobj.html>`_
 
 .. contents:: **Table of Contents**
 
@@ -125,11 +125,43 @@ attributes by passing their full name as the key:
     print(session['account_info.user_name'])
     # "jack"
 
-Filtering output and input
---------------------------
+Iterating over versioned object instance attributes
+---------------------------------------------------
 
-Whitelisting output/input by field name
-***************************************
+If you want to enumerate all attribute names & values on a versioned object instance,
+you can use the ``object_attributes()`` method, which returns a generator for all instance
+attributes:
+
+.. code:: python
+
+    from versionedobj import VersionedObject
+
+    class AccountInfo(VersionedObject):
+        user_name = "john"
+        user_id = 11223344
+
+    class Session(VersionedObject):
+        ip_addr = "255.255.255.255"
+        port = 22
+        account_info = AccountInfo()
+
+    session = Session()
+
+    for attr_name, attr_value in session.object_attributes():
+        print(f"{attr_name}: {attr_value}")
+
+    # Output looks like this:
+    #
+    # ip_addr: 255.255.255.255
+    # port: 22
+    # account_info.user_name: john
+    # account_info.user_id: 11223344
+
+Filtering serialization/deserialization output
+----------------------------------------------
+
+Whitelisting by field name
+**************************
 
 When serializing, if you only want to output certain fields, you can use the 'only'
 parameter to specify which fields should be output (effectively a whitelist by field name):
@@ -156,8 +188,8 @@ The same parameter can be used for de-serializing:
 
     # Only the 'display_config.display_mode' field is loaded from the file
 
-Blacklisting output/input by field name
-***************************************
+Blacklisting by field name
+**************************
 
 When serializing, if you *don't* want to output certain fields, you can use the 'ignore'
 parameter to specify which fields should be excluded from output (effectively a blacklist
