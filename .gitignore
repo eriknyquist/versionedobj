@@ -1,0 +1,5 @@
+*.pyc
+build/*
+dist/*
+sphinx_docs/build/*
+*.egg-info/
