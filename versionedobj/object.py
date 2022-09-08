@@ -298,7 +298,12 @@ class VersionedObject(metaclass=__Meta):
 
         :return: generator for all attributes
         :rtype: Iterator[tuple(attribute_name, attribute_value)]
+
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
+        if only and ignore:
+            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
         for field in _walk_obj_attrs(self, only, ignore):
             yield (field.dot_name(), field.get_obj_field(self))
 

@@ -1032,3 +1032,81 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, retrieved['var1'])
         self.assertEqual("hey", retrieved['var2.var1'])
         self.assertEqual(False, retrieved['var2.var2'])
+
+    def test_iter_and_set_object_attributes(self):
+        class NestedConfig(VersionedObject):
+            var1 = 66
+            var2 = 44
+
+        class TestConfig(VersionedObject):
+            var1 = 123
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+
+        for name, val in cfg.object_attributes():
+            cfg[name] = 99
+
+        self.assertEqual(99, cfg.var1)
+        self.assertEqual(99, cfg.var2.var1)
+        self.assertEqual(99, cfg.var2.var2)
+
+    def test_iter_object_attributes_filter_only(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+        retrieved = {}
+
+        for name, val in cfg.object_attributes(only=['var2']):
+            retrieved[name] = val
+
+        self.assertEqual(2, len(retrieved))
+        self.assertEqual("hey", retrieved['var2.var1'])
+        self.assertEqual(False, retrieved['var2.var2'])
+
+    def test_iter_object_attributes_filter_ignore(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+        retrieved = {}
+
+        for name, val in cfg.object_attributes(ignore=['var2']):
+            retrieved[name] = val
+
+        self.assertEqual(1, len(retrieved))
+        self.assertEqual(1, retrieved['var1'])
+
+    def test_iter_object_attributes_invalid_filter(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        cfg = TestConfig()
+
+        retrieved = {}
+        exception_occurred = False
+
+        try:
+            for name, val in cfg.object_attributes(ignore=['var1'], only=['var2']):
+                retrieved[name] = val
+        except InvalidFilterError:
+            exception_occurred = True
+
+        self.assertEqual(0, len(retrieved))
+        self.assertTrue(exception_occurred)
