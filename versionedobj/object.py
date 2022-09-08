@@ -88,13 +88,7 @@ class _ObjField(object):
 
         if self.parents:
             for pname in self.parents:
-                if not hasattr(obj, pname):
-                    raise InputValidationError(f"Unrecognized attribute name '{pname}'")
-
                 obj = getattr(obj, pname)
-
-        if not hasattr(obj, self.fieldname):
-            raise InputValidationError(f"Unrecognized attribute name '{self.fieldname}'")
 
         return getattr(obj, self.fieldname)
 
@@ -108,8 +102,6 @@ class _ObjField(object):
 
         if self.parents:
             for pname in self.parents:
-                if not hasattr(obj, pname):
-                    raise InputValidationError(f"Unrecognized attribute name '{pname}'")
 
                 obj = getattr(obj, pname)
 
@@ -360,16 +352,19 @@ class VersionedObject(metaclass=__Meta):
             obj_attrs_loaded[dotname] = False
 
         # Now, walk through all attributes in the dict
-        for field in _walk_dict_attrs(self, attrs, only, ignore):
-            dotname = field.dot_name()
+        try:
+            for field in _walk_dict_attrs(self, attrs, only, ignore):
+                dotname = field.dot_name()
 
-            if 'version' == dotname:
-                continue
+                if 'version' == dotname:
+                    continue
 
-            if dotname not in obj_attrs_loaded:
-                raise InputValidationError(f"Unrecognized attribute name '{dotname}' in dict")
+                if dotname not in obj_attrs_loaded:
+                    raise InputValidationError(f"Unrecognized attribute name '{dotname}' in dict")
 
-            obj_attrs_loaded[dotname] = True
+                obj_attrs_loaded[dotname] = True
+        except AttributeError as e:
+            raise InputValidationError(str(e))
 
         # See if any fields were missing from the dict
         missing = []
