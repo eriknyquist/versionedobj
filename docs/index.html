@@ -93,27 +93,28 @@ structure across time, and to migrate between different object versions.</p>
 <li><p><a class="reference internal" href="#object-serialization-versioning-framework-for-python-3x" id="id2">Object serialization &amp; versioning framework for python 3x</a></p>
 <ul>
 <li><p><a class="reference internal" href="#example-versionedobject-as-a-configuration-file" id="id3">Example– VersionedObject as a configuration file</a></p></li>
-<li><p><a class="reference internal" href="#accessing-versioned-object-instance-attributes" id="id4">Accessing versioned object instance attributes</a></p></li>
-<li><p><a class="reference internal" href="#iterating-over-versioned-object-instance-attributes" id="id5">Iterating over versioned object instance attributes</a></p></li>
-<li><p><a class="reference internal" href="#filtering-serialization-deserialization-output" id="id6">Filtering serialization/deserialization output</a></p>
+<li><p><a class="reference internal" href="#performance-stress-test-visualization" id="id4">Performance/stress test visualization</a></p></li>
+<li><p><a class="reference internal" href="#accessing-versioned-object-instance-attributes" id="id5">Accessing versioned object instance attributes</a></p></li>
+<li><p><a class="reference internal" href="#iterating-over-versioned-object-instance-attributes" id="id6">Iterating over versioned object instance attributes</a></p></li>
+<li><p><a class="reference internal" href="#filtering-serialization-deserialization-output" id="id7">Filtering serialization/deserialization output</a></p>
 <ul>
-<li><p><a class="reference internal" href="#whitelisting-by-field-name" id="id7">Whitelisting by field name</a></p></li>
-<li><p><a class="reference internal" href="#blacklisting-by-field-name" id="id8">Blacklisting by field name</a></p></li>
+<li><p><a class="reference internal" href="#whitelisting-by-field-name" id="id8">Whitelisting by field name</a></p></li>
+<li><p><a class="reference internal" href="#blacklisting-by-field-name" id="id9">Blacklisting by field name</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#migrations-making-use-of-the-version-number" id="id9">Migrations – making use of the version number</a></p>
+<li><p><a class="reference internal" href="#migrations-making-use-of-the-version-number" id="id10">Migrations – making use of the version number</a></p>
 <ul>
-<li><p><a class="reference internal" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" id="id10">Example scenario, part 1: you have created a beautiful versioned object</a></p></li>
-<li><p><a class="reference internal" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" id="id11">Example scenario, part 2: you update your software, modifying the versioned object</a></p></li>
-<li><p><a class="reference internal" href="#uh-oh-you-have-a-problem" id="id12">Uh-oh, you have a problem…</a></p></li>
-<li><p><a class="reference internal" href="#solution-migrations" id="id13">Solution– migrations!</a></p></li>
+<li><p><a class="reference internal" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" id="id11">Example scenario, part 1: you have created a beautiful versioned object</a></p></li>
+<li><p><a class="reference internal" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" id="id12">Example scenario, part 2: you update your software, modifying the versioned object</a></p></li>
+<li><p><a class="reference internal" href="#uh-oh-you-have-a-problem" id="id13">Uh-oh, you have a problem…</a></p></li>
+<li><p><a class="reference internal" href="#solution-migrations" id="id14">Solution– migrations!</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id14">Validating input data without deserializing</a></p></li>
-<li><p><a class="reference internal" href="#contributions" id="id15">Contributions</a></p></li>
+<li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id15">Validating input data without deserializing</a></p></li>
+<li><p><a class="reference internal" href="#contributions" id="id16">Contributions</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#indices-and-tables" id="id16">Indices and tables</a></p></li>
+<li><p><a class="reference internal" href="#indices-and-tables" id="id17">Indices and tables</a></p></li>
 </ul>
 </div>
 <div class="section" id="example-versionedobject-as-a-configuration-file">
@@ -179,8 +180,12 @@ structure across time, and to migrate between different object versions.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="performance-stress-test-visualization">
+<h2><a class="toc-backref" href="#id4">Performance/stress test visualization</a><a class="headerlink" href="#performance-stress-test-visualization" title="Permalink to this headline"></a></h2>
+<img alt="_images/performance_graph.png" src="_images/performance_graph.png" />
+</div>
 <div class="section" id="accessing-versioned-object-instance-attributes">
-<h2><a class="toc-backref" href="#id4">Accessing versioned object instance attributes</a><a class="headerlink" href="#accessing-versioned-object-instance-attributes" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id5">Accessing versioned object instance attributes</a><a class="headerlink" href="#accessing-versioned-object-instance-attributes" title="Permalink to this headline"></a></h2>
 <p>When you create an instance of your VersionedObject class, the instance attributes
 will be automatically populated to match the class attributes you have created:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
@@ -221,7 +226,7 @@ attributes by passing their full name as the key:</p>
 </div>
 </div>
 <div class="section" id="iterating-over-versioned-object-instance-attributes">
-<h2><a class="toc-backref" href="#id5">Iterating over versioned object instance attributes</a><a class="headerlink" href="#iterating-over-versioned-object-instance-attributes" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id6">Iterating over versioned object instance attributes</a><a class="headerlink" href="#iterating-over-versioned-object-instance-attributes" title="Permalink to this headline"></a></h2>
 <p>If you want to enumerate all attribute names &amp; values on a versioned object instance,
 you can use the <code class="docutils literal notranslate"><span class="pre">object_attributes()</span></code> method, which returns a generator for all instance
 attributes:</p>
@@ -251,9 +256,9 @@ attributes:</p>
 </div>
 </div>
 <div class="section" id="filtering-serialization-deserialization-output">
-<h2><a class="toc-backref" href="#id6">Filtering serialization/deserialization output</a><a class="headerlink" href="#filtering-serialization-deserialization-output" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id7">Filtering serialization/deserialization output</a><a class="headerlink" href="#filtering-serialization-deserialization-output" title="Permalink to this headline"></a></h2>
 <div class="section" id="whitelisting-by-field-name">
-<h3><a class="toc-backref" href="#id7">Whitelisting by field name</a><a class="headerlink" href="#whitelisting-by-field-name" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id8">Whitelisting by field name</a><a class="headerlink" href="#whitelisting-by-field-name" title="Permalink to this headline"></a></h3>
 <p>When serializing, if you only want to output certain fields, you can use the ‘only’
 parameter to specify which fields should be output (effectively a whitelist by field name):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.resolution&#39;</span><span class="p">])</span>
@@ -277,7 +282,7 @@ parameter to specify which fields should be output (effectively a whitelist by f
 </div>
 </div>
 <div class="section" id="blacklisting-by-field-name">
-<h3><a class="toc-backref" href="#id8">Blacklisting by field name</a><a class="headerlink" href="#blacklisting-by-field-name" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id9">Blacklisting by field name</a><a class="headerlink" href="#blacklisting-by-field-name" title="Permalink to this headline"></a></h3>
 <p>When serializing, if you <em>don’t</em> want to output certain fields, you can use the ‘ignore’
 parameter to specify which fields should be excluded from output (effectively a blacklist
 by field name):</p>
@@ -304,13 +309,13 @@ by field name):</p>
 </div>
 </div>
 <div class="section" id="migrations-making-use-of-the-version-number">
-<h2><a class="toc-backref" href="#id9">Migrations – making use of the version number</a><a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id10">Migrations – making use of the version number</a><a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
 <p>Any VersionedObject object can have a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute, which can be any object,
 although it is typically a string (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;v1.2.3&quot;</span></code>). This version attribute can be
 used to support migrations for older objects, in the event that you need to
 change the format of your object.</p>
 <div class="section" id="example-scenario-part-1-you-have-created-a-beautiful-versioned-object">
-<h3><a class="toc-backref" href="#id10">Example scenario, part 1: you have created a beautiful versioned object</a><a class="headerlink" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id11">Example scenario, part 1: you have created a beautiful versioned object</a><a class="headerlink" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Let’s take the same config file definition from the previous example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
@@ -333,7 +338,7 @@ using it, and they have JSON files generated by your <code class="docutils liter
 on their computers.</p>
 </div>
 <div class="section" id="example-scenario-part-2-you-update-your-software-modifying-the-versioned-object">
-<h3><a class="toc-backref" href="#id11">Example scenario, part 2: you update your software, modifying the versioned object</a><a class="headerlink" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id12">Example scenario, part 2: you update your software, modifying the versioned object</a><a class="headerlink" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Now, imagine you are making a new release of your software, and some new features
 require you to make the following changes to your versioned object:</p>
 <ul class="simple">
@@ -359,7 +364,7 @@ require you to make the following changes to your versioned object:</p>
 </div>
 </div>
 <div class="section" id="uh-oh-you-have-a-problem">
-<h3><a class="toc-backref" href="#id12">Uh-oh, you have a problem…</a><a class="headerlink" href="#uh-oh-you-have-a-problem" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id13">Uh-oh, you have a problem…</a><a class="headerlink" href="#uh-oh-you-have-a-problem" title="Permalink to this headline"></a></h3>
 <p>Right now, if you send this updated UserConfig class to your existing users, it will fail
 to load their existing JSON files with version <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>, since those files will contain
 the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.resolution</span></code> field that we deleted in <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, and
@@ -367,7 +372,7 @@ the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.r
 <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code>. This situation is what migrations are for.</p>
 </div>
 <div class="section" id="solution-migrations">
-<h3><a class="toc-backref" href="#id13">Solution– migrations!</a><a class="headerlink" href="#solution-migrations" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id14">Solution– migrations!</a><a class="headerlink" href="#solution-migrations" title="Permalink to this headline"></a></h3>
 <p>The solution is to:</p>
 <ol class="arabic simple">
 <li><p>Change the version number to something new, e.g. <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> becomes <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code></p></li>
@@ -411,7 +416,7 @@ number, or don’t create a <code class="docutils literal notranslate"><span cla
 </div>
 </div>
 <div class="section" id="validating-input-data-without-deserializing">
-<h2><a class="toc-backref" href="#id14">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id15">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h2>
 <p>You may want to validate some serialized object data without actually deserializing
 and loading the object values. You can use the <code class="docutils literal notranslate"><span class="pre">validate_dict</span></code> method for this.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
@@ -432,7 +437,7 @@ and loading the object values. You can use the <code class="docutils literal not
 </div>
 </div>
 <div class="section" id="contributions">
-<h2><a class="toc-backref" href="#id15">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id16">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
 <p>Contributions are welcome, please open a pull request at <a class="reference external" href="https://github.com/eriknyquist/versionedobj">https://github.com/eriknyquist/versionedobj</a> and ensure that:</p>
 <ol class="arabic simple">
 <li><p>All existing unit tests pass (run tests via <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></code>)</p></li>
@@ -443,7 +448,7 @@ contact Erik at <a class="reference external" href="mailto:eknyquist&#37;&#52;&#
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h1><a class="toc-backref" href="#id16">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<h1><a class="toc-backref" href="#id17">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>

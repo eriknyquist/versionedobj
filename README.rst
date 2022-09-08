@@ -80,6 +80,11 @@ Or, as a dict:
 
     >>> cfg.from_dict(obj_as_dict)    # Load from dict
 
+Performance/stress test visualization
+-------------------------------------
+
+.. image:: images/performance_graph.png
+
 Accessing versioned object instance attributes
 ----------------------------------------------
 
