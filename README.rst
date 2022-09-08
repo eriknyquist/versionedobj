@@ -83,7 +83,7 @@ Or, as a dict:
 Performance/stress test visualization
 -------------------------------------
 
-.. image:: images/performance_graph.png
+.. image:: https://github.com/eriknyquist/versionedobj/raw/master/docs/_images/performance_graph.png
 
 Accessing versioned object instance attributes
 ----------------------------------------------
