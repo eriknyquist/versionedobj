@@ -12,13 +12,12 @@ classifiers = [
     'License :: OSI Approved :: Apache Software License',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
     'Natural Language :: English',
     'Intended Audience :: Developers',
     'Intended Audience :: Science/Research',
     'Intended Audience :: Education',
     'Intended Audience :: Information Technology',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 3',
 ]
 
 class RunVersionedObjTests(Command):
