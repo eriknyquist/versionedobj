@@ -228,6 +228,12 @@ class VersionedObject(metaclass=__Meta):
         # Set all class attributes as instance attributes
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
+
+            if isinstance(val, VersionedObject):
+                val = val.__class__()
+            elif inspect.isclass(val) and issubclass(val, VersionedObject):
+                val = val()
+
             setattr(self, n, val)
 
         # Set alternate initial values, if any
