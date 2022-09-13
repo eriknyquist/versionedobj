@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 
 def gen_random_string():
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=random.randrange(32, 64)))
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=random.randrange(64, 128)))
 
 def generate_big_class(filename, nesting_levels=100, vars_per_level=1000):
     with open(filename, 'w') as fh:
@@ -116,27 +116,23 @@ def main():
         from_json_times.append(from_json_time)
 
     generate_data_point(0, 10, 10)
-    generate_data_point(1, 10, 100)
-    generate_data_point(2, 10, 200)
-    generate_data_point(3, 20, 200)
-    generate_data_point(4, 20, 300)
-    generate_data_point(5, 20, 400)
-    generate_data_point(6, 40, 400)
-    generate_data_point(7, 40, 500)
-    generate_data_point(8, 40, 600)
-    generate_data_point(9, 60, 600)
-    generate_data_point(10, 60, 700)
-    generate_data_point(11, 60, 800)
-    generate_data_point(12, 80, 800)
-    generate_data_point(13, 80, 900)
-    generate_data_point(14, 90, 1000)
-    generate_data_point(15, 90, 1100)
-    generate_data_point(16, 90, 1200)
-    generate_data_point(17, 100, 1200)
-
-    print(json_lens)
-    print(to_dict_times)
-    print(from_dict_times)
+    generate_data_point(1, 10, 50)
+    generate_data_point(2, 10, 100)
+    generate_data_point(3, 20, 100)
+    generate_data_point(4, 20, 150)
+    generate_data_point(5, 20, 200)
+    generate_data_point(6, 40, 200)
+    generate_data_point(7, 40, 250)
+    generate_data_point(8, 40, 300)
+    generate_data_point(9, 60, 300)
+    generate_data_point(10, 60, 350)
+    generate_data_point(11, 60, 400)
+    generate_data_point(12, 80, 400)
+    generate_data_point(13, 80, 450)
+    generate_data_point(14, 90, 500)
+    generate_data_point(15, 90, 550)
+    generate_data_point(16, 90, 600)
+    generate_data_point(17, 100, 600)
 
     fig, ax1 = plt.subplots()
 
