@@ -386,7 +386,7 @@ useful, since we'll just be measuring ``to/from_dict`` with additional JSON pars
 Test executed on a system with an Intel Core-i7 running Debian GNU/Linux 10 (buster)
 with Linux debian 4.19.0-21-amd64.
 
-.. image:: https://github.com/eriknyquist/versionedobj/raw/master/docs/_images/performance_graph.png
+.. image:: https://github.com/eriknyquist/versionedobj/raw/master/images/performance_graph.png
 
 Contributions
 -------------
