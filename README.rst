@@ -342,8 +342,8 @@ Migrations: migrating an unversioned object
 You may run into a situation where you release an unversioned object, but then
 later you need to make changes, and migrate an unversioned object to a versioned object.
 
-This can be handled simply by passing "None" to the "from_version" parameter to the "add_migration()"
-method. For example:
+This can be handled simply by passing "None" to the "add_migration()" method, for the
+"from_version" parameter. For example:
 
 .. code:: python
 
