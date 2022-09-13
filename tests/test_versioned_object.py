@@ -796,7 +796,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual("changed", cfg.var2.var2)
         self.assertEqual(True, cfg.var3)
 
-    def test_change_default_values_on_class_attrs(self):
+    def test_change_default_values_on_class_attrs_1(self):
         class NestedConfig(VersionedObject):
             var1 = "hello"
             var2 = 55.5
@@ -804,6 +804,68 @@ class TestVersionedObject(TestCase):
         class TestConfig(VersionedObject):
             var1 = 4
             var2 = NestedConfig()
+            var3 = True
+
+        cfg = TestConfig()
+
+        # Instance vars and class vars should match right now
+        self.assertEqual(4, cfg.var1)
+        self.assertEqual("hello", cfg.var2.var1)
+        self.assertEqual(55.5, cfg.var2.var2)
+        self.assertEqual(True, cfg.var3)
+
+        self.assertEqual(4, TestConfig.var1)
+        self.assertEqual("hello", TestConfig.var2.var1)
+        self.assertEqual(55.5, TestConfig.var2.var2)
+        self.assertEqual(True, TestConfig.var3)
+
+        # Now, change some values on the instance
+        cfg.var1 = 99
+        cfg.var2.var1 = "changed"
+        cfg.var2.var2 = 0.0
+        cfg.var3 = False
+
+        # Create a 2nd instance, values should still match original defaults
+        cfg2 = TestConfig()
+        self.assertEqual(4, cfg2.var1)
+        self.assertEqual("hello", cfg2.var2.var1)
+        self.assertEqual(55.5, cfg2.var2.var2)
+        self.assertEqual(True, cfg2.var3)
+
+        # Now change default values
+        NestedConfig.var1 = "xxx"
+        NestedConfig.var2 = "yyy"
+        TestConfig.var1 = "zzz"
+        TestConfig.var3 = "aaa"
+
+        # Create a new instance, values should match new defaults
+        cfg3 = TestConfig()
+        self.assertEqual("zzz", cfg3.var1)
+        self.assertEqual("xxx", cfg3.var2.var1)
+        self.assertEqual("yyy", cfg3.var2.var2)
+        self.assertEqual("aaa", cfg3.var3)
+
+        # Other instance values should not have changed
+        self.assertEqual(4, cfg2.var1)
+        self.assertEqual("hello", cfg2.var2.var1)
+        self.assertEqual(55.5, cfg2.var2.var2)
+        self.assertEqual(True, cfg2.var3)
+
+        self.assertEqual(99, cfg.var1)
+        self.assertEqual("changed", cfg.var2.var1)
+        self.assertEqual(0.0, cfg.var2.var2)
+        self.assertEqual(False, cfg.var3)
+
+    def test_change_default_values_on_class_attrs_2(self):
+        # Same as the previous test, except we use the NestConfig class object instead
+        # of creating an instance.... behaviour should be exactly the same
+        class NestedConfig(VersionedObject):
+            var1 = "hello"
+            var2 = 55.5
+
+        class TestConfig(VersionedObject):
+            var1 = 4
+            var2 = NestedConfig
             var3 = True
 
         cfg = TestConfig()
