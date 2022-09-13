@@ -80,11 +80,6 @@ Or, as a dict:
 
     >>> cfg.from_dict(obj_as_dict)    # Load from dict
 
-Performance/stress test visualization
--------------------------------------
-
-.. image:: https://github.com/eriknyquist/versionedobj/raw/master/docs/_images/performance_graph.png
-
 Accessing versioned object instance attributes
 ----------------------------------------------
 
@@ -223,8 +218,8 @@ The same parameter can be used for de-serializing:
 
     # Every field except for the 'friend_list' field is loaded from the file
 
-Migrations -- making use of the version number
-----------------------------------------------
+Migrations: making use of the version number
+--------------------------------------------
 
 Any VersionedObject object can have a ``version`` attribute, which can be any object,
 although it is typically a string (e.g. ``"v1.2.3"``). This version attribute can be
@@ -341,6 +336,19 @@ version of your config file to the current version.
 If you don't need the versioning/migration functionality, just never change your version
 number, or don't create a ``version`` attribute on your ``VersionedObject`` classes.
 
+Migrations: migrating an unversioned object
+-------------------------------------------
+
+You may run into a situation where you release an unversioned object, but then
+later you need to make changes, and migrate an unversioned object to a versioned object.
+
+This can be handled simply by passing "None" to the "from_version" parameter to the "add_migration()"
+method. For example:
+
+.. code:: python
+
+    UserConfig.add_migration(None, "v1.0.0", migrate_none_to_100)
+
 Validating input data without deserializing
 -------------------------------------------
 
@@ -363,6 +371,11 @@ and loading the object values. You can use the ``validate_dict`` method for this
 
     rcp.validate_dict({"ingredient_1": "celery", "ingredient_2": "carrots", "ingredient_12": "cumin"})
     # Raises versionedobj.exceptions.InputValidationError because 'ingredient_12' is not a valid attribute
+
+Performance/stress test visualization
+-------------------------------------
+
+.. image:: https://github.com/eriknyquist/versionedobj/raw/master/docs/_images/performance_graph.png
 
 Contributions
 -------------
