@@ -11,6 +11,15 @@ See `API documentation <https://eriknyquist.github.io/versionedobj/versionedobj.
 
 .. contents:: **Table of Contents**
 
+Installing
+----------
+
+Install ``versionedobj`` using pip:
+
+::
+
+    pip install versionedobj
+
 Example-- VersionedObject as a configuration file
 -------------------------------------------------
 
