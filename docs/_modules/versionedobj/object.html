@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj.object &mdash; versionedobj v0.2.4 documentation</title>
+  <title>versionedobj.object &mdash; versionedobj v0.2.5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
             <a href="../../index.html" class="icon icon-home"> versionedobj
           </a>
               <div class="version">
-                v0.2.4
+                v0.2.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -313,6 +313,63 @@
                     <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">initial_values</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span>
                     <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="VersionedObject.new_from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.new_from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">new_from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new object instance, populate it with object data from a dict, and</span>
+<span class="sd">        return the new object instance</span>
+
+<span class="sd">        :param dict attrs: dict containing object data</span>
+<span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
+<span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
+<span class="sd">            and don&#39;t want to mess with filtering.</span>
+<span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VersionedObject.new_from_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.new_from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">new_from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new object instance, populate it with object data from a JSON string, and</span>
+<span class="sd">        return the new object instance</span>
+
+<span class="sd">        :param dict jsonstr: JSON string containing object data</span>
+<span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
+<span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
+<span class="sd">            and don&#39;t want to mess with filtering.</span>
+<span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VersionedObject.new_from_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.new_from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">new_from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new object instance, populate it with object data from a JSON file, and</span>
+<span class="sd">        return the new object instance</span>
+
+<span class="sd">        :param dict filename: name of JSON file containing object data</span>
+<span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
+<span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
+<span class="sd">            and don&#39;t want to mess with filtering.</span>
+<span class="sd">        :param list only: Whitelist of field names to load (cannot be used with blacklist)</span>
+<span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
+
+<span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="VersionedObject.add_migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.add_migration">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">add_migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_func</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -457,7 +514,7 @@
 
 <div class="viewcode-block" id="VersionedObject.from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load object data from a dict.</span>
+<span class="sd">        Populate instance attributes of this object with object data from a dict.</span>
 
 <span class="sd">        :param dict attrs: dict containing object data</span>
 <span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
@@ -488,7 +545,9 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">CustomValue</span><span class="p">):</span>
                 <span class="n">val</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+                <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="VersionedObject.to_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -505,7 +564,7 @@
 
 <div class="viewcode-block" id="VersionedObject.from_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load object data from a JSON string.</span>
+<span class="sd">        Populate instance attributes of this object with object data from a JSON string.</span>
 
 <span class="sd">        :param str jsonstr: JSON string to load</span>
 <span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
@@ -523,7 +582,8 @@
         <span class="k">except</span> <span class="n">JSONDecodeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="s2">&quot;JSON decode failure&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="VersionedObject.to_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.to_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -539,7 +599,7 @@
 
 <div class="viewcode-block" id="VersionedObject.from_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load object data from a JSON file.</span>
+<span class="sd">        Populate instance attributes of this object with object data from a JSON file.</span>
 
 <span class="sd">        :param str filename: Name of file to load</span>
 <span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
@@ -553,7 +613,9 @@
 <span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
 
            </div>
