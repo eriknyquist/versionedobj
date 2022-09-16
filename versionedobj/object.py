@@ -245,6 +245,63 @@ class VersionedObject(metaclass=__Meta):
                     field.set_obj_field(self)
 
     @classmethod
+    def new_from_dict(cls, attrs, validate=True, only=[], ignore=[]):
+        """
+        Create a new object instance, populate it with object data from a dict, and
+        return the new object instance
+
+        :param dict attrs: dict containing object data
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        return cls().from_dict(attrs, validate, only, ignore)
+
+    @classmethod
+    def new_from_json(cls, jsonstr, validate=True, only=[], ignore=[]):
+        """
+        Create a new object instance, populate it with object data from a JSON string, and
+        return the new object instance
+
+        :param dict jsonstr: JSON string containing object data
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        return cls().from_json(jsonstr, validate, only, ignore)
+
+    @classmethod
+    def new_from_file(cls, filename, validate=True, only=[], ignore=[]):
+        """
+        Create a new object instance, populate it with object data from a JSON file, and
+        return the new object instance
+
+        :param dict filename: name of JSON file containing object data
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        return cls().from_file(filename, validate, only, ignore)
+
+    @classmethod
     def add_migration(cls, from_version, to_version, migration_func):
         """
         Add a function to migrate object data from an earlier version to a later version
@@ -388,7 +445,7 @@ class VersionedObject(metaclass=__Meta):
 
     def from_dict(self, attrs, validate=True, only=[], ignore=[]):
         """
-        Load object data from a dict.
+        Populate instance attributes of this object with object data from a dict.
 
         :param dict attrs: dict containing object data
         :param bool validate: If false, pre-validation will be skipped for the input data.\
@@ -421,6 +478,8 @@ class VersionedObject(metaclass=__Meta):
             else:
                 field.set_obj_field(self)
 
+        return self
+
     def to_json(self, indent=None, only=[], ignore=[]):
         """
         Generate a JSON string containing all object data
@@ -436,7 +495,7 @@ class VersionedObject(metaclass=__Meta):
 
     def from_json(self, jsonstr, validate=True, only=[], ignore=[]):
         """
-        Load object data from a JSON string.
+        Populate instance attributes of this object with object data from a JSON string.
 
         :param str jsonstr: JSON string to load
         :param bool validate: If false, pre-validation will be skipped for the input data.\
@@ -455,6 +514,7 @@ class VersionedObject(metaclass=__Meta):
             raise LoadObjError("JSON decode failure")
 
         self.from_dict(d, validate, only, ignore)
+        return self
 
     def to_file(self, filename, indent=None, only=[], ignore=[]):
         """
@@ -470,7 +530,7 @@ class VersionedObject(metaclass=__Meta):
 
     def from_file(self, filename, validate=True, only=[], ignore=[]):
         """
-        Load object data from a JSON file.
+        Populate instance attributes of this object with object data from a JSON file.
 
         :param str filename: Name of file to load
         :param bool validate: If false, pre-validation will be skipped for the input data.\
@@ -485,3 +545,5 @@ class VersionedObject(metaclass=__Meta):
         """
         with open(filename, 'r') as fh:
             self.from_json(fh.read(), validate, only, ignore)
+
+        return self

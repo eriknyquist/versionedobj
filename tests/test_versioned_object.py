@@ -383,7 +383,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(2, d['var2'])
 
-        cfg.from_dict(d, only=['var2'])
+        cfg.from_dict(d, validate=False)
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -400,7 +400,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(2, d['var2'])
         self.assertEqual(3, d['var3'])
 
-        cfg.from_dict(d, only=['var2', 'var3'])
+        cfg.from_dict(d, validate=False)
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -423,7 +423,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual("abc", d['var3']['var1']['var1'])
 
-        cfg.from_dict(d, only=['var3.var1.var1'])
+        cfg.from_dict(d, validate=False)
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -456,7 +456,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(3, d['var3'])
 
-        cfg.from_dict(d, ignore=['var1', 'var2'])
+        cfg.from_dict(d, validate=False)
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -479,7 +479,7 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(2, d['var2'])
 
-        cfg.from_dict(d, ignore=['var1', 'var3.var1.var1'])
+        cfg.from_dict(d, validate=False)
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -1232,3 +1232,96 @@ class TestVersionedObject(TestCase):
 
         self.assertEqual(0, len(retrieved))
         self.assertTrue(exception_occurred)
+
+    def test_new_from_dict(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        data1 = {"var1": 2, "var2" : {"var1": "ho", "var2": True}}
+        data2 = {"var1": 3, "var2" : {"var1": "ha", "var2": 777}}
+
+        cfg1 = TestConfig.new_from_dict(data1)
+        cfg2 = TestConfig.new_from_dict(data2)
+
+        self.assertEqual(1, TestConfig.var1)
+        self.assertEqual("hey", TestConfig.var2.var1)
+        self.assertEqual(False, TestConfig.var2.var2)
+
+        self.assertEqual(2, cfg1.var1)
+        self.assertEqual("ho", cfg1.var2.var1)
+        self.assertEqual(True, cfg1.var2.var2)
+
+        self.assertEqual(3, cfg2.var1)
+        self.assertEqual("ha", cfg2.var2.var1)
+        self.assertEqual(777, cfg2.var2.var2)
+
+    def test_new_from_json(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        data1 = '{"var1": 2, "var2": {"var1": "ho", "var2": true}}'
+        data2 = '{"var1": 3, "var2": {"var1": "ha", "var2": 777}}'
+
+        cfg1 = TestConfig.new_from_json(data1)
+        cfg2 = TestConfig.new_from_json(data2)
+
+        self.assertEqual(1, TestConfig.var1)
+        self.assertEqual("hey", TestConfig.var2.var1)
+        self.assertEqual(False, TestConfig.var2.var2)
+
+        self.assertEqual(2, cfg1.var1)
+        self.assertEqual("ho", cfg1.var2.var1)
+        self.assertEqual(True, cfg1.var2.var2)
+
+        self.assertEqual(3, cfg2.var1)
+        self.assertEqual("ha", cfg2.var2.var1)
+        self.assertEqual(777, cfg2.var2.var2)
+
+    def test_new_from_file(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        data1 = '{"var1": 2, "var2": {"var1": "ho", "var2": true}}'
+        data2 = '{"var1": 3, "var2": {"var1": "ha", "var2": 777}}'
+
+        file1 = "__test_file1.txt"
+        file2 = "__test_file2.txt"
+
+        with open(file1, 'w') as fh:
+            fh.write(data1)
+
+        with open(file2, 'w') as fh:
+            fh.write(data2)
+
+        cfg1 = TestConfig.new_from_file(file1)
+        cfg2 = TestConfig.new_from_file(file2)
+
+        self.assertEqual(1, TestConfig.var1)
+        self.assertEqual("hey", TestConfig.var2.var1)
+        self.assertEqual(False, TestConfig.var2.var2)
+
+        self.assertEqual(2, cfg1.var1)
+        self.assertEqual("ho", cfg1.var2.var1)
+        self.assertEqual(True, cfg1.var2.var2)
+
+        self.assertEqual(3, cfg2.var1)
+        self.assertEqual("ha", cfg2.var2.var1)
+        self.assertEqual(777, cfg2.var2.var2)
+
+        os.remove(file1)
+        os.remove(file2)
