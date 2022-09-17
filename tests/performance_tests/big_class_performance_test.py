@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 
 def gen_random_string():
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=random.randrange(64, 128)))
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=random.randrange(64, 96)))
 
 def generate_big_class(filename, nesting_levels=100, vars_per_level=1000):
     with open(filename, 'w') as fh:
@@ -39,12 +39,11 @@ def generate_big_class(filename, nesting_levels=100, vars_per_level=1000):
         fh.write("class BigTestConfig(VersionedObject):\n")
 
         for v in range(vars_per_level - 1):
-            var_data = ''.join(random.choices(string.ascii_letters + string.digits, k=random.randrange(32, 64)))
-            fh.write(f"    var{v} = '{var_data}'\n")
+            fh.write(f"    var{v} = '{gen_random_string()}'\n")
 
         fh.write(f"    var{vars_per_level - 1} = NestedConfig{nesting_levels - 1}()\n")
 
-def run_test_iterations(index, nesting_levels, vars_per_level, num_iterations=10):
+def run_test_iterations(index, nesting_levels, vars_per_level, num_iterations=5):
     # Generate module
     classname = f"big_test_class{index}"
     generate_big_class(f"{classname}.py", nesting_levels, vars_per_level)
@@ -63,23 +62,23 @@ def run_test_iterations(index, nesting_levels, vars_per_level, num_iterations=10
     from_json_times = []
     j = ""
 
-    print("starting test...")
+    print(f"Generating data point #{index}")
     for i in range(num_iterations):
         to_dict_start = time.time()
         d = cfg.to_dict()
-        to_dict_times.append(time.time() - to_dict_start)
+        to_dict_times.append(int((time.time() - to_dict_start) * 1000))
 
         to_json_start = time.time()
         j = cfg.to_json()
-        to_json_times.append(time.time() - to_json_start)
+        to_json_times.append(int((time.time() - to_json_start) * 1000))
 
         from_dict_start = time.time()
         cfg.from_dict(d, validate=False)
-        from_dict_times.append(time.time() - from_dict_start)
+        from_dict_times.append(int((time.time() - from_dict_start) * 1000))
 
         from_json_start = time.time()
         cfg.from_json(j, validate=False)
-        from_json_times.append(time.time() - from_json_start)
+        from_json_times.append(int((time.time() - from_json_start) * 1000))
 
         print(f"completed iteration {i + 1}/{num_iterations}")
 
@@ -89,6 +88,7 @@ def run_test_iterations(index, nesting_levels, vars_per_level, num_iterations=10
     from_json_avg = sum(from_json_times) / num_iterations
 
     os.remove(f"{classname}.py")
+    print("")
 
     return len(j), init_time, to_dict_avg, to_json_avg, from_dict_avg, from_json_avg
 
@@ -115,6 +115,7 @@ def main():
         from_dict_times.append(from_dict_time)
         from_json_times.append(from_json_time)
 
+    # Larger data
     generate_data_point(0, 10, 10)
     generate_data_point(1, 10, 50)
     generate_data_point(2, 10, 100)
@@ -129,19 +130,41 @@ def main():
     generate_data_point(11, 60, 400)
     generate_data_point(12, 80, 400)
     generate_data_point(13, 80, 450)
-    generate_data_point(14, 90, 500)
-    generate_data_point(15, 90, 550)
-    generate_data_point(16, 90, 600)
-    generate_data_point(17, 100, 600)
+    generate_data_point(14, 80, 500)
+    generate_data_point(15, 90, 500)
+    generate_data_point(16, 90, 550)
+    generate_data_point(17, 90, 600)
+    generate_data_point(18, 100, 600)
+
+    # Smaller data
+    #generate_data_point(0, 10, 10)
+    #generate_data_point(1, 10, 20)
+    #generate_data_point(2, 10, 40)
+    #generate_data_point(3, 20, 40)
+    #generate_data_point(4, 20, 60)
+    #generate_data_point(5, 20, 80)
+    #generate_data_point(6, 40, 80)
+    #generate_data_point(7, 40, 100)
+    #generate_data_point(8, 40, 120)
+    #generate_data_point(9, 60, 120)
+    #generate_data_point(10, 60, 140)
+    #generate_data_point(11, 60, 160)
+    #generate_data_point(12, 80, 160)
+    #generate_data_point(13, 80, 180)
+    #generate_data_point(14, 80, 200)
+    #generate_data_point(15, 90, 200)
+    #generate_data_point(16, 90, 220)
+    #generate_data_point(17, 90, 240)
+    #generate_data_point(18, 100, 240)
 
     fig, ax1 = plt.subplots()
 
     ax2 = ax1.twiny()
-    ax2.set_xlabel('Deepest sub-object nesting level')
+    ax2.set_xlabel('Deepest sub-object nesting level', fontweight='bold')
     ax2.set_xlim(nesting_levels[0], nesting_levels[-1])
 
     ax3 = ax1.twiny()
-    ax3.set_xlabel('Attribute count per nested sub-object')
+    ax3.set_xlabel('Attribute count per nested sub-object', fontweight='bold')
     ax3.set_xlim(vars_per_levels[0], vars_per_levels[-1])
     ax3.spines["top"].set_position(("axes", 1.09))
 
@@ -166,8 +189,8 @@ def main():
     ticks = f(ax1.get_xticks())
     ax3.xaxis.set_major_locator(matplotlib.ticker.FixedLocator(ticks))
 
-    ax1.set_xlabel('JSON string size in bytes')
-    ax1.set_ylabel('Time in seconds')
+    ax1.set_xlabel('JSON string size in bytes', fontweight='bold')
+    ax1.set_ylabel('Time in milliseconds', fontweight='bold')
     ax1.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
     ax1.legend(bbox_to_anchor=(0,1), loc='upper left', ncol=1)
 
