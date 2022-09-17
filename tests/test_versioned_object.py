@@ -1325,3 +1325,31 @@ class TestVersionedObject(TestCase):
 
         os.remove(file1)
         os.remove(file2)
+
+    def test_nested_class_or_instance(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+
+        class TestConfig1(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        class TestConfig2(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig
+
+
+        cfg1 = TestConfig1()
+
+        NestedConfig.var1 = "xxx"
+
+        cfg2 = TestConfig2()
+
+        self.assertEqual(1, cfg1.var1)
+        self.assertEqual("hey", cfg1.var2.var1)
+        self.assertEqual(False, cfg1.var2.var2)
+
+        self.assertEqual(1, cfg2.var1)
+        self.assertEqual("xxx", cfg2.var2.var1)
+        self.assertEqual(False, cfg2.var2.var2)
