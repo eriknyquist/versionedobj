@@ -198,6 +198,20 @@ class TestVersionedObject(TestCase):
         cfg = TestConfig()
         self.assertRaises(LoadObjError, cfg.from_dict, fake_config)
 
+    def test_load_dict_migration_failure_bad_migration_decorator(self):
+        class TestConfig(VersionedObject):
+            version = "1.0.22"
+            value = 2727
+
+        fake_config = {'version': '1.0.0'}
+
+        @migration(TestConfig, "1.0.0", "1.0.21")
+        def bad_migration(attrs):
+            return attrs
+
+        cfg = TestConfig()
+        self.assertRaises(LoadObjError, cfg.from_dict, fake_config)
+
     def test_load_dict_migration_success(self):
         class TestConfig(VersionedObject):
             version = '1.0.22'
@@ -209,6 +223,26 @@ class TestVersionedObject(TestCase):
             return attrs
 
         TestConfig.add_migration('1.0.0', '1.0.22', migration)
+
+        fake_config = {'version': '1.0.0', 'value1': 8888}
+
+        cfg = TestConfig()
+        cfg.from_dict(fake_config)
+
+        self.assertEqual(8888, cfg.value1)
+        self.assertEqual(1234, cfg.value2)
+        self.assertEqual('1.0.22', cfg.version)
+
+    def test_load_dict_migration_success_decorator(self):
+        class TestConfig(VersionedObject):
+            version = '1.0.22'
+            value1 = 2727
+            value2 = 'hey'
+
+        @migration(TestConfig, "1.0.0", "1.0.22")
+        def migration_func(attrs):
+            attrs['value2'] = 1234
+            return attrs
 
         fake_config = {'version': '1.0.0', 'value1': 8888}
 
