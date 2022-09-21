@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, InputValidationError, CustomValue
+from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, InputValidationError, CustomValue, migration
 
 
 class TestVersionedObject(TestCase):
@@ -928,6 +928,22 @@ class TestVersionedObject(TestCase):
 
         self.assertRaises(ValueError, TestConfig.add_migration, "a", "b", func)
 
+    def test_add_migration_to_unversioned_obj_decorator(self):
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = 2
+
+        raised = False
+        try:
+            @migration(TestConfig, "a", "b")
+            def func(attrs):
+                return attrs
+
+        except ValueError:
+            raised = True
+
+        self.assertTrue(raised)
+
     def test_migrate_unversioned_to_versioned(self):
         # New config, with version number added
         class TestConfig(VersionedObject):
@@ -946,6 +962,33 @@ class TestVersionedObject(TestCase):
             return attrs
 
         TestConfig.add_migration(None, "1.0.0", migrate_none_to_100)
+
+        cfg = TestConfig()
+        cfg.from_dict(fake_config)
+
+        self.assertEqual(11, cfg.var1)
+        self.assertEqual(12, cfg.var2)
+        self.assertEqual(13, cfg.var3)
+
+        self.assertFalse(hasattr(cfg, 'var4'))
+
+    def test_migrate_unversioned_to_versioned_decorator(self):
+        # New config, with version number added
+        class TestConfig(VersionedObject):
+            version = "1.0.0"
+            var1 = 1
+            var2 = 2
+            var3 = 3
+
+        # old config, different format, and without version number
+        fake_config = {'var2': 12, 'var3': 13, 'var4': 14}
+
+        # Add migration from unversioned to 1.0.0
+        @migration(TestConfig, None, "1.0.0")
+        def migrate_none_to_100(attrs):
+            del attrs['var4']
+            attrs['var1'] = 11
+            return attrs
 
         cfg = TestConfig()
         cfg.from_dict(fake_config)
@@ -997,6 +1040,56 @@ class TestVersionedObject(TestCase):
             return attrs
 
         TestConfig.add_migration("1.0.2", "1.0.3", migrate_102_to_103)
+
+        # Load oldest config from dict
+        cfg = TestConfig()
+        cfg.from_dict(fake_config)
+
+        # Verify all migrations were performed
+        self.assertEqual(11, cfg.var1)
+        self.assertEqual(12, cfg.var2)
+        self.assertEqual(13, cfg.var3)
+        self.assertEqual(14, cfg.var4)
+        self.assertEqual(15, cfg.var5)
+        self.assertEqual(16, cfg.var6)
+
+    def test_multiple_migrations_decorator(self):
+        # Newest config, with version number added
+        class TestConfig(VersionedObject):
+            version = "1.0.3"
+            var1 = 1
+            var2 = 2
+            var3 = 3
+            var4 = 4
+            var5 = 5
+            var6 = 6
+
+        # oldest config, different format, and without version number
+        fake_config = {'var1': 11, 'var2': 12}
+
+        # Add migration from unversioned to 1.0.0
+        @migration(TestConfig, None, "1.0.0")
+        def migrate_none_to_100(attrs):
+            attrs['var3'] = 13
+            return attrs
+
+        # Add migration from 1.0.0 to 1.0.1
+        @migration(TestConfig, "1.0.0", "1.0.1")
+        def migrate_100_to_101(attrs):
+            attrs['var4'] = 14
+            return attrs
+
+        # Add migration from 1.0.1 to 1.0.2
+        @migration(TestConfig, "1.0.1", "1.0.2")
+        def migrate_101_to_102(attrs):
+            attrs['var5'] = 15
+            return attrs
+
+        # Add migration from 1.0.2 to 1.0.3
+        @migration(TestConfig, "1.0.2", "1.0.3")
+        def migrate_102_to_103(attrs):
+            attrs['var6'] = 16
+            return attrs
 
         # Load oldest config from dict
         cfg = TestConfig()

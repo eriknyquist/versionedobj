@@ -1,8 +1,25 @@
+import sys
 import inspect
 import json
 from json.decoder import JSONDecodeError
 
 from versionedobj.exceptions import InvalidFilterError, LoadObjError, InputValidationError
+
+
+def migration(cls, from_version, to_version):
+    """
+    Decorator for migration functions. Use this decorator on any function or method
+    that should be used for migrating an object from one version to another.
+
+    :param cls: Class object to add migration to
+    :param from_version: Version to migrate from. If you are migrating an object that\
+        previously had no version number, use 'None' here.
+    :param to_version: Version to migrate to
+    """
+    def _inner_migration(migration_classfunc):
+        cls.add_migration(from_version, to_version, migration_classfunc)
+
+    return _inner_migration
 
 
 class CustomValue(object):

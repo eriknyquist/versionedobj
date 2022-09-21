@@ -356,7 +356,39 @@ This can be handled simply by passing "None" to the "add_migration()" method, fo
 
 .. code:: python
 
+    from versionedobj import VersionedObj
+
+    class UserConfig(VersionedObject):
+        version = "v1.1.0"
+        username = ""
+        friend_list = []
+
+    def migrate_none_to_100(attrs);
+        attrs['friend_list'] = [] # Add new 'friend_list' field
+        return attrs
+
     UserConfig.add_migration(None, "v1.0.0", migrate_none_to_100)
+
+Migrations: decorator for migration functions
+---------------------------------------------
+
+Instead of calling the ``add_migration()`` class method, you can instead use the
+``versionedobj.migration`` decorator on your migration function, if you wish:
+
+.. code:: python
+
+    from versionedobj import VersionedObj, migration
+
+    class UserConfig(VersionedObject):
+        version = "v1.0.1"
+        username = "john smith"
+        friend_list = []
+
+    @migration(UserConfig, "1.0.0", "1.1.0")
+    def migrate_100_to_101(attrs);
+        attrs['friend_list'] = [] # Add new 'friend_list' field
+        return attrs
+
 
 Validating input data without deserializing
 -------------------------------------------
