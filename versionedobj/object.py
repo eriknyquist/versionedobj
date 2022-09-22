@@ -3,7 +3,7 @@ import inspect
 import json
 from json.decoder import JSONDecodeError
 
-from versionedobj.exceptions import InvalidFilterError, LoadObjError, InputValidationError
+from versionedobj.exceptions import InvalidFilterError, LoadObjError, InputValidationError, InvalidVersionAttributeError
 
 
 def migration(cls, from_version, to_version):
@@ -246,10 +246,18 @@ class VersionedObject(metaclass=__Meta):
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
 
+            vobj_class = None
             if isinstance(val, VersionedObject):
-                val = val.__class__()
+                vobj_class = val.__class__
             elif inspect.isclass(val) and issubclass(val, VersionedObject):
-                val = val()
+                vobj_class = val
+
+            if vobj_class:
+                if hasattr(val, 'version'):
+                    raise InvalidVersionAttributeError(f"{vobj_class.__name__} cannot have a version attribute. "
+                                                        "Only the top-level object can have a version attribute.")
+
+                val = vobj_class()
 
             setattr(self, n, val)
 

@@ -21,3 +21,8 @@ class InputValidationError(Exception):
     pass
 
 
+class InvalidVersionAttributeError(Exception):
+    """
+    Exception raised whenever a nested VersionedObject has a 'version' attribute
+    """
+    pass

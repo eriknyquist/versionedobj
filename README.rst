@@ -230,7 +230,7 @@ The same parameter can be used for de-serializing:
 Migrations: making use of the version number
 --------------------------------------------
 
-Any VersionedObject object can have a ``version`` attribute, which can be any object,
+A VersionedObject object can have a ``version`` attribute, which can be any object,
 although it is typically a string (e.g. ``"v1.2.3"``). This version attribute can be
 used to support migrations for older objects, in the event that you need to
 change the format of your object.

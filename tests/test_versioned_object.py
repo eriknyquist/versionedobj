@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, InputValidationError, CustomValue, migration
+from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, InputValidationError, InvalidVersionAttributeError, CustomValue, migration
 
 
 class TestVersionedObject(TestCase):
@@ -1466,7 +1466,6 @@ class TestVersionedObject(TestCase):
             var1 = 1
             var2 = NestedConfig
 
-
         cfg1 = TestConfig1()
 
         NestedConfig.var1 = "xxx"
@@ -1480,3 +1479,31 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, cfg2.var1)
         self.assertEqual("xxx", cfg2.var2.var1)
         self.assertEqual(False, cfg2.var2.var2)
+
+    def test_nested_version_exception_1(self):
+        class NestedConfig(VersionedObject):
+            var1 = "hey"
+            var2 = False
+            version = "q"
+
+        class TestConfig1(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig()
+
+        self.assertRaises(InvalidVersionAttributeError, TestConfig1)
+
+    def test_nested_version_exception_2(self):
+        class NestedConfig1(VersionedObject):
+            var1 = "hey"
+            var2 = False
+            version = 8
+
+        class NestedConfig2(VersionedObject):
+            var1 = "hey"
+            var2 = NestedConfig1
+
+        class TestConfig1(VersionedObject):
+            var1 = 1
+            var2 = NestedConfig2
+
+        self.assertRaises(InvalidVersionAttributeError, TestConfig1)
