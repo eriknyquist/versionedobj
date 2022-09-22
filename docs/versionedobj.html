@@ -398,6 +398,22 @@ Can be used to iterate over all object attributes.</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="versionedobj.object.migration">
+<span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_version</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.migration" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator for migration functions. Use this decorator on any function or method
+that should be used for migrating an object from one version to another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cls</strong> – Class object to add migration to</p></li>
+<li><p><strong>from_version</strong> – Version to migrate from. If you are migrating an object that        previously had no version number, use ‘None’ here.</p></li>
+<li><p><strong>to_version</strong> – Version to migrate to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-versionedobj.exceptions">
 <span id="versionedobj-exceptions-module"></span><h2>versionedobj.exceptions module<a class="headerlink" href="#module-versionedobj.exceptions" title="Permalink to this headline"></a></h2>
@@ -413,6 +429,13 @@ Can be used to iterate over all object attributes.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidFilterError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InvalidFilterError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InvalidFilterError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception raised whenever ‘only’ and ‘ignore’ filters are used at the same time</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="versionedobj.exceptions.InvalidVersionAttributeError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidVersionAttributeError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InvalidVersionAttributeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InvalidVersionAttributeError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised whenever a nested VersionedObject has a ‘version’ attribute</p>
 </dd></dl>
 
 <dl class="py exception">

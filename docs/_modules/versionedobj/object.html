@@ -67,11 +67,28 @@
            <div itemprop="articleBody">
              
   <h1>Source code for versionedobj.object</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">inspect</span>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">json.decoder</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
 
-<span class="kn">from</span> <span class="nn">versionedobj.exceptions</span> <span class="kn">import</span> <span class="n">InvalidFilterError</span><span class="p">,</span> <span class="n">LoadObjError</span><span class="p">,</span> <span class="n">InputValidationError</span>
+<span class="kn">from</span> <span class="nn">versionedobj.exceptions</span> <span class="kn">import</span> <span class="n">InvalidFilterError</span><span class="p">,</span> <span class="n">LoadObjError</span><span class="p">,</span> <span class="n">InputValidationError</span><span class="p">,</span> <span class="n">InvalidVersionAttributeError</span>
+
+
+<div class="viewcode-block" id="migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.migration">[docs]</a><span class="k">def</span> <span class="nf">migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator for migration functions. Use this decorator on any function or method</span>
+<span class="sd">    that should be used for migrating an object from one version to another.</span>
+
+<span class="sd">    :param cls: Class object to add migration to</span>
+<span class="sd">    :param from_version: Version to migrate from. If you are migrating an object that\</span>
+<span class="sd">        previously had no version number, use &#39;None&#39; here.</span>
+<span class="sd">    :param to_version: Version to migrate to</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_inner_migration</span><span class="p">(</span><span class="n">migration_classfunc</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">add_migration</span><span class="p">(</span><span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">,</span> <span class="n">migration_classfunc</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_inner_migration</span></div>
 
 
 <div class="viewcode-block" id="CustomValue"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.CustomValue">[docs]</a><span class="k">class</span> <span class="nc">CustomValue</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -298,10 +315,18 @@
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_iter_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 
+            <span class="n">vobj_class</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">VersionedObject</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
+                <span class="n">vobj_class</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="vm">__class__</span>
             <span class="k">elif</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">VersionedObject</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">()</span>
+                <span class="n">vobj_class</span> <span class="o">=</span> <span class="n">val</span>
+
+            <span class="k">if</span> <span class="n">vobj_class</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">InvalidVersionAttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vobj_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> cannot have a version attribute. &quot;</span>
+                                                        <span class="s2">&quot;Only the top-level object can have a version attribute.&quot;</span><span class="p">)</span>
+
+                <span class="n">val</span> <span class="o">=</span> <span class="n">vobj_class</span><span class="p">()</span>
 
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
