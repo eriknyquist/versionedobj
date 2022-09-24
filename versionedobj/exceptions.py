@@ -6,10 +6,16 @@ class InvalidFilterError(Exception):
     pass
 
 
-class LoadObjError(Exception):
+class LoadObjectError(Exception):
     """
     Exception raised whenever saved object data cannot be loaded because of a JSON parser error
-    or because of a failed migration path
+    """
+    pass
+
+
+class ObjectMigrationError(Exception):
+    """
+    Exception raised whenever migration of a versioned object fails
     """
     pass
 

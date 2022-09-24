@@ -3,7 +3,7 @@ import inspect
 import json
 from json.decoder import JSONDecodeError
 
-from versionedobj.exceptions import InvalidFilterError, LoadObjError, InputValidationError, InvalidVersionAttributeError
+from versionedobj.exceptions import InvalidFilterError, LoadObjectError, ObjectMigrationError, InputValidationError, InvalidVersionAttributeError
 
 
 def migration(cls, from_version, to_version):
@@ -283,7 +283,7 @@ class VersionedObject(metaclass=__Meta):
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         return cls().from_dict(attrs, validate, only, ignore)
@@ -302,7 +302,7 @@ class VersionedObject(metaclass=__Meta):
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         return cls().from_json(jsonstr, validate, only, ignore)
@@ -321,7 +321,7 @@ class VersionedObject(metaclass=__Meta):
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         return cls().from_file(filename, validate, only, ignore)
@@ -363,7 +363,7 @@ class VersionedObject(metaclass=__Meta):
                     break
 
         if version_after_migration != version:
-            raise LoadObjError(f"Failed to migrate from version {version_before_migration} to {version}")
+            raise ObjectMigrationError(f"Failed to migrate from version {version_before_migration} to {version}")
 
         return attrs
 
@@ -480,7 +480,7 @@ class VersionedObject(metaclass=__Meta):
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         if only and ignore:
@@ -530,13 +530,14 @@ class VersionedObject(metaclass=__Meta):
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.
+        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         try:
             d = json.loads(jsonstr)
         except JSONDecodeError:
-            raise LoadObjError("JSON decode failure")
+            raise LoadObjectError("JSON decode failure")
 
         self.from_dict(d, validate, only, ignore)
         return self
@@ -565,7 +566,8 @@ class VersionedObject(metaclass=__Meta):
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.
+        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
         """
         with open(filename, 'r') as fh:

@@ -1,7 +1,8 @@
 import os
 from unittest import TestCase
 
-from versionedobj import VersionedObject, LoadObjError, InvalidFilterError, InputValidationError, InvalidVersionAttributeError, CustomValue, migration
+from versionedobj import (VersionedObject, LoadObjectError, InvalidFilterError,
+    InputValidationError, InvalidVersionAttributeError, ObjectMigrationError, CustomValue, migration)
 
 
 class TestVersionedObject(TestCase):
@@ -140,14 +141,26 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, cfg.val2.val1)
         self.assertEqual("changed", cfg.val2.val2)
 
-    def test_load_dict_invalid_attr(self):
+    def test_load_dict_invalid_attr_1(self):
         class TestConfig(VersionedObject):
             val1 = 1
 
         cfg = TestConfig()
         self.assertRaises(InputValidationError, cfg.from_dict, {"val2": 55})
 
-    def test_load_dict_missing_attr(self):
+    def test_load_dict_invalid_attr_2(self):
+        class NestedConfig(VersionedObject):
+            val1 = "a"
+            val2 = "bb"
+
+        class TestConfig(VersionedObject):
+            val1 = 1
+            val2 = NestedConfig
+
+        cfg = TestConfig()
+        self.assertRaises(InputValidationError, cfg.from_dict, {"val1": 1, "val2": {"val1": 1, "val2": 1, "val3": 1}})
+
+    def test_load_dict_missing_attr_1(self):
         class TestConfig(VersionedObject):
             val1 = 1
             val2 = 2
@@ -155,7 +168,19 @@ class TestVersionedObject(TestCase):
         cfg = TestConfig()
         self.assertRaises(InputValidationError, cfg.from_dict, {"val2": 55})
 
-    def test_load_dict_missing_attr_no_validation(self):
+    def test_load_dict_missing_attr_2(self):
+        class NestedConfig(VersionedObject):
+            val1 = "g"
+            val2 = True
+
+        class TestConfig(VersionedObject):
+            val1 = 1
+            val2 = NestedConfig
+
+        cfg = TestConfig()
+        self.assertRaises(InputValidationError, cfg.from_dict, {"val1": 99, "val2": {"val2": False}})
+
+    def test_load_dict_missing_attr_no_validation_1(self):
         class TestConfig(VersionedObject):
             val1 = 1
             val2 = 2
@@ -166,12 +191,28 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, cfg.val1)
         self.assertEqual(55, cfg.val2)
 
+    def test_load_dict_missing_attr_no_validation_2(self):
+        class NestedConfig(VersionedObject):
+            val1 = "g"
+            val2 = True
+
+        class TestConfig(VersionedObject):
+            val1 = 1
+            val2 = NestedConfig()
+
+        cfg = TestConfig()
+        cfg.from_dict({"val1": 99, "val2": {"val2": 88}}, validate=False)
+
+        self.assertEqual(99, cfg.val1)
+        self.assertEqual("g", cfg.val2.val1)
+        self.assertEqual(88, cfg.val2.val2)
+
     def test_load_invalid_json(self):
         class TestConfig(VersionedObject):
             val1 = 1
 
         cfg = TestConfig()
-        self.assertRaises(LoadObjError, cfg.from_json, "zsrg]s\er]gsegr")
+        self.assertRaises(LoadObjectError, cfg.from_json, "zsrg]s\er]gsegr")
 
     def test_load_dict_migration_failure_no_migrations(self):
         class TestConfig(VersionedObject):
@@ -181,7 +222,7 @@ class TestVersionedObject(TestCase):
         fake_config = {'version': '1.0.22', 'value': 2727}
 
         cfg = TestConfig()
-        self.assertRaises(LoadObjError, cfg.from_dict, fake_config)
+        self.assertRaises(ObjectMigrationError, cfg.from_dict, fake_config)
 
     def test_load_dict_migration_failure_bad_migration(self):
         class TestConfig(VersionedObject):
@@ -196,7 +237,7 @@ class TestVersionedObject(TestCase):
         TestConfig.add_migration('1.0.0', '1.0.21', bad_migration)
 
         cfg = TestConfig()
-        self.assertRaises(LoadObjError, cfg.from_dict, fake_config)
+        self.assertRaises(ObjectMigrationError, cfg.from_dict, fake_config)
 
     def test_load_dict_migration_failure_bad_migration_decorator(self):
         class TestConfig(VersionedObject):
@@ -210,7 +251,7 @@ class TestVersionedObject(TestCase):
             return attrs
 
         cfg = TestConfig()
-        self.assertRaises(LoadObjError, cfg.from_dict, fake_config)
+        self.assertRaises(ObjectMigrationError, cfg.from_dict, fake_config)
 
     def test_load_dict_migration_success(self):
         class TestConfig(VersionedObject):
