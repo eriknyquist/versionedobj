@@ -20,8 +20,26 @@ Install ``versionedobj`` using pip:
 
     pip install versionedobj
 
-Example-- VersionedObject as a configuration file
--------------------------------------------------
+Getting started
+---------------
+
+Object definition
+*****************
+
+Define objects by creating a new class that inherits from ``VersionedObject``,
+and set class attributes to define your object attribubtes:
+
+.. code:: python
+
+    from versionedobj import VersionedObjbect
+
+    class UserConfig(VersionedObject):
+        version = "v1.0.0"
+        username = "john smith"
+        friend_list = ["user1", "user2", "user3"]
+
+You can also nest VersionedObjects by simply assigning another ``VersionedObject``
+class or instance object to a class attribute:
 
 .. code:: python
 
@@ -39,132 +57,95 @@ Example-- VersionedObject as a configuration file
         friend_list = ["user1", "user2", "user3"]
         display_config = DisplayConfig() # VersionedObjects can be nested
 
-    # Create an instance of your object (instance attributes will match class attributes,
-    # and the initial values will be whatever values you set on the class attributes)
-    cfg = UserConfig()
+        # Nested VersionedObjects can be a class object, or an instance of the
+        # class, either way will behave the same
 
-    # Change some values on the object instance
-    cfg.display_config.volume = 1.0
-    cfg.username = "jane doe"
+        # display_config = DisplayConfig
+
+Creating object instances and accessing object attributes
+*********************************************************
+
+The values you set on the class attributes of a ``VersionedObject`` serve as the default
+values for that object. When you create an instance of your ``VersionedObject`` class,
+instance attributes will automatically be created to match the class attributes, and
+the values of the class attributes will be copied over to the instance attributes:
+
+.. code:: python
+
+    obj = UserConfig()
+
+    print(obj.friend_list)
+    # Output looks like this: ["user1", "user2", "user3"]
+
+    print(obj.display_config.display_mode)
+    # Output looks like this: "windowed"
+
+As well as regular dot notation, you can also treat an object instance like a dict,
+and access individual attribubtes using their full dot name as the key:
+
+.. code:: python
+
+    print(obj['friend_list'])
+    # Output looks like this: ["user1", "user2", "user3"]
+
+    print(obj['display_config.display_mode'])
+    # Output looks like this: "windowed"
+
+    # Change the value of an instance attribute
+    obj['display_config.display_mode'] = "fullscreen"
+
+    print(obj['display_config.display_mode'])
+    # Output looks like this: "fullscreen"
+
+You can also use the ``object_attributes()`` method to iterate over all object attribute
+names and values:
+
+.. code:: python
+
+    for attr_name, attr_value in obj.object_attributes():
+        print(f"{attr_name}: {attr_value}")
+
+    # Output looks like this:
+    #
+    # version: v1.0.0
+    # username: john smith
+    # friend_list: ["user1", "user2", "user3"]
+    # display_config.display_mode: windowed
+    # display_config.resolution: 1920x1080
+    # display_config.volume: 0.66
+
+Serializing and de-serializing
+******************************
+
+Use the ``to_file`` and ``from_file`` methods to serialize/deserialize data to/from a JSON file:
+
+.. code:: python
 
     # Save object instance to JSON file
-    cfg.to_file('user_config.json', indent=4)
+    obj.to_file('user_config.json', indent=4)
 
     # Load object instance from JSON file
-    cfg.from_file('user_config.json')
-
+    obj.from_file('user_config.json')
 
 You can also save/load object data as a JSON string:
 
 .. code:: python
 
-    >>> obj_as_json = cfg.to_json(indent=4) # Serialize to JSON string
-    >>> obj_as_json                         # Print JSON string
+    # Save object instance to JSON string
+    obj_as_json = obj.to_json(indent=4)
 
-    {
-        "version": "v1.0.0",
-        "username": "jane doe",
-        "friend_list": [
-                "user1",
-                "user2",
-                "user3"
-        ],
-        "display_config": {
-            "display_mode": "windowed",
-            "resolution": "1920x1080",
-            "volume": 1.0
-        }
-    }
-
-    >>> cfg.from_json(obj_as_json)          # Load from JSON string
+    # Load object instance from JSON string
+    obj.from_json(obj_as_json)
 
 Or, as a dict:
 
 .. code:: python
 
-    >>> obj_as_dict = cfg.to_dict()   # Serialize to dict
-    >>> obj_as_dict                   # Print dict
+    # Save object instance to dict
+    obj_as_dict = obj.to_dict()
 
-    {'version': '1.0.0', 'username': 'jane doe', 'friend_list': ['user1', 'user2', 'user3'], 'display_config': {'display_mode': 'windowed', 'resolution': '1920x1080', 'volume': 1.0}}
-
-    >>> cfg.from_dict(obj_as_dict)    # Load from dict
-
-Accessing versioned object instance attributes
-----------------------------------------------
-
-When you create an instance of your VersionedObject class, the instance attributes
-will be automatically populated to match the class attributes you have created:
-
-.. code:: python
-
-    from versionedobj import VersionedObject
-
-    class AccountInfo(VersionedObject):
-        user_name = "john"
-        user_id = 11223344
-
-    class Session(VersionedObject):
-        ip_addr = "255.255.255.255"
-        port = 22
-        account_info = AccountInfo()
-
-    session = Session()
-
-    print(session.ip_addr)
-    # "255.255.255.255"
-
-    print(session.account_info.user_name)
-    # "john"
-
-    session.account_info.user_name = "jane"
-
-    print(session.account_info.user_name)
-    # "jane"
-
-Alternatively, you can treat a VersionedObject instance as a dict, and access
-attributes by passing their full name as the key:
-
-.. code:: python
-
-    print(session['account_info.user_name'])
-    # "jane"
-
-    session['account_info.user_name'] = "jack"
-
-    print(session['account_info.user_name'])
-    # "jack"
-
-Iterating over versioned object instance attributes
----------------------------------------------------
-
-If you want to enumerate all attribute names & values on a versioned object instance,
-you can use the ``object_attributes()`` method, which returns a generator for all instance
-attributes:
-
-.. code:: python
-
-    from versionedobj import VersionedObject
-
-    class AccountInfo(VersionedObject):
-        user_name = "john"
-        user_id = 11223344
-
-    class Session(VersionedObject):
-        ip_addr = "255.255.255.255"
-        port = 22
-        account_info = AccountInfo()
-
-    session = Session()
-
-    for attr_name, attr_value in session.object_attributes():
-        print(f"{attr_name}: {attr_value}")
-
-    # Output looks like this:
-    #
-    # ip_addr: 255.255.255.255
-    # port: 22
-    # account_info.user_name: john
-    # account_info.user_id: 11223344
+    # Load object instance from dict
+    obj.from_dict(obj_as_dict)
 
 Filtering serialization/deserialization output
 ----------------------------------------------
