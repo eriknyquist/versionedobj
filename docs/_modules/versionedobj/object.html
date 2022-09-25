@@ -72,7 +72,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">json.decoder</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
 
-<span class="kn">from</span> <span class="nn">versionedobj.exceptions</span> <span class="kn">import</span> <span class="n">InvalidFilterError</span><span class="p">,</span> <span class="n">LoadObjError</span><span class="p">,</span> <span class="n">InputValidationError</span><span class="p">,</span> <span class="n">InvalidVersionAttributeError</span>
+<span class="kn">from</span> <span class="nn">versionedobj.exceptions</span> <span class="kn">import</span> <span class="n">InvalidFilterError</span><span class="p">,</span> <span class="n">LoadObjectError</span><span class="p">,</span> <span class="n">ObjectMigrationError</span><span class="p">,</span> <span class="n">InputValidationError</span><span class="p">,</span> <span class="n">InvalidVersionAttributeError</span>
 
 
 <div class="viewcode-block" id="migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.migration">[docs]</a><span class="k">def</span> <span class="nf">migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">):</span>
@@ -352,7 +352,7 @@
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
 <span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
-<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.</span>
 <span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
@@ -371,7 +371,7 @@
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
 <span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
-<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.</span>
 <span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
@@ -390,7 +390,7 @@
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
 <span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
-<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.</span>
 <span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
@@ -432,7 +432,7 @@
                     <span class="k">break</span>
 
         <span class="k">if</span> <span class="n">version_after_migration</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to migrate from version </span><span class="si">{</span><span class="n">version_before_migration</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ObjectMigrationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to migrate from version </span><span class="si">{</span><span class="n">version_before_migration</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">attrs</span>
 
@@ -549,7 +549,7 @@
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
 <span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
-<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.</span>
 <span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
@@ -599,13 +599,14 @@
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
 <span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
-<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails</span>
+<span class="sd">        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails</span>
 <span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">jsonstr</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">JSONDecodeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">LoadObjError</span><span class="p">(</span><span class="s2">&quot;JSON decode failure&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LoadObjectError</span><span class="p">(</span><span class="s2">&quot;JSON decode failure&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -634,7 +635,8 @@
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
 <span class="sd">        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.</span>
-<span class="sd">        :raises versionedobj.exceptions.LoadObjError: if JSON parsing fails, or if migration to current version fails.</span>
+<span class="sd">        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails</span>
+<span class="sd">        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.</span>
 <span class="sd">        :raises versionedobj.exceptions.InvalidFilterError: if both &#39;only&#39; and &#39;ignore&#39; are provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>

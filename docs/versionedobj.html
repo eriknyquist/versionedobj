@@ -164,7 +164,7 @@ migrating older files to the current version</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjError" title="versionedobj.exceptions.LoadObjError"><strong>versionedobj.exceptions.LoadObjError</strong></a> – if migration to current version fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.ObjectMigrationError" title="versionedobj.exceptions.ObjectMigrationError"><strong>versionedobj.exceptions.ObjectMigrationError</strong></a> – if migration to current version fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
@@ -187,7 +187,8 @@ migrating older files to the current version</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjError" title="versionedobj.exceptions.LoadObjError"><strong>versionedobj.exceptions.LoadObjError</strong></a> – if JSON parsing fails, or if migration to current version fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.ObjectMigrationError" title="versionedobj.exceptions.ObjectMigrationError"><strong>versionedobj.exceptions.ObjectMigrationError</strong></a> – if migration to current version fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
@@ -210,7 +211,8 @@ migrating older files to the current version</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjError" title="versionedobj.exceptions.LoadObjError"><strong>versionedobj.exceptions.LoadObjError</strong></a> – if JSON parsing fails, or if migration to current version fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.ObjectMigrationError" title="versionedobj.exceptions.ObjectMigrationError"><strong>versionedobj.exceptions.ObjectMigrationError</strong></a> – if migration to current version fails</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
@@ -239,7 +241,7 @@ return the new object instance</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjError" title="versionedobj.exceptions.LoadObjError"><strong>versionedobj.exceptions.LoadObjError</strong></a> – if migration to current version fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.ObjectMigrationError" title="versionedobj.exceptions.ObjectMigrationError"><strong>versionedobj.exceptions.ObjectMigrationError</strong></a> – if migration to current version fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
@@ -263,7 +265,7 @@ return the new object instance</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjError" title="versionedobj.exceptions.LoadObjError"><strong>versionedobj.exceptions.LoadObjError</strong></a> – if migration to current version fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.ObjectMigrationError" title="versionedobj.exceptions.ObjectMigrationError"><strong>versionedobj.exceptions.ObjectMigrationError</strong></a> – if migration to current version fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
@@ -287,7 +289,7 @@ return the new object instance</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjError" title="versionedobj.exceptions.LoadObjError"><strong>versionedobj.exceptions.LoadObjError</strong></a> – if migration to current version fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.ObjectMigrationError" title="versionedobj.exceptions.ObjectMigrationError"><strong>versionedobj.exceptions.ObjectMigrationError</strong></a> – if migration to current version fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
@@ -439,11 +441,17 @@ that should be used for migrating an object from one version to another.</p>
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="versionedobj.exceptions.LoadObjError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">LoadObjError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#LoadObjError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.LoadObjError" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="versionedobj.exceptions.LoadObjectError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">LoadObjectError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#LoadObjectError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.LoadObjectError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised whenever saved object data cannot be loaded because of a JSON parser error
-or because of a failed migration path</p>
+<p>Exception raised whenever saved object data cannot be loaded because of a JSON parser error</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="versionedobj.exceptions.ObjectMigrationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">ObjectMigrationError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#ObjectMigrationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.ObjectMigrationError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised whenever migration of a versioned object fails</p>
 </dd></dl>
 
 </div>
