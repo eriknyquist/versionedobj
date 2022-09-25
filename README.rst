@@ -9,9 +9,10 @@ structure across time, and to migrate between different object versions.
 
 See `API documentation <https://eriknyquist.github.io/versionedobj/versionedobj.html>`_
 
-.. only:: html
+..
+    .. only:: html
 
-    .. contents:: **Table of Contents**
+.. contents:: **Table of Contents**
 
 
 Installing
