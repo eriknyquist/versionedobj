@@ -3,8 +3,10 @@ Object serialization & versioning framework for python 3x
 
 .. |tests_badge| image:: https://github.com/eriknyquist/versionedobj/actions/workflows/tests.yml/badge.svg
 .. |cov_badge| image:: https://github.com/eriknyquist/versionedobj/actions/workflows/coverage.yml/badge.svg
+.. |version_badge| image:: https://badgen.net/pypi/v/versionedobj
+.. |license_badge| image:: https://badgen.net/pypi/license/versionedobj
 
-|tests_badge| |cov_badge|
+|tests_badge| |cov_badge| |version_badge| |license_badge|
 
 **versionedobj** is a framework for creating complex python objects that can be
 serialized/deserialized to and from strings, or dicts, or JSON files.
