@@ -2,7 +2,7 @@ import unittest
 from coverage import Coverage
 
 
-MIN_COVERAGE_PERCENT = 100.0
+MIN_COVERAGE_PERCENT = 95.0
 
 
 def main():
