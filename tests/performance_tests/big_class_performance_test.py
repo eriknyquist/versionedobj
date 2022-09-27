@@ -8,6 +8,9 @@ import os
 import matplotlib
 import matplotlib.pyplot as plt
 
+from versionedobj import Serializer
+
+
 sys.path.insert(0, os.path.dirname(__file__))
 
 
@@ -53,6 +56,7 @@ def run_test_iterations(index, nesting_levels, vars_per_level, num_iterations=5)
     big_test_class = importlib.import_module(f"{classname}")
 
     init_start = time.time()
+    ser = Serializer()
     cfg = big_test_class.BigTestConfig()
     init_time = time.time() - init_start
 
@@ -65,19 +69,19 @@ def run_test_iterations(index, nesting_levels, vars_per_level, num_iterations=5)
     print(f"Generating data point #{index}")
     for i in range(num_iterations):
         to_dict_start = time.time()
-        d = cfg.to_dict()
+        d = ser.to_dict(cfg)
         to_dict_times.append(int((time.time() - to_dict_start) * 1000))
 
         to_json_start = time.time()
-        j = cfg.to_json()
+        j = ser.to_json(cfg)
         to_json_times.append(int((time.time() - to_json_start) * 1000))
 
         from_dict_start = time.time()
-        cfg.from_dict(d, validate=False)
+        ser.from_dict(cfg, d, validate=False)
         from_dict_times.append(int((time.time() - from_dict_start) * 1000))
 
         from_json_start = time.time()
-        cfg.from_json(j, validate=False)
+        ser.from_json(cfg, j, validate=False)
         from_json_times.append(int((time.time() - from_json_start) * 1000))
 
         print(f"completed iteration {i + 1}/{num_iterations}")
