@@ -38,7 +38,7 @@ Object definition
 *****************
 
 Define objects by creating a new class that inherits from ``VersionedObject``,
-and set class attributes to define your object attribubtes:
+and set class attributes to define your object attributes:
 
 .. code:: python
 
@@ -92,7 +92,7 @@ the values of the class attributes will be copied over to the instance attribute
     # Output looks like this: "windowed"
 
 As well as regular dot notation, you can also treat an object instance like a dict,
-and access individual attribubtes using their full dot name as the key:
+and access individual attributes using their full dot name as the key:
 
 .. code:: python
 
@@ -108,12 +108,12 @@ and access individual attribubtes using their full dot name as the key:
     print(obj['display_config.display_mode'])
     # Output looks like this: "fullscreen"
 
-You can also use the ``object_attributes()`` method to iterate over all object attribute
-names and values:
+You can also treat a ``VersionedObjbect`` instance as an iterable, to iterate
+over all object attribute names and values:
 
 .. code:: python
 
-    for attr_name, attr_value in obj.object_attributes():
+    for attr_name, attr_value in obj:
         print(f"{attr_name}: {attr_value}")
 
     # Output looks like this:
@@ -128,35 +128,55 @@ names and values:
 Serializing and de-serializing
 ******************************
 
-Use the ``to_file`` and ``from_file`` methods to serialize/deserialize data to/from a JSON file:
+Create an instance of the ``versionedobj.Serializer`` class, and use the ``to_file``
+and ``from_file`` methods to serialize/deserialize data to/from a JSON file:
 
 .. code:: python
 
-    # Save object instance to JSON file
-    obj.to_file('user_config.json', indent=4)
+    from versionedobj import VersionedObject, Serializer
 
-    # Load object instance from JSON file
-    obj.from_file('user_config.json')
+    class DisplayConfig(VersionedObject):
+        display_mode = "windowed"
+        resolution = "1920x1080"
+        volume = 0.66
+
+    class UserConfig(VersionedObject):
+        version = "v1.0.0"
+        username = "john smith"
+        friend_list = ["user1", "user2", "user3"]
+        display_config = DisplayConfig() # VersionedObjects can be nested
+
+    # Create a serializer instance
+    serializer = Serializer()
+
+    # Create an instance of our VersionedObject
+    obj = UserConfig()
+
+    # Save object instance to JSON file
+    serializer.to_file(obj, 'user_config.json', indent=4)
+
+    # Load JSON file and populate the same object instance
+    serializer.from_file(obj, 'user_config.json')
 
 You can also save/load object data as a JSON string:
 
 .. code:: python
 
     # Save object instance to JSON string
-    obj_as_json = obj.to_json(indent=4)
+    obj_as_json = serializer.to_json(obj, indent=4)
 
     # Load object instance from JSON string
-    obj.from_json(obj_as_json)
+    serializer.from_json(obj, obj_as_json)
 
 Or, as a dict:
 
 .. code:: python
 
     # Save object instance to dict
-    obj_as_dict = obj.to_dict()
+    obj_as_dict = serializer.to_dict(obj)
 
     # Load object instance from dict
-    obj.from_dict(obj_as_dict)
+    serializer.from_dict(obj, obj_as_dict)
 
 Filtering serialization/deserialization output
 ----------------------------------------------
@@ -169,7 +189,7 @@ parameter to specify which fields should be output (effectively a whitelist by f
 
 .. code:: python
 
-    cfg.to_file('user_config.json', only=['version', 'username', 'display_config.resolution'])
+    serializer.to_file(obj 'user_config.json', only=['version', 'username', 'display_config.resolution'])
 
     # Output looks like this:
     #
@@ -185,7 +205,7 @@ The same parameter can be used for de-serializing:
 
 .. code:: python
 
-    cfg.from_file('user_config.json', only=['display_config.display_mode'])
+    serializer.from_file(obj, 'user_config.json', only=['display_config.display_mode'])
 
     # Only the 'display_config.display_mode' field is loaded from the file
 
@@ -198,7 +218,7 @@ by field name):
 
 .. code:: python
 
-    cfg.to_file('user_config.json', ignore=['friend_list', 'display_config.volume'])
+    serializer.to_file(obj, 'user_config.json', ignore=['friend_list', 'display_config.volume'])
 
     # Output looks like this:
     #
@@ -215,7 +235,7 @@ The same parameter can be used for de-serializing:
 
 .. code:: python
 
-    cfg.from_file('user_config.json', ignore=['friend_list'])
+    serializer.from_file(obj, 'user_config.json', ignore=['friend_list'])
 
     # Every field except for the 'friend_list' field is loaded from the file
 
@@ -296,10 +316,11 @@ The solution is to:
 
 #. Change the version number to something new, e.g. ``v1.0.0`` becomes ``v1.0.1``
 #. Write a migration function to transform ``v1.0.0`` object data into ``v1.0.1`` object data
+#. Use the ``versionedobj.migration`` decorator to register your migration function
 
 .. code:: python
 
-    from versionedobj import VersionedObject
+    from versionedobj import VersionedObject, migration
 
     # Nested config object
     class DisplayConfig(VersionedObject):
@@ -315,14 +336,12 @@ The solution is to:
         display_config = DisplayConfig()
 
     # Create the migration function for v1.0.0 to v1.0.1
+    @migration(UserConfig, "v1.0.0", "v1.0.1")
     def migrate_100_to_101(attrs):
         del attrs['display_config']['resolution']        # Delete resolution field
         del attrs['display_config']['volume']            # Delete volume field
         attrs['display_config']['volumes'] = [0.66, 0.1] # Add defaults for new volume values
         return attrs                                     # Return modified data (important!)
-
-    # Add the migration function for v1.0.0 to v1.0.1
-    UserConfig.add_migration("v1.0.0", "v1.0.1", migrate_100_to_101)
 
 after you add the migration function and update the version to ``v1.0.1``, JSON files
 that are loaded and contain the version ``v1.0.0`` will be automatically migrated to version
@@ -348,36 +367,15 @@ This can be handled simply by passing "None" to the "add_migration()" method, fo
 
 .. code:: python
 
-    from versionedobj import VersionedObj
-
-    class UserConfig(VersionedObject):
-        version = "v1.1.0"
-        username = ""
-        friend_list = []
-
-    def migrate_none_to_100(attrs);
-        attrs['friend_list'] = [] # Add new 'friend_list' field
-        return attrs
-
-    UserConfig.add_migration(None, "v1.0.0", migrate_none_to_100)
-
-Migrations: decorator for migration functions
----------------------------------------------
-
-Instead of calling the ``add_migration()`` class method, you can instead use the
-``versionedobj.migration`` decorator on your migration function, if you wish:
-
-.. code:: python
-
     from versionedobj import VersionedObj, migration
 
     class UserConfig(VersionedObject):
-        version = "v1.0.1"
-        username = "john smith"
+        version = "v1.0.0"
+        username = ""
         friend_list = []
 
-    @migration(UserConfig, "1.0.0", "1.1.0")
-    def migrate_100_to_101(attrs);
+    @migration(UserConfig, None, "v1.0.0")
+    def migrate_none_to_100(attrs);
         attrs['friend_list'] = [] # Add new 'friend_list' field
         return attrs
 
@@ -386,23 +384,24 @@ Validating input data without deserializing
 -------------------------------------------
 
 You may want to validate some serialized object data without actually deserializing
-and loading the object values. You can use the ``validate_dict`` method for this.
+and loading the object values. You can use the ``Serializer.validate_dict`` method for this.
 
 .. code:: python
 
-    from versionedobj import VersionedObject
+    from versionedobj import VersionedObject, Serializer
 
     class Recipe(VersionedObject):
         ingredient_1 = "onions"
         ingredient_2 = "tomatoes"
         ingredient_3 = "garlic"
 
+    serializer = Serializer()
     rcp = Recipe()
 
-    rcp.validate_dict({"ingredient_1": "celery", "ingredient_2": "carrots"})
+    serializer.validate_dict(rcp, {"ingredient_1": "celery", "ingredient_2": "carrots"})
     # Raises versionedobj.exceptions.InputValidationError because 'ingredient_3' is missing
 
-    rcp.validate_dict({"ingredient_1": "celery", "ingredient_2": "carrots", "ingredient_12": "cumin"})
+    serializer.validate_dict(rcp, {"ingredient_1": "celery", "ingredient_2": "carrots", "ingredient_12": "cumin"})
     # Raises versionedobj.exceptions.InputValidationError because 'ingredient_12' is not a valid attribute
 
 Performance/stress test visualization
