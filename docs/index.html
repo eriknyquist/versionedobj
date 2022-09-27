@@ -81,6 +81,7 @@
 </div>
 <div class="section" id="object-serialization-versioning-framework-for-python-3x">
 <h1><a class="toc-backref" href="#id2">Object serialization &amp; versioning framework for python 3x</a><a class="headerlink" href="#object-serialization-versioning-framework-for-python-3x" title="Permalink to this headline"></a></h1>
+<p><img alt="tests_badge" src="https://github.com/eriknyquist/versionedobj/actions/workflows/tests.yml/badge.svg" /> <img alt="cov_badge" src="https://github.com/eriknyquist/versionedobj/actions/workflows/coverage.yml/badge.svg" /> <img alt="version_badge" src="https://badgen.net/pypi/v/versionedobj" /> <img alt="license_badge" src="https://badgen.net/pypi/license/versionedobj" /></p>
 <p><strong>versionedobj</strong> is a framework for creating complex python objects that can be
 serialized/deserialized to and from strings, or dicts, or JSON files.</p>
 <p><strong>versionedobj</strong> also provides a versioning mechanism, to track changes in object
@@ -115,13 +116,12 @@ structure across time, and to migrate between different object versions.</p>
 </ul>
 </li>
 <li><p><a class="reference internal" href="#migrations-migrating-an-unversioned-object" id="id16">Migrations: migrating an unversioned object</a></p></li>
-<li><p><a class="reference internal" href="#migrations-decorator-for-migration-functions" id="id17">Migrations: decorator for migration functions</a></p></li>
-<li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id18">Validating input data without deserializing</a></p></li>
-<li><p><a class="reference internal" href="#performance-stress-test-visualization" id="id19">Performance/stress test visualization</a></p></li>
-<li><p><a class="reference internal" href="#contributions" id="id20">Contributions</a></p></li>
+<li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id17">Validating input data without deserializing</a></p></li>
+<li><p><a class="reference internal" href="#performance-stress-test-visualization" id="id18">Performance/stress test visualization</a></p></li>
+<li><p><a class="reference internal" href="#contributions" id="id19">Contributions</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#indices-and-tables" id="id21">Indices and tables</a></p></li>
+<li><p><a class="reference internal" href="#indices-and-tables" id="id20">Indices and tables</a></p></li>
 </ul>
 </div>
 <div class="section" id="installing">
@@ -136,7 +136,7 @@ structure across time, and to migrate between different object versions.</p>
 <div class="section" id="object-definition">
 <h3><a class="toc-backref" href="#id5">Object definition</a><a class="headerlink" href="#object-definition" title="Permalink to this headline"></a></h3>
 <p>Define objects by creating a new class that inherits from <code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code>,
-and set class attributes to define your object attribubtes:</p>
+and set class attributes to define your object attributes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObjbect</span>
 
 <span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
@@ -184,7 +184,7 @@ the values of the class attributes will be copied over to the instance attribute
 </pre></div>
 </div>
 <p>As well as regular dot notation, you can also treat an object instance like a dict,
-and access individual attribubtes using their full dot name as the key:</p>
+and access individual attributes using their full dot name as the key:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">])</span>
 <span class="c1"># Output looks like this: [&quot;user1&quot;, &quot;user2&quot;, &quot;user3&quot;]</span>
 
@@ -198,9 +198,9 @@ and access individual attribubtes using their full dot name as the key:</p>
 <span class="c1"># Output looks like this: &quot;fullscreen&quot;</span>
 </pre></div>
 </div>
-<p>You can also use the <code class="docutils literal notranslate"><span class="pre">object_attributes()</span></code> method to iterate over all object attribute
-names and values:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">object_attributes</span><span class="p">():</span>
+<p>You can also treat a <code class="docutils literal notranslate"><span class="pre">VersionedObjbect</span></code> instance as an iterable, to iterate
+over all object attribute names and values:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">attr_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Output looks like this:</span>
@@ -216,28 +216,48 @@ names and values:</p>
 </div>
 <div class="section" id="serializing-and-de-serializing">
 <h3><a class="toc-backref" href="#id7">Serializing and de-serializing</a><a class="headerlink" href="#serializing-and-de-serializing" title="Permalink to this headline"></a></h3>
-<p>Use the <code class="docutils literal notranslate"><span class="pre">to_file</span></code> and <code class="docutils literal notranslate"><span class="pre">from_file</span></code> methods to serialize/deserialize data to/from a JSON file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save object instance to JSON file</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<p>Create an instance of the <code class="docutils literal notranslate"><span class="pre">versionedobj.Serializer</span></code> class, and use the <code class="docutils literal notranslate"><span class="pre">to_file</span></code>
+and <code class="docutils literal notranslate"><span class="pre">from_file</span></code> methods to serialize/deserialize data to/from a JSON file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">Serializer</span>
 
-<span class="c1"># Load object instance from JSON file</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;windowed&quot;</span>
+    <span class="n">resolution</span> <span class="o">=</span> <span class="s2">&quot;1920x1080&quot;</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.66</span>
+
+<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
+    <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;user1&quot;</span><span class="p">,</span> <span class="s2">&quot;user2&quot;</span><span class="p">,</span> <span class="s2">&quot;user3&quot;</span><span class="p">]</span>
+    <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span><span class="p">()</span> <span class="c1"># VersionedObjects can be nested</span>
+
+<span class="c1"># Create a serializer instance</span>
+<span class="n">serializer</span> <span class="o">=</span> <span class="n">Serializer</span><span class="p">()</span>
+
+<span class="c1"># Create an instance of our VersionedObject</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">UserConfig</span><span class="p">()</span>
+
+<span class="c1"># Save object instance to JSON file</span>
+<span class="n">serializer</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Load JSON file and populate the same object instance</span>
+<span class="n">serializer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;user_config.json&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can also save/load object data as a JSON string:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save object instance to JSON string</span>
-<span class="n">obj_as_json</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">obj_as_json</span> <span class="o">=</span> <span class="n">serializer</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
 <span class="c1"># Load object instance from JSON string</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">obj_as_json</span><span class="p">)</span>
+<span class="n">serializer</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_as_json</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or, as a dict:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save object instance to dict</span>
-<span class="n">obj_as_dict</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="n">obj_as_dict</span> <span class="o">=</span> <span class="n">serializer</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
 <span class="c1"># Load object instance from dict</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">obj_as_dict</span><span class="p">)</span>
+<span class="n">serializer</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_as_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -248,7 +268,7 @@ names and values:</p>
 <h3><a class="toc-backref" href="#id9">Whitelisting by field name</a><a class="headerlink" href="#whitelisting-by-field-name" title="Permalink to this headline"></a></h3>
 <p>When serializing, if you only want to output certain fields, you can use the ‘only’
 parameter to specify which fields should be output (effectively a whitelist by field name):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.resolution&#39;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">serializer</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">obj</span> <span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.resolution&#39;</span><span class="p">])</span>
 
 <span class="c1"># Output looks like this:</span>
 <span class="c1">#</span>
@@ -262,7 +282,7 @@ parameter to specify which fields should be output (effectively a whitelist by f
 </pre></div>
 </div>
 <p>The same parameter can be used for de-serializing:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;display_config.display_mode&#39;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">serializer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;display_config.display_mode&#39;</span><span class="p">])</span>
 
 <span class="c1"># Only the &#39;display_config.display_mode&#39; field is loaded from the file</span>
 </pre></div>
@@ -273,7 +293,7 @@ parameter to specify which fields should be output (effectively a whitelist by f
 <p>When serializing, if you <em>don’t</em> want to output certain fields, you can use the ‘ignore’
 parameter to specify which fields should be excluded from output (effectively a blacklist
 by field name):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.volume&#39;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">serializer</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">,</span> <span class="s1">&#39;display_config.volume&#39;</span><span class="p">])</span>
 
 <span class="c1"># Output looks like this:</span>
 <span class="c1">#</span>
@@ -288,7 +308,7 @@ by field name):</p>
 </pre></div>
 </div>
 <p>The same parameter can be used for de-serializing:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">serializer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;user_config.json&#39;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">])</span>
 
 <span class="c1"># Every field except for the &#39;friend_list&#39; field is loaded from the file</span>
 </pre></div>
@@ -364,8 +384,9 @@ the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.r
 <ol class="arabic simple">
 <li><p>Change the version number to something new, e.g. <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> becomes <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code></p></li>
 <li><p>Write a migration function to transform <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> object data into <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code> object data</p></li>
+<li><p>Use the <code class="docutils literal notranslate"><span class="pre">versionedobj.migration</span></code> decorator to register your migration function</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">migration</span>
 
 <span class="c1"># Nested config object</span>
 <span class="k">class</span> <span class="nc">DisplayConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
@@ -381,14 +402,12 @@ the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.r
     <span class="n">display_config</span> <span class="o">=</span> <span class="n">DisplayConfig</span><span class="p">()</span>
 
 <span class="c1"># Create the migration function for v1.0.0 to v1.0.1</span>
+<span class="nd">@migration</span><span class="p">(</span><span class="n">UserConfig</span><span class="p">,</span> <span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;v1.0.1&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">migrate_100_to_101</span><span class="p">(</span><span class="n">attrs</span><span class="p">):</span>
     <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;display_config&#39;</span><span class="p">][</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>        <span class="c1"># Delete resolution field</span>
     <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;display_config&#39;</span><span class="p">][</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span>            <span class="c1"># Delete volume field</span>
     <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;display_config&#39;</span><span class="p">][</span><span class="s1">&#39;volumes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.66</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># Add defaults for new volume values</span>
     <span class="k">return</span> <span class="n">attrs</span>                                     <span class="c1"># Return modified data (important!)</span>
-
-<span class="c1"># Add the migration function for v1.0.0 to v1.0.1</span>
-<span class="n">UserConfig</span><span class="o">.</span><span class="n">add_migration</span><span class="p">(</span><span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;v1.0.1&quot;</span><span class="p">,</span> <span class="n">migrate_100_to_101</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>after you add the migration function and update the version to <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, JSON files
@@ -408,62 +427,44 @@ number, or don’t create a <code class="docutils literal notranslate"><span cla
 later you need to make changes, and migrate an unversioned object to a versioned object.</p>
 <p>This can be handled simply by passing “None” to the “add_migration()” method, for the
 “from_version” parameter. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObj</span>
-
-<span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.1.0&quot;</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="k">def</span> <span class="nf">migrate_none_to_100</span><span class="p">(</span><span class="n">attrs</span><span class="p">);</span>
-    <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Add new &#39;friend_list&#39; field</span>
-    <span class="k">return</span> <span class="n">attrs</span>
-
-<span class="n">UserConfig</span><span class="o">.</span><span class="n">add_migration</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span> <span class="n">migrate_none_to_100</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="migrations-decorator-for-migration-functions">
-<h2><a class="toc-backref" href="#id17">Migrations: decorator for migration functions</a><a class="headerlink" href="#migrations-decorator-for-migration-functions" title="Permalink to this headline"></a></h2>
-<p>Instead of calling the <code class="docutils literal notranslate"><span class="pre">add_migration()</span></code> class method, you can instead use the
-<code class="docutils literal notranslate"><span class="pre">versionedobj.migration</span></code> decorator on your migration function, if you wish:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObj</span><span class="p">,</span> <span class="n">migration</span>
 
 <span class="k">class</span> <span class="nc">UserConfig</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.1&quot;</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;john smith&quot;</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;v1.0.0&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="nd">@migration</span><span class="p">(</span><span class="n">UserConfig</span><span class="p">,</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;1.1.0&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">migrate_100_to_101</span><span class="p">(</span><span class="n">attrs</span><span class="p">);</span>
+<span class="nd">@migration</span><span class="p">(</span><span class="n">UserConfig</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;v1.0.0&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">migrate_none_to_100</span><span class="p">(</span><span class="n">attrs</span><span class="p">);</span>
     <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;friend_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Add new &#39;friend_list&#39; field</span>
     <span class="k">return</span> <span class="n">attrs</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="validating-input-data-without-deserializing">
-<h2><a class="toc-backref" href="#id18">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id17">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h2>
 <p>You may want to validate some serialized object data without actually deserializing
-and loading the object values. You can use the <code class="docutils literal notranslate"><span class="pre">validate_dict</span></code> method for this.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
+and loading the object values. You can use the <code class="docutils literal notranslate"><span class="pre">Serializer.validate_dict</span></code> method for this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">Serializer</span>
 
 <span class="k">class</span> <span class="nc">Recipe</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
     <span class="n">ingredient_1</span> <span class="o">=</span> <span class="s2">&quot;onions&quot;</span>
     <span class="n">ingredient_2</span> <span class="o">=</span> <span class="s2">&quot;tomatoes&quot;</span>
     <span class="n">ingredient_3</span> <span class="o">=</span> <span class="s2">&quot;garlic&quot;</span>
 
+<span class="n">serializer</span> <span class="o">=</span> <span class="n">Serializer</span><span class="p">()</span>
 <span class="n">rcp</span> <span class="o">=</span> <span class="n">Recipe</span><span class="p">()</span>
 
-<span class="n">rcp</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">({</span><span class="s2">&quot;ingredient_1&quot;</span><span class="p">:</span> <span class="s2">&quot;celery&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_2&quot;</span><span class="p">:</span> <span class="s2">&quot;carrots&quot;</span><span class="p">})</span>
+<span class="n">serializer</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">(</span><span class="n">rcp</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;ingredient_1&quot;</span><span class="p">:</span> <span class="s2">&quot;celery&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_2&quot;</span><span class="p">:</span> <span class="s2">&quot;carrots&quot;</span><span class="p">})</span>
 <span class="c1"># Raises versionedobj.exceptions.InputValidationError because &#39;ingredient_3&#39; is missing</span>
 
-<span class="n">rcp</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">({</span><span class="s2">&quot;ingredient_1&quot;</span><span class="p">:</span> <span class="s2">&quot;celery&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_2&quot;</span><span class="p">:</span> <span class="s2">&quot;carrots&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_12&quot;</span><span class="p">:</span> <span class="s2">&quot;cumin&quot;</span><span class="p">})</span>
+<span class="n">serializer</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">(</span><span class="n">rcp</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;ingredient_1&quot;</span><span class="p">:</span> <span class="s2">&quot;celery&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_2&quot;</span><span class="p">:</span> <span class="s2">&quot;carrots&quot;</span><span class="p">,</span> <span class="s2">&quot;ingredient_12&quot;</span><span class="p">:</span> <span class="s2">&quot;cumin&quot;</span><span class="p">})</span>
 <span class="c1"># Raises versionedobj.exceptions.InputValidationError because &#39;ingredient_12&#39; is not a valid attribute</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="performance-stress-test-visualization">
-<h2><a class="toc-backref" href="#id19">Performance/stress test visualization</a><a class="headerlink" href="#performance-stress-test-visualization" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id18">Performance/stress test visualization</a><a class="headerlink" href="#performance-stress-test-visualization" title="Permalink to this headline"></a></h2>
 <p>The following image is generated by the <code class="docutils literal notranslate"><span class="pre">tests/performance_tests/big_class_performance_test.py</span></code> script,
 which creates multiple versioned objects of increasing size.</p>
 <p>The time taken to serialize each object to a dict, and also to deserialize the object data
@@ -475,7 +476,7 @@ with Linux debian 4.19.0-21-amd64.</p>
 <img alt="https://github.com/eriknyquist/versionedobj/raw/master/images/performance_graph.png" src="https://github.com/eriknyquist/versionedobj/raw/master/images/performance_graph.png" />
 </div>
 <div class="section" id="contributions">
-<h2><a class="toc-backref" href="#id20">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id19">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
 <p>Contributions are welcome, please open a pull request at <a class="reference external" href="https://github.com/eriknyquist/versionedobj">https://github.com/eriknyquist/versionedobj</a> and ensure that:</p>
 <ol class="arabic simple">
 <li><p>All existing unit tests pass (run tests via <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></code>)</p></li>
@@ -486,7 +487,7 @@ contact Erik at <a class="reference external" href="mailto:eknyquist&#37;&#52;&#
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h1><a class="toc-backref" href="#id21">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<h1><a class="toc-backref" href="#id20">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
