@@ -27,7 +27,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual([2, 3, 4], d['val4'])
         self.assertEqual({"a": 5, "b": 55.5}, d['val5'])
 
-        s.from_dict(cfg, d)
+        result = s.from_dict(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(1, cfg.val1)
         self.assertEqual(9.99, cfg.val2)
@@ -59,7 +60,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual({"a": 5, "b": 55.5}, d['val5'])
 
         d["val1"] = 12
-        s.from_dict(cfg, d)
+        result = s.from_dict(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(12, cfg.val1)
         self.assertEqual(9.99, cfg.val2)
@@ -82,7 +84,8 @@ class TestVersionedObjectSerializer(TestCase):
         s = Serializer()
         cfg = TestConfig()
         d = s.to_json(cfg)
-        s.from_json(cfg, d)
+        result = s.from_json(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(1, cfg.val1)
         self.assertEqual(9.99, cfg.val2)
@@ -106,7 +109,8 @@ class TestVersionedObjectSerializer(TestCase):
         cfg = TestConfig()
         filename = "__test_file.txt"
         s.to_file(cfg, filename)
-        s.from_file(cfg, filename)
+        result = s.from_file(cfg, filename)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(1, cfg.val1)
         self.assertEqual(9.99, cfg.val2)
@@ -138,7 +142,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, d["val2"]["val1"])
         self.assertEqual(55.5, d["val2"]["val2"])
 
-        s.from_dict(cfg, d)
+        result = s.from_dict(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual("a", cfg.val1)
         self.assertEqual(1, cfg.val2.val1)
@@ -168,7 +173,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(55.5, d["val2"]["val2"])
 
         d["val2"]["val2"] = "changed"
-        ser.from_dict(cfg, d)
+        result = ser.from_dict(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual("a", cfg.val1)
         self.assertEqual(1, cfg.val2.val1)
@@ -186,7 +192,8 @@ class TestVersionedObjectSerializer(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        ser.from_dict(cfg, {"val2": 55}, validate=False)
+        result = ser.from_dict(cfg, {"val2": 55}, validate=False)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(1, cfg.val1)
         self.assertEqual(55, cfg.val2)
@@ -207,7 +214,8 @@ class TestVersionedObjectSerializer(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        ser.from_dict(cfg, {"val1": 99, "val2": {"val2": 88}}, validate=False)
+        result = ser.from_dict(cfg, {"val1": 99, "val2": {"val2": 88}}, validate=False)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(99, cfg.val1)
         self.assertEqual("g", cfg.val2.val1)
@@ -343,7 +351,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(False, d['val2']['val2']['val2']['val2'])
 
         d['val2']['val1'] = "changed"
-        ser.from_dict(cfg, d)
+        result = ser.from_dict(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(3, cfg.val1)
         self.assertEqual('changed', cfg.val2.val1)
@@ -375,7 +384,8 @@ class TestVersionedObjectSerializer(TestCase):
         ser = Serializer()
         cfg = Level1()
         d = ser.to_json(cfg)
-        ser.from_json(cfg, d)
+        result = ser.from_json(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(3, cfg.val1)
         self.assertEqual('gg', cfg.val2.val1)
@@ -408,7 +418,8 @@ class TestVersionedObjectSerializer(TestCase):
         cfg = Level1()
         filename = "__test_cfg.txt"
         ser.to_file(cfg, filename)
-        ser.from_file(cfg, filename)
+        result = ser.from_file(cfg, filename)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(3, cfg.val1)
         self.assertEqual('gg', cfg.val2.val1)
@@ -453,7 +464,8 @@ class TestVersionedObjectSerializer(TestCase):
         d['val2'] = "5:6:7"
 
         # Load values from dict
-        ser.from_dict(cfg, d)
+        result = ser.from_dict(cfg, d)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         # Verify loaded values
         self.assertEqual(10, cfg.val1)
@@ -477,7 +489,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(2, d['var2'])
 
-        ser.from_dict(cfg, d, validate=False)
+        result = ser.from_dict(cfg, d, validate=False)
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -499,7 +512,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(2, d['var2'])
         self.assertEqual(3, d['var3'])
 
-        ser.from_dict(cfg, d, validate=False)
+        result = ser.from_dict(cfg, d, validate=False)
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -527,7 +541,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual("abc", d['var3']['var1']['var1'])
 
-        ser.from_dict(cfg, d, validate=False)
+        result = ser.from_dict(cfg, d, validate=False)
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -549,7 +564,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, d['var1'])
         self.assertEqual(3, d['var3'])
 
-        ser.from_dict(cfg, d, ignore=['var2'])
+        result = ser.from_dict(cfg, d, ignore=['var2'])
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -570,7 +586,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(3, d['var3'])
 
-        ser.from_dict(cfg, d, validate=False)
+        result = ser.from_dict(cfg, d, validate=False)
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -598,7 +615,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual(2, d['var2'])
 
-        ser.from_dict(cfg, d, validate=False)
+        result = ser.from_dict(cfg, d, validate=False)
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -621,7 +639,8 @@ class TestVersionedObjectSerializer(TestCase):
         d['var1'] = 99
         d['var2'] = 99
 
-        ser.from_dict(cfg, d, only=['var3'])
+        result = ser.from_dict(cfg, d, only=['var3'])
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -643,7 +662,8 @@ class TestVersionedObjectSerializer(TestCase):
         # Change the value we're not loading
         d['var2'] = 99
 
-        ser.from_dict(cfg, d, only=['var1', 'var3'])
+        result = ser.from_dict(cfg, d, only=['var1', 'var3'])
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -672,7 +692,8 @@ class TestVersionedObjectSerializer(TestCase):
         # Change the value we're not loading
         d["var1"] = 99
 
-        ser.from_dict(cfg, d, only=['var2', 'var3.var1.var1'])
+        result = ser.from_dict(cfg, d, only=['var2', 'var3.var1.var1'])
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -694,7 +715,8 @@ class TestVersionedObjectSerializer(TestCase):
         # Change the value we're ignoring
         d['var1'] = 99
 
-        ser.from_dict(cfg, d, ignore=['var1'])
+        result = ser.from_dict(cfg, d, ignore=['var1'])
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -717,7 +739,8 @@ class TestVersionedObjectSerializer(TestCase):
         d['var1'] = 99
         d['var2'] = 99
 
-        ser.from_dict(cfg, d, ignore=['var1', 'var2'])
+        result = ser.from_dict(cfg, d, ignore=['var1', 'var2'])
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual(3, cfg.var3)
@@ -747,7 +770,8 @@ class TestVersionedObjectSerializer(TestCase):
         d['var1'] = 99
         d['var3']['var1']['var1'] = "xxx"
 
-        ser.from_dict(cfg, d, ignore=['var1', 'var3.var1.var1'])
+        result = ser.from_dict(cfg, d, ignore=['var1', 'var3.var1.var1'])
+        self.assertIs(None, result) # verify no migrations peformewd
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
         self.assertEqual("abc", cfg.var3.var1.var1)
@@ -771,7 +795,8 @@ class TestVersionedObjectSerializer(TestCase):
         cfg.var2 = 99
         cfg.var3 = 99
 
-        ser.from_file(cfg, filename, only=['var1', 'var2'])
+        result = ser.from_file(cfg, filename, only=['var1', 'var2'])
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(1, cfg.var1)
         self.assertEqual(2, cfg.var2)
@@ -797,7 +822,8 @@ class TestVersionedObjectSerializer(TestCase):
         cfg.var2 = 99
         cfg.var3 = 99
 
-        ser.from_file(cfg, filename, ignore=['var2'])
+        result = ser.from_file(cfg, filename, ignore=['var2'])
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(1, cfg.var1)
         self.assertEqual(99, cfg.var2)
@@ -833,8 +859,10 @@ class TestVersionedObjectSerializer(TestCase):
         d1['var1'] = 88
         d2['var1'] = 77
 
-        ser.from_dict(cfg1, d1)
-        ser.from_dict(cfg2, d2)
+        result = ser.from_dict(cfg1, d1)
+        self.assertIs(None, result) # verify no migrations peformewd
+        result = ser.from_dict(cfg2, d2)
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(88, cfg1.var1)
         self.assertEqual(99, cfg1.var2)
@@ -908,7 +936,8 @@ class TestVersionedObjectSerializer(TestCase):
         cfg.var1 = 99
         cfg.var3 = "sgghr"
 
-        ser.from_dict(cfg, d, only=['var2'])
+        result = ser.from_dict(cfg, d, only=['var2'])
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(99, cfg.var1)
         self.assertEqual("hello", cfg.var2.var1)
@@ -937,7 +966,8 @@ class TestVersionedObjectSerializer(TestCase):
         d['var2']['var1'] = "xxx"
         d['var2']['var2'] = 99
 
-        ser.from_dict(cfg, d, ignore=['var2'])
+        result = ser.from_dict(cfg, d, ignore=['var2'])
+        self.assertIs(None, result) # verify no migrations peformewd
 
         self.assertEqual(4, cfg.var1)
         self.assertEqual("hello", cfg.var2.var1)
@@ -1321,4 +1351,3 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, cfg.var1)
         self.assertEqual("hey", cfg.var2.var1)
         self.assertEqual(8.8, cfg.var2.var2)
-
