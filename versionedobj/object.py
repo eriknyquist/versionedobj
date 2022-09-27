@@ -49,8 +49,9 @@ class __Meta(type):
     """
     Metaclass for VersionedObject, creates the 'migrations' class attribute
     """
-    def __init__(cls, name, bases, dct):
-        cls.migrations = []
+    def __new__(cls, name, bases, dic):
+        dic['_vobj__migrations'] = []
+        return super().__new__(cls, name, bases, dic)
 
 
 class _ObjField(object):
@@ -145,13 +146,11 @@ class _ObjField(object):
 
 def _iter_obj_attrs(obj):
     for n in obj.__dict__:
-        if n.startswith('__'):
-            continue
-
-        if n == 'migrations':
+        if n.startswith('__') or n.startswith('_vobj__'):
             continue
 
         yield n
+
 
 def _field_should_be_skipped(dotname, only, ignore):
     """
@@ -237,6 +236,7 @@ class VersionedObject(metaclass=__Meta):
     Versioned object class supporting saving/loading to/from JSON files, and
     migrating older files to the current version
     """
+
     def __init__(self, initial_values={}):
         """
         :param dict: map of initial values. Keys are the field name, and values are\
@@ -344,17 +344,17 @@ class VersionedObject(metaclass=__Meta):
         except KeyError:
             raise ValueError("Cannot add migration to un-versioned object. Add a 'version' attribute.")
 
-        cls.migrations.append((from_version, to_version, migration_func))
+        cls._vobj__migrations.append((from_version, to_version, migration_func))
 
     @classmethod
-    def _migrate(cls, version, attrs):
+    def _vobj__migrate(cls, version, attrs):
         old_version = attrs.get('version', None)
         version_before_migration = old_version
         version_after_migration = old_version
 
         if old_version != version:
             # Attempt migrations
-            for fromversion, toversion, migrate in cls.migrations:
+            for fromversion, toversion, migrate in cls._vobj__migrations:
                 if fromversion == version_after_migration:
                     attrs = migrate(attrs)
 
@@ -487,7 +487,7 @@ class VersionedObject(metaclass=__Meta):
             raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
 
         version = self.__dict__.get('version', None)
-        attrs = self._migrate(version, attrs)
+        attrs = self._vobj__migrate(version, attrs)
 
         if validate:
             self.validate_dict(attrs, only, ignore)
