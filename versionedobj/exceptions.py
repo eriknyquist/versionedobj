@@ -13,13 +13,6 @@ class LoadObjectError(Exception):
     pass
 
 
-class ObjectMigrationError(Exception):
-    """
-    Exception raised whenever migration of a versioned object fails
-    """
-    pass
-
-
 class InputValidationError(Exception):
     """
     Exception raised whenever validation of a serialized object fails

@@ -2,7 +2,7 @@ import os
 from unittest import TestCase
 
 from versionedobj import (VersionedObject, LoadObjectError, InvalidFilterError, Serializer,
-    InputValidationError, InvalidVersionAttributeError, ObjectMigrationError, CustomValue, migration)
+    InputValidationError, InvalidVersionAttributeError, CustomValue, migration)
 
 
 class TestVersionedObject(TestCase):

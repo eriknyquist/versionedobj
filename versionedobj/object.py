@@ -3,7 +3,7 @@ import inspect
 import json
 from json.decoder import JSONDecodeError
 
-from versionedobj.exceptions import InvalidFilterError, LoadObjectError, ObjectMigrationError, InputValidationError, InvalidVersionAttributeError
+from versionedobj.exceptions import InvalidFilterError, LoadObjectError, InputValidationError, InvalidVersionAttributeError
 
 
 def migration(cls, from_version, to_version):
@@ -349,7 +349,6 @@ class Serializer(object):
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
 
         :return: MigrationResult object describing the object migration that was peformed, or\
@@ -408,7 +407,6 @@ class Serializer(object):
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
         :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
 
         :return: MigrationResult object describing the object migration that was peformed, or\
@@ -449,7 +447,6 @@ class Serializer(object):
 
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
         :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
 
         :return: MigrationResult object describing the object migration that was peformed, or\
