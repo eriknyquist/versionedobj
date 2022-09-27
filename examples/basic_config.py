@@ -1,4 +1,4 @@
-from versionedobj import VersionedObject
+from versionedobj import VersionedObject, Serializer
 
 # Nested config object
 class DisplayConfig(VersionedObject):
@@ -13,6 +13,9 @@ class UserConfig(VersionedObject):
     friend_list = ["user1", "user2", "user3"]
     display_config = DisplayConfig()
 
+
+s = Serializer()
+
 # Create an instance of the top-level object
 cfg = UserConfig()
 
@@ -21,9 +24,9 @@ cfg.display_config.volume = 1.0
 cfg.username = "jane doe"
 
 # Save to JSON file
-cfg.to_file('user_config.json', indent=4)
+s.to_file(cfg, 'user_config.json', indent=4)
 
 # Load from JSON file
-cfg.from_file('user_config.json')
+s.from_file(cfg, 'user_config.json')
 
-print(cfg.to_dict())
+print(s.to_dict(cfg))

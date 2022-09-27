@@ -16,8 +16,13 @@ def migration(cls, from_version, to_version):
         previously had no version number, use 'None' here.
     :param to_version: Version to migrate to
     """
-    def _inner_migration(migration_classfunc):
-        cls.add_migration(from_version, to_version, migration_classfunc)
+    def _inner_migration(migration_func):
+        try:
+            version = cls.__dict__['version']
+        except KeyError:
+            raise ValueError("Cannot add migration to un-versioned object. Add a 'version' attribute.")
+
+        cls._vobj__migrations.append((from_version, to_version, migration_func))
 
     return _inner_migration
 
@@ -231,6 +236,201 @@ def _walk_dict_attrs(obj, parent_attrs, only=[], ignore=[]):
                     yield field
 
 
+class Serializer(object):
+    """
+    Class for serializing/deserializing any VersionedObject types
+    """
+    def __init__(self):
+        pass
+
+    def to_dict(self, obj, only=[], ignore=[]):
+        """
+        Convert object to a dict, suitable for passing to the json library
+
+        :param obj: VersionedObject instance
+        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :return: object data as a dict
+        :rtype: dict
+        """
+        if only and ignore:
+            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
+        ret = {}
+        for field in _walk_obj_attrs(obj, only, ignore):
+            if isinstance(field.value, CustomValue):
+                field.value = field.value.to_dict()
+
+            ret = field.set_dict_field(ret)
+
+        return ret
+
+    def validate_dict(self, obj, attrs, only=[], ignore=[]):
+        """
+        Validate a versioned object in dict form.
+
+        :param obj: VersionedObject instance
+        :param dict attrs: dict to validate
+        :param list only: Whitelist of attribute names to validate (cannot be used with 'ignore')
+        :param list ignore: Blacklist of attribute names to exclude from validation (cannot be used with 'only')
+
+        :raises versionedobj.exceptions.InputValidationError: if the dict contains\
+            fields that are not found in this object, or if the dict is missing\
+            fields that are found in this object.
+
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        if only and ignore:
+            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
+        # Create a map of all object attribute names, to track which attributes have
+        # also been seen in the dict
+        obj_attrs_loaded = {}
+        for field in _walk_obj_attrs(obj, only, ignore):
+            dotname = field.dot_name()
+            if 'version' == dotname:
+                continue
+
+            obj_attrs_loaded[dotname] = False
+
+        # Now, walk through all attributes in the dict
+        try:
+            for field in _walk_dict_attrs(obj, attrs, only, ignore):
+                dotname = field.dot_name()
+
+                if 'version' == dotname:
+                    continue
+
+                if dotname not in obj_attrs_loaded:
+                    raise InputValidationError(f"Unrecognized attribute name '{dotname}' in dict")
+
+                obj_attrs_loaded[dotname] = True
+        except AttributeError as e:
+            raise InputValidationError(str(e))
+
+        # See if any fields were missing from the dict
+        missing = []
+        for n in obj_attrs_loaded:
+            if not obj_attrs_loaded[n]:
+                missing.append(n)
+
+        if missing:
+            raise InputValidationError(f"Attributes missing from dict: {','.join(missing)}")
+
+    def from_dict(self, obj, attrs, validate=True, only=[], ignore=[]):
+        """
+        Populate instance attributes of this object with object data from a dict.
+
+        :param obj: VersionedObject instance
+        :param dict attrs: dict containing object data
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        if only and ignore:
+            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
+        version = obj.__dict__.get('version', None)
+        attrs = obj._vobj__migrate(version, attrs)
+
+        if validate:
+            self.validate_dict(obj, attrs, only, ignore)
+
+        # Delete version field from dict, if it exists
+        if 'version' in attrs:
+            del attrs['version']
+
+        for field in _walk_dict_attrs(obj, attrs, only, ignore):
+            val = field.get_obj_field(obj)
+            if isinstance(val, CustomValue):
+                val.from_dict(field.value)
+            else:
+                field.set_obj_field(obj)
+
+        return self
+
+    def to_json(self, obj, indent=None, only=[], ignore=[]):
+        """
+        Generate a JSON string containing all object data
+
+        :param obj: VersionedObject instance
+        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
+        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :return: Object data as a JSON string
+        :rtype: str
+        """
+        return json.dumps(self.to_dict(obj, only, ignore), indent=indent)
+
+    def from_json(self, obj, jsonstr, validate=True, only=[], ignore=[]):
+        """
+        Populate instance attributes of this object with object data from a JSON string.
+
+        :param obj: VersionedObject instance
+        :param str jsonstr: JSON string to load
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        try:
+            d = json.loads(jsonstr)
+        except JSONDecodeError:
+            raise LoadObjectError("JSON decode failure")
+
+        self.from_dict(obj, d, validate, only, ignore)
+        return self
+
+    def to_file(self, obj, filename, indent=None, only=[], ignore=[]):
+        """
+        Save object data to a JSON file
+
+        :param obj: VersionedObject instance
+        :param str filename: Name of file to write
+        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
+        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+        """
+        with open(filename, 'w') as fh:
+            fh.write(self.to_json(obj, indent, only, ignore))
+
+    def from_file(self, obj, filename, validate=True, only=[], ignore=[]):
+        """
+        Populate instance attributes of this object with object data from a JSON file.
+
+        :param obj: VersionedObject instance
+        :param str filename: Name of file to load
+        :param bool validate: If false, pre-validation will be skipped for the input data.\
+            This may be useful if you want to load a partial object that is missing some fields,\
+            and don't want to mess with filtering.
+        :param list only: Whitelist of field names to load (cannot be used with blacklist)
+        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
+
+        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
+        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
+        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
+        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+        """
+        with open(filename, 'r') as fh:
+            self.from_json(obj, fh.read(), validate, only, ignore)
+
+        return self
+
+
 class VersionedObject(metaclass=__Meta):
     """
     Versioned object class supporting saving/loading to/from JSON files, and
@@ -270,83 +470,6 @@ class VersionedObject(metaclass=__Meta):
                     field.set_obj_field(self)
 
     @classmethod
-    def new_from_dict(cls, attrs, validate=True, only=[], ignore=[]):
-        """
-        Create a new object instance, populate it with object data from a dict, and
-        return the new object instance
-
-        :param dict attrs: dict containing object data
-        :param bool validate: If false, pre-validation will be skipped for the input data.\
-            This may be useful if you want to load a partial object that is missing some fields,\
-            and don't want to mess with filtering.
-        :param list only: Whitelist of field names to load (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        return cls().from_dict(attrs, validate, only, ignore)
-
-    @classmethod
-    def new_from_json(cls, jsonstr, validate=True, only=[], ignore=[]):
-        """
-        Create a new object instance, populate it with object data from a JSON string, and
-        return the new object instance
-
-        :param dict jsonstr: JSON string containing object data
-        :param bool validate: If false, pre-validation will be skipped for the input data.\
-            This may be useful if you want to load a partial object that is missing some fields,\
-            and don't want to mess with filtering.
-        :param list only: Whitelist of field names to load (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        return cls().from_json(jsonstr, validate, only, ignore)
-
-    @classmethod
-    def new_from_file(cls, filename, validate=True, only=[], ignore=[]):
-        """
-        Create a new object instance, populate it with object data from a JSON file, and
-        return the new object instance
-
-        :param dict filename: name of JSON file containing object data
-        :param bool validate: If false, pre-validation will be skipped for the input data.\
-            This may be useful if you want to load a partial object that is missing some fields,\
-            and don't want to mess with filtering.
-        :param list only: Whitelist of field names to load (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        return cls().from_file(filename, validate, only, ignore)
-
-    @classmethod
-    def add_migration(cls, from_version, to_version, migration_func):
-        """
-        Add a function to migrate object data from an earlier version to a later version
-
-        :param from_version: Version to migrate from. If you are migrating an object that\
-            previously had no version number, use 'None' here.
-        :param to_version: Version to migrate to
-        :param migration_func: Function to perform the migration. The function should\
-            accept one argument, which will be the object data as a dict, and the function\
-            should do whatever transformations on the dict that are required for the\
-            migration, and then return the transformed dict.
-        """
-        try:
-            version = cls.__dict__['version']
-        except KeyError:
-            raise ValueError("Cannot add migration to un-versioned object. Add a 'version' attribute.")
-
-        cls._vobj__migrations.append((from_version, to_version, migration_func))
-
-    @classmethod
     def _vobj__migrate(cls, version, attrs):
         old_version = attrs.get('version', None)
         version_before_migration = old_version
@@ -376,201 +499,6 @@ class VersionedObject(metaclass=__Meta):
         field.value = value
         field.set_obj_field(self)
 
-    def object_attributes(self, only=[], ignore=[]):
-        """
-        Returns a generator that generates all attribute names and values.
-        Can be used to iterate over all object attributes.
-
-        :param list only: Whitelist of field names to generate (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :return: generator for all attributes
-        :rtype: Iterator[tuple(attribute_name, attribute_value)]
-
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        if only and ignore:
-            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
-
-        for field in _walk_obj_attrs(self, only, ignore):
+    def __iter__(self):
+        for field in _walk_obj_attrs(self):
             yield (field.dot_name(), field.get_obj_field(self))
-
-    def to_dict(self, only=[], ignore=[]):
-        """
-        Convert object to a dict, suitable for passing to the json library
-
-        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :return: object data as a dict
-        :rtype: dict
-        """
-        if only and ignore:
-            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
-
-        ret = {}
-        for field in _walk_obj_attrs(self, only, ignore):
-            if isinstance(field.value, CustomValue):
-                field.value = field.value.to_dict()
-
-            ret = field.set_dict_field(ret)
-
-        return ret
-
-    def validate_dict(self, attrs, only=[], ignore=[]):
-        """
-        Validate a versioned object in dict form.
-
-        :param dict attrs: dict to validate
-        :param list only: Whitelist of attribute names to validate (cannot be used with 'ignore')
-        :param list ignore: Blacklist of attribute names to exclude from validation (cannot be used with 'only')
-
-        :raises versionedobj.exceptions.InputValidationError: if the dict contains\
-            fields that are not found in this object, or if the dict is missing\
-            fields that are found in this object.
-
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        if only and ignore:
-            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
-
-        # Create a map of all object attribute names, to track which attributes have
-        # also been seen in the dict
-        obj_attrs_loaded = {}
-        for field in _walk_obj_attrs(self, only, ignore):
-            dotname = field.dot_name()
-            if 'version' == dotname:
-                continue
-
-            obj_attrs_loaded[dotname] = False
-
-        # Now, walk through all attributes in the dict
-        try:
-            for field in _walk_dict_attrs(self, attrs, only, ignore):
-                dotname = field.dot_name()
-
-                if 'version' == dotname:
-                    continue
-
-                if dotname not in obj_attrs_loaded:
-                    raise InputValidationError(f"Unrecognized attribute name '{dotname}' in dict")
-
-                obj_attrs_loaded[dotname] = True
-        except AttributeError as e:
-            raise InputValidationError(str(e))
-
-        # See if any fields were missing from the dict
-        missing = []
-        for n in obj_attrs_loaded:
-            if not obj_attrs_loaded[n]:
-                missing.append(n)
-
-        if missing:
-            raise InputValidationError(f"Attributes missing from dict: {','.join(missing)}")
-
-    def from_dict(self, attrs, validate=True, only=[], ignore=[]):
-        """
-        Populate instance attributes of this object with object data from a dict.
-
-        :param dict attrs: dict containing object data
-        :param bool validate: If false, pre-validation will be skipped for the input data.\
-            This may be useful if you want to load a partial object that is missing some fields,\
-            and don't want to mess with filtering.
-        :param list only: Whitelist of field names to load (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        if only and ignore:
-            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
-
-        version = self.__dict__.get('version', None)
-        attrs = self._vobj__migrate(version, attrs)
-
-        if validate:
-            self.validate_dict(attrs, only, ignore)
-
-        # Delete version field from dict, if it exists
-        if 'version' in attrs:
-            del attrs['version']
-
-        for field in _walk_dict_attrs(self, attrs, only, ignore):
-            val = field.get_obj_field(self)
-            if isinstance(val, CustomValue):
-                val.from_dict(field.value)
-            else:
-                field.set_obj_field(self)
-
-        return self
-
-    def to_json(self, indent=None, only=[], ignore=[]):
-        """
-        Generate a JSON string containing all object data
-
-        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
-        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :return: Object data as a JSON string
-        :rtype: str
-        """
-        return json.dumps(self.to_dict(only, ignore), indent=indent)
-
-    def from_json(self, jsonstr, validate=True, only=[], ignore=[]):
-        """
-        Populate instance attributes of this object with object data from a JSON string.
-
-        :param str jsonstr: JSON string to load
-        :param bool validate: If false, pre-validation will be skipped for the input data.\
-            This may be useful if you want to load a partial object that is missing some fields,\
-            and don't want to mess with filtering.
-        :param list only: Whitelist of field names to load (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        try:
-            d = json.loads(jsonstr)
-        except JSONDecodeError:
-            raise LoadObjectError("JSON decode failure")
-
-        self.from_dict(d, validate, only, ignore)
-        return self
-
-    def to_file(self, filename, indent=None, only=[], ignore=[]):
-        """
-        Save object data to a JSON file
-
-        :param str filename: Name of file to write
-        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
-        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-        """
-        with open(filename, 'w') as fh:
-            fh.write(self.to_json(indent, only, ignore))
-
-    def from_file(self, filename, validate=True, only=[], ignore=[]):
-        """
-        Populate instance attributes of this object with object data from a JSON file.
-
-        :param str filename: Name of file to load
-        :param bool validate: If false, pre-validation will be skipped for the input data.\
-            This may be useful if you want to load a partial object that is missing some fields,\
-            and don't want to mess with filtering.
-        :param list only: Whitelist of field names to load (cannot be used with blacklist)
-        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
-
-        :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
-        :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
-        :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
-        :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
-        """
-        with open(filename, 'r') as fh:
-            self.from_json(fh.read(), validate, only, ignore)
-
-        return self

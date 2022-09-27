@@ -1,4 +1,4 @@
-from versionedobj import VersionedObject, migration
+from versionedobj import VersionedObject, migration, Serializer
 
 
 # Represents an old version of the object
@@ -29,16 +29,17 @@ def migrate_100_to_101(attrs):
 
 
 # Create instances of the 'new' and 'old' objects
+serializer = Serializer()
 old_cfg = OldUserConfig()
 new_cfg = NewUserConfig()
 
 # Serialize the old object
-old_cfg_json = old_cfg.to_json()
+old_cfg_json = serializer.to_json(old_cfg)
 
 # Load serialized old object data, with new object instance
-new_cfg.from_json(old_cfg_json)
+serializer.from_json(new_cfg, old_cfg_json)
 
 # Success, print loaded object attributes
-print(new_cfg.to_json())
+print(serializer.to_json(new_cfg))
 # Output:
 # {"version": "1.0.1", "user_name": "jack", "score": 1001}
