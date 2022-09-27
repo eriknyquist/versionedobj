@@ -305,14 +305,19 @@ class TestVersionedObject(TestCase):
         but no migrations have been added to the class
         """
         class TestConfig(VersionedObject):
-            version = "1.0.0"
+            version = "1.0.22"
             value = 2727
 
-        fake_config = {'version': '1.0.22', 'value': 2727}
+        fake_config = {'version': '1.0.0', 'value': 2727}
 
         ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(ObjectMigrationError, ser.from_dict, cfg, fake_config)
+        result = ser.from_dict(cfg, fake_config)
+
+        self.assertEqual(False, result.success)
+        self.assertEqual("1.0.0", result.old_version)
+        self.assertEqual("1.0.22", result.target_version)
+        self.assertEqual("1.0.0", result.version_reached)
 
     def test_load_dict_migration_failure_bad_migration_decorator(self):
         """
@@ -331,7 +336,11 @@ class TestVersionedObject(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(ObjectMigrationError, ser.from_dict, cfg, fake_config)
+        result = ser.from_dict(cfg, fake_config)
+        self.assertEqual(False, result.success)
+        self.assertEqual("1.0.0", result.old_version)
+        self.assertEqual("1.0.22", result.target_version)
+        self.assertEqual("1.0.21", result.version_reached)
 
     def test_load_dict_migration_success_decorator_1(self):
         """
@@ -1286,6 +1295,126 @@ class TestVersionedObject(TestCase):
 
         self.assertFalse(hasattr(cfg, 'var4'))
 
+    def test_multiple_migration_path_failed_1(self):
+        """
+        Tests that the migration path fails as expected, when an object is 4 versions old
+        but only 3 migrations are available
+        """
+        # Newest config, with version number added
+        class TestConfig(VersionedObject):
+            version = "1.0.3"
+            var1 = 1
+            var2 = 2
+            var3 = 3
+            var4 = 4
+            var5 = 5
+            var6 = 6
+
+        # oldest config, different format, and without version number
+        fake_config = {'var1': 11, 'var2': 12}
+
+        # Add migration from unversioned to 1.0.0
+        @migration(TestConfig, None, "1.0.0")
+        def migrate_none_to_100(attrs):
+            attrs['var3'] = 13
+            return attrs
+
+        # Add migration from 1.0.0 to 1.0.1
+        @migration(TestConfig, "1.0.0", "1.0.1")
+        def migrate_100_to_101(attrs):
+            attrs['var4'] = 14
+            return attrs
+
+        # Add migration from 1.0.1 to 1.0.2
+        @migration(TestConfig, "1.0.1", "1.0.2")
+        def migrate_101_to_102(attrs):
+            attrs['var5'] = 15
+            return attrs
+
+        # Load oldest config from dict
+        ser = Serializer()
+        cfg = TestConfig()
+        result = ser.from_dict(cfg, fake_config)
+
+        self.assertEqual(False, result.success)
+        self.assertEqual(None, result.old_version)
+        self.assertEqual("1.0.3", result.target_version)
+        self.assertEqual("1.0.2", result.version_reached)
+
+    def test_multiple_migration_path_failed_2(self):
+        """
+        Tests that the migration path fails as expected, when an object is 4 versions old
+        but only 2 migrations are available
+        """
+        # Newest config, with version number added
+        class TestConfig(VersionedObject):
+            version = "1.0.3"
+            var1 = 1
+            var2 = 2
+            var3 = 3
+            var4 = 4
+            var5 = 5
+            var6 = 6
+
+        # oldest config, different format, and without version number
+        fake_config = {'var1': 11, 'var2': 12}
+
+        # Add migration from unversioned to 1.0.0
+        @migration(TestConfig, None, "1.0.0")
+        def migrate_none_to_100(attrs):
+            attrs['var3'] = 13
+            return attrs
+
+        # Add migration from 1.0.0 to 1.0.1
+        @migration(TestConfig, "1.0.0", "1.0.1")
+        def migrate_100_to_101(attrs):
+            attrs['var4'] = 14
+            return attrs
+
+        # Load oldest config from dict
+        ser = Serializer()
+        cfg = TestConfig()
+        result = ser.from_dict(cfg, fake_config)
+
+        self.assertEqual(False, result.success)
+        self.assertEqual(None, result.old_version)
+        self.assertEqual("1.0.3", result.target_version)
+        self.assertEqual("1.0.1", result.version_reached)
+
+    def test_multiple_migration_path_failed_3(self):
+        """
+        Tests that the migration path fails as expected, when an object is 4 versions old
+        but only 1 migrations is available
+        """
+        # Newest config, with version number added
+        class TestConfig(VersionedObject):
+            version = "1.0.3"
+            var1 = 1
+            var2 = 2
+            var3 = 3
+            var4 = 4
+            var5 = 5
+            var6 = 6
+
+        # oldest config, different format, and without version number
+        fake_config = {'var1': 11, 'var2': 12}
+
+        # Add migration from unversioned to 1.0.0
+        @migration(TestConfig, None, "1.0.0")
+        def migrate_none_to_100(attrs):
+            attrs['var3'] = 13
+            return attrs
+
+        # Load oldest config from dict
+        ser = Serializer()
+        cfg = TestConfig()
+        result = ser.from_dict(cfg, fake_config)
+
+        self.assertEqual(False, result.success)
+        self.assertEqual(None, result.old_version)
+        self.assertEqual("1.0.3", result.target_version)
+        self.assertEqual("1.0.0", result.version_reached)
+
     def test_multiple_migrations_decorator(self):
         """
         Tests that we can successfully migrate an obbject that is 4 versions old,
@@ -1331,7 +1460,7 @@ class TestVersionedObject(TestCase):
         # Load oldest config from dict
         ser = Serializer()
         cfg = TestConfig()
-        ser.from_dict(cfg, fake_config)
+        result = ser.from_dict(cfg, fake_config)
 
         # Verify all migrations were performed
         self.assertEqual(11, cfg.var1)
@@ -1340,6 +1469,11 @@ class TestVersionedObject(TestCase):
         self.assertEqual(14, cfg.var4)
         self.assertEqual(15, cfg.var5)
         self.assertEqual(16, cfg.var6)
+
+        self.assertEqual(True, result.success)
+        self.assertEqual(None, result.old_version)
+        self.assertEqual("1.0.3", result.target_version)
+        self.assertEqual("1.0.3", result.version_reached)
 
     def test_validate_dict_missing_from_dict(self):
         """

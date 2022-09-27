@@ -27,6 +27,24 @@ def migration(cls, from_version, to_version):
     return _inner_migration
 
 
+class MigrationResult(object):
+    """
+    Value returned by Serializer.from_dict, Serializer.from_file, and Serializer.from_json methods,
+    if a successful or partial object migration was performed.
+
+    :ivar old_version: the object version before migration was attempted
+    :ivar target_version: the target version of the migration (current version)
+    :ivar version_reached: the actual object version after migration (this should\
+        match target_version after a successful migration)
+    :ivar bool success: True if migration was successful, false otherwise
+    """
+    def __init__(self, old_version, target_version, version_reached, success):
+        self.old_version = old_version
+        self.target_version = target_version
+        self.version_reached = version_reached
+        self.success = success
+
+
 class CustomValue(object):
     """
     Abstract class that can be sub-classed if you want to serialize/deserialize
@@ -333,12 +351,18 @@ class Serializer(object):
         :raises versionedobj.exceptions.InputValidationError: if validation of input data fails.
         :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+
+        :return: MigrationResult object describing the object migration that was peformed, or\
+            None if no object migrations were required
+        :rtype: MigrationResult
         """
         if only and ignore:
             raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
 
         version = obj.__dict__.get('version', None)
-        attrs = obj._vobj__migrate(version, attrs)
+        migration_result, attrs = obj._vobj__migrate(version, attrs)
+        if (migration_result is not None) and (not migration_result.success):
+            return migration_result
 
         if validate:
             self.validate_dict(obj, attrs, only, ignore)
@@ -354,7 +378,7 @@ class Serializer(object):
             else:
                 field.set_obj_field(obj)
 
-        return self
+        return migration_result
 
     def to_json(self, obj, indent=None, only=[], ignore=[]):
         """
@@ -386,14 +410,17 @@ class Serializer(object):
         :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
         :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+
+        :return: MigrationResult object describing the object migration that was peformed, or\
+            None if no object migrations were required
+        :rtype: MigrationResult
         """
         try:
             d = json.loads(jsonstr)
         except JSONDecodeError:
             raise LoadObjectError("JSON decode failure")
 
-        self.from_dict(obj, d, validate, only, ignore)
-        return self
+        return self.from_dict(obj, d, validate, only, ignore)
 
     def to_file(self, obj, filename, indent=None, only=[], ignore=[]):
         """
@@ -424,11 +451,13 @@ class Serializer(object):
         :raises versionedobj.exceptions.LoadObjectError: if JSON parsing fails
         :raises versionedobj.exceptions.ObjectMigrationError: if migration to current version fails.
         :raises versionedobj.exceptions.InvalidFilterError: if both 'only' and 'ignore' are provided.
+
+        :return: MigrationResult object describing the object migration that was peformed, or\
+            None if no object migrations were required
+        :rtype: MigrationResult
         """
         with open(filename, 'r') as fh:
-            self.from_json(obj, fh.read(), validate, only, ignore)
-
-        return self
+            return self.from_json(obj, fh.read(), validate, only, ignore)
 
 
 class VersionedObject(metaclass=__Meta):
@@ -475,7 +504,11 @@ class VersionedObject(metaclass=__Meta):
         version_before_migration = old_version
         version_after_migration = old_version
 
+        result = None
+
         if old_version != version:
+            result = MigrationResult(old_version, version, None, True)
+
             # Attempt migrations
             for fromversion, toversion, migrate in cls._vobj__migrations:
                 if fromversion == version_after_migration:
@@ -485,10 +518,12 @@ class VersionedObject(metaclass=__Meta):
                 if toversion == version:
                     break
 
-        if version_after_migration != version:
-            raise ObjectMigrationError(f"Failed to migrate from version {version_before_migration} to {version}")
+            if version_after_migration != version:
+                result.success = False
 
-        return attrs
+            result.version_reached = version_after_migration
+
+        return result, attrs
 
     def __getitem__(self, key):
         field = _ObjField.from_dot_name(key, self)
