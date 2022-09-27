@@ -247,7 +247,7 @@ class Serializer(object):
         """
         Convert object to a dict, suitable for passing to the json library
 
-        :param obj: VersionedObject instance
+        :param obj: VersionedObject instance to convert
         :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
@@ -270,7 +270,7 @@ class Serializer(object):
         """
         Validate a versioned object in dict form.
 
-        :param obj: VersionedObject instance
+        :param obj: VersionedObject instance you want to validate the dict against
         :param dict attrs: dict to validate
         :param list only: Whitelist of attribute names to validate (cannot be used with 'ignore')
         :param list ignore: Blacklist of attribute names to exclude from validation (cannot be used with 'only')
@@ -320,9 +320,9 @@ class Serializer(object):
 
     def from_dict(self, obj, attrs, validate=True, only=[], ignore=[]):
         """
-        Populate instance attributes of this object with object data from a dict.
+        Populate instance attributes of a VersionedObjbect instance, with object data from a dict.
 
-        :param obj: VersionedObject instance
+        :param obj: VersionedObject instance to populate
         :param dict attrs: dict containing object data
         :param bool validate: If false, pre-validation will be skipped for the input data.\
             This may be useful if you want to load a partial object that is missing some fields,\
@@ -358,7 +358,7 @@ class Serializer(object):
 
     def to_json(self, obj, indent=None, only=[], ignore=[]):
         """
-        Generate a JSON string containing all object data
+        Generate a JSON string containing all data from a VersionedObject instance
 
         :param obj: VersionedObject instance
         :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
@@ -372,9 +372,9 @@ class Serializer(object):
 
     def from_json(self, obj, jsonstr, validate=True, only=[], ignore=[]):
         """
-        Populate instance attributes of this object with object data from a JSON string.
+        Populate instance attributes of a VersionedObject instance with object data from a JSON string.
 
-        :param obj: VersionedObject instance
+        :param obj: VersionedObject instance to populate
         :param str jsonstr: JSON string to load
         :param bool validate: If false, pre-validation will be skipped for the input data.\
             This may be useful if you want to load a partial object that is missing some fields,\
@@ -397,7 +397,7 @@ class Serializer(object):
 
     def to_file(self, obj, filename, indent=None, only=[], ignore=[]):
         """
-        Save object data to a JSON file
+        Save VersionedObject instance data to a JSON file
 
         :param obj: VersionedObject instance
         :param str filename: Name of file to write
@@ -410,9 +410,9 @@ class Serializer(object):
 
     def from_file(self, obj, filename, validate=True, only=[], ignore=[]):
         """
-        Populate instance attributes of this object with object data from a JSON file.
+        Populate instance attributes of a VersionedObject instance with object data from a JSON file.
 
-        :param obj: VersionedObject instance
+        :param obj: VersionedObject instance to populate
         :param str filename: Name of file to load
         :param bool validate: If false, pre-validation will be skipped for the input data.\
             This may be useful if you want to load a partial object that is missing some fields,\
