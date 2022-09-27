@@ -20,6 +20,14 @@ versionedobj.exceptions module
    :undoc-members:
    :show-inheritance:
 
+versionedobj.serializer module
+------------------------------
+
+.. automodule:: versionedobj.serializer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

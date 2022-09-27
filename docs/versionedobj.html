@@ -45,6 +45,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.object">versionedobj.object module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.exceptions">versionedobj.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.serializer">versionedobj.serializer module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-versionedobj">Module contents</a></li>
 </ul>
 </li>
@@ -141,189 +142,6 @@ if a successful or partial object migration was performed.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">Serializer</span></span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for serializing/deserializing any VersionedObject types</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.from_dict">
-<span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.from_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Populate instance attributes of a VersionedObjbect instance, with object data from a dict.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – VersionedObject instance to populate</p></li>
-<li><p><strong>attrs</strong> (<em>dict</em>) – dict containing object data</p></li>
-<li><p><strong>validate</strong> (<em>bool</em>) – If false, pre-validation will be skipped for the input data.            This may be useful if you want to load a partial object that is missing some fields,            and don’t want to mess with filtering.</p></li>
-<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to load (cannot be used with blacklist)</p></li>
-<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.from_file">
-<span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.from_file" title="Permalink to this definition"></a></dt>
-<dd><p>Populate instance attributes of a VersionedObject instance with object data from a JSON file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – VersionedObject instance to populate</p></li>
-<li><p><strong>filename</strong> (<em>str</em>) – Name of file to load</p></li>
-<li><p><strong>validate</strong> (<em>bool</em>) – If false, pre-validation will be skipped for the input data.            This may be useful if you want to load a partial object that is missing some fields,            and don’t want to mess with filtering.</p></li>
-<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to load (cannot be used with blacklist)</p></li>
-<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.from_json">
-<span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.from_json" title="Permalink to this definition"></a></dt>
-<dd><p>Populate instance attributes of a VersionedObject instance with object data from a JSON string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – VersionedObject instance to populate</p></li>
-<li><p><strong>jsonstr</strong> (<em>str</em>) – JSON string to load</p></li>
-<li><p><strong>validate</strong> (<em>bool</em>) – If false, pre-validation will be skipped for the input data.            This may be useful if you want to load a partial object that is missing some fields,            and don’t want to mess with filtering.</p></li>
-<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to load (cannot be used with blacklist)</p></li>
-<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.to_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Convert object to a dict, suitable for passing to the json library</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – VersionedObject instance to convert</p></li>
-<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to serialize (cannot be used with blacklist)</p></li>
-<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object data as a dict</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.to_file">
-<span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.to_file" title="Permalink to this definition"></a></dt>
-<dd><p>Save VersionedObject instance data to a JSON file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – VersionedObject instance</p></li>
-<li><p><strong>filename</strong> (<em>str</em>) – Name of file to write</p></li>
-<li><p><strong>indent</strong> (<em>int</em>) – Indentation level to use, in columns. If None, everything will be on one line.</p></li>
-<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to serialize (cannot be used with blacklist)</p></li>
-<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.to_json">
-<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.to_json" title="Permalink to this definition"></a></dt>
-<dd><p>Generate a JSON string containing all data from a VersionedObject instance</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – VersionedObject instance</p></li>
-<li><p><strong>indent</strong> (<em>int</em>) – Indentation level to use, in columns. If None, everything will be on one line.</p></li>
-<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to serialize (cannot be used with blacklist)</p></li>
-<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Object data as a JSON string</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="versionedobj.object.Serializer.validate_dict">
-<span class="sig-name descname"><span class="pre">validate_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#Serializer.validate_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.Serializer.validate_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Validate a versioned object in dict form.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> – VersionedObject instance you want to validate the dict against</p></li>
-<li><p><strong>attrs</strong> (<em>dict</em>) – dict to validate</p></li>
-<li><p><strong>only</strong> (<em>list</em>) – Whitelist of attribute names to validate (cannot be used with ‘ignore’)</p></li>
-<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of attribute names to exclude from validation (cannot be used with ‘only’)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if the dict contains            fields that are not found in this object, or if the dict is missing            fields that are found in this object.</p></li>
-<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">VersionedObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -386,6 +204,192 @@ that should be used for migrating an object from one version to another.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">LoadObjectError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#LoadObjectError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.LoadObjectError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception raised whenever saved object data cannot be loaded because of a JSON parser error</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-versionedobj.serializer">
+<span id="versionedobj-serializer-module"></span><h2>versionedobj.serializer module<a class="headerlink" href="#module-versionedobj.serializer" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.serializer.</span></span><span class="sig-name descname"><span class="pre">Serializer</span></span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for serializing/deserializing any VersionedObject types</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.from_dict">
+<span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Populate instance attributes of a VersionedObjbect instance, with object data from a dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – VersionedObject instance to populate</p></li>
+<li><p><strong>attrs</strong> (<em>dict</em>) – dict containing object data</p></li>
+<li><p><strong>validate</strong> (<em>bool</em>) – If false, pre-validation will be skipped for the input data.            This may be useful if you want to load a partial object that is missing some fields,            and don’t want to mess with filtering.</p></li>
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to load (cannot be used with blacklist)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.from_file">
+<span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.from_file" title="Permalink to this definition"></a></dt>
+<dd><p>Populate instance attributes of a VersionedObject instance with object data from a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – VersionedObject instance to populate</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of file to load</p></li>
+<li><p><strong>validate</strong> (<em>bool</em>) – If false, pre-validation will be skipped for the input data.            This may be useful if you want to load a partial object that is missing some fields,            and don’t want to mess with filtering.</p></li>
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to load (cannot be used with blacklist)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.from_json">
+<span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.from_json" title="Permalink to this definition"></a></dt>
+<dd><p>Populate instance attributes of a VersionedObject instance with object data from a JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – VersionedObject instance to populate</p></li>
+<li><p><strong>jsonstr</strong> (<em>str</em>) – JSON string to load</p></li>
+<li><p><strong>validate</strong> (<em>bool</em>) – If false, pre-validation will be skipped for the input data.            This may be useful if you want to load a partial object that is missing some fields,            and don’t want to mess with filtering.</p></li>
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to load (cannot be used with blacklist)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert object to a dict, suitable for passing to the json library</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – VersionedObject instance to convert</p></li>
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to serialize (cannot be used with blacklist)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>object data as a dict</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.to_file">
+<span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.to_file" title="Permalink to this definition"></a></dt>
+<dd><p>Save VersionedObject instance data to a JSON file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – VersionedObject instance</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Name of file to write</p></li>
+<li><p><strong>indent</strong> (<em>int</em>) – Indentation level to use, in columns. If None, everything will be on one line.</p></li>
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to serialize (cannot be used with blacklist)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.to_json" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a JSON string containing all data from a VersionedObject instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – VersionedObject instance</p></li>
+<li><p><strong>indent</strong> (<em>int</em>) – Indentation level to use, in columns. If None, everything will be on one line.</p></li>
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to serialize (cannot be used with blacklist)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Object data as a JSON string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.validate_dict">
+<span class="sig-name descname"><span class="pre">validate_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.validate_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.validate_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Validate a versioned object in dict form.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – VersionedObject instance you want to validate the dict against</p></li>
+<li><p><strong>attrs</strong> (<em>dict</em>) – dict to validate</p></li>
+<li><p><strong>only</strong> (<em>list</em>) – Whitelist of attribute names to validate (cannot be used with ‘ignore’)</p></li>
+<li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of attribute names to exclude from validation (cannot be used with ‘only’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if the dict contains            fields that are not found in this object, or if the dict is missing            fields that are found in this object.</p></li>
+<li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
