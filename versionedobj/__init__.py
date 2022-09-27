@@ -1,4 +1,4 @@
-__version__ = "0.3.0"
+__version__ = "1.0.0"
 
 from versionedobj.object import VersionedObject, CustomValue, migration
 from versionedobj.serializer import Serializer
