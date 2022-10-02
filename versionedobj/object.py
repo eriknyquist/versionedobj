@@ -97,6 +97,32 @@ class VersionedObject(metaclass=__Meta):
                     field.value = initial_values[dotname]
                     field.set_obj_field(self)
 
+    def __eq__(self, other):
+        if self.__class__ != other.__class__:
+            return False
+
+        seen_in_other = {}
+        for field in _walk_obj_attrs(self):
+            seen_in_other[field.dot_name()] = False
+
+        for field in _walk_obj_attrs(other):
+            seen_in_other[field.dot_name()] = True
+            other_val = field.get_obj_field(other)
+
+            try:
+                self_val = field.get_obj_field(self)
+            except AttributeError:
+                return False
+
+            if other_val != self_val:
+                return False
+
+        for n in seen_in_other:
+            if not seen_in_other[n]:
+                return False
+
+        return True
+
     def _vobj__populate_instance(self):
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
