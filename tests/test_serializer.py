@@ -1351,3 +1351,81 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, cfg.var1)
         self.assertEqual("hey", cfg.var2.var1)
         self.assertEqual(8.8, cfg.var2.var2)
+
+    def test_reset_to_defaults_1(self):
+        """
+        Tests that reset_to_defaults correctly resets all object attributes
+        back to default class attribute values (no nested objects)
+        """
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = "abc"
+            var3 = 4.4
+
+        ser = Serializer()
+        cfg = TestConfig()
+
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual("abc", cfg.var2)
+        self.assertEqual(4.4, cfg.var3)
+
+        # Change instance attribute values
+        cfg.var1 = 99
+        cfg.var2 = 99
+        cfg.var3 = 99
+        self.assertEqual(99, cfg.var1)
+        self.assertEqual(99, cfg.var2)
+        self.assertEqual(99, cfg.var3)
+
+        # Reset instance attribute values back to defaults and verify
+        ser.reset_to_defaults(cfg)
+
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual("abc", cfg.var2)
+        self.assertEqual(4.4, cfg.var3)
+
+    def test_reset_to_defaults_2(self):
+        """
+        Tests that reset_to_defaults correctly resets all object attributes
+        back to default class attribute values (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            var1 = 88
+            var2 = "hey"
+            var3 = 5.5
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = "abc"
+            var3 = NestedConfig
+
+        ser = Serializer()
+        cfg = TestConfig()
+
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual("abc", cfg.var2)
+        self.assertEqual(88, cfg.var3.var1)
+        self.assertEqual("hey", cfg.var3.var2)
+        self.assertEqual(5.5, cfg.var3.var3)
+
+        # Change instance attribute values
+        cfg.var1 = 99
+        cfg.var2 = 99
+        cfg.var3.var1 = 99
+        cfg.var3.var2 = 99
+        cfg.var3.var3 = 99
+        self.assertEqual(99, cfg.var1)
+        self.assertEqual(99, cfg.var2)
+        self.assertEqual(99, cfg.var3.var1)
+        self.assertEqual(99, cfg.var3.var2)
+        self.assertEqual(99, cfg.var3.var3)
+
+        # Reset instance attribute values back to defaults and verify
+        ser.reset_to_defaults(cfg)
+
+        self.assertEqual(1, cfg.var1)
+        self.assertEqual("abc", cfg.var2)
+        self.assertEqual(88, cfg.var3.var1)
+        self.assertEqual("hey", cfg.var3.var2)
+        self.assertEqual(5.5, cfg.var3.var3)
+

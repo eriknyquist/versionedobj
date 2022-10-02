@@ -87,7 +87,17 @@ class VersionedObject(metaclass=__Meta):
         :param dict: map of initial values. Keys are the field name, and values are\
             the initial values to set.
         """
-        # Set all class attributes as instance attributes
+        self._vobj__populate_instance()
+
+        # Set alternate initial values, if any
+        if initial_values:
+            for field in _walk_obj_attrs(self):
+                dotname = field.dot_name()
+                if dotname in initial_values:
+                    field.value = initial_values[dotname]
+                    field.set_obj_field(self)
+
+    def _vobj__populate_instance(self):
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
 
@@ -105,14 +115,6 @@ class VersionedObject(metaclass=__Meta):
                 val = vobj_class()
 
             setattr(self, n, val)
-
-        # Set alternate initial values, if any
-        if initial_values:
-            for field in _walk_obj_attrs(self):
-                dotname = field.dot_name()
-                if dotname in initial_values:
-                    field.value = initial_values[dotname]
-                    field.set_obj_field(self)
 
     @classmethod
     def _vobj__migrate(cls, version, attrs):

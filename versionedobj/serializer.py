@@ -238,4 +238,11 @@ class Serializer(object):
         with open(filename, 'r') as fh:
             return self.from_json(obj, fh.read(), validate, only, ignore)
 
+    def reset_to_defaults(self, obj):
+        """
+        Resets instance attribute values of a VersionedObject instance back to the
+        default values defined in the matching class attributes.
 
+        :param obj: VersionedObject instance to reset
+        """
+        obj._vobj__populate_instance()

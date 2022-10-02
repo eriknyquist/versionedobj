@@ -97,6 +97,10 @@ class _ObjField(object):
 
 
 def _iter_obj_attrs(obj):
+    """
+    Generator that iterates over all attributes in obj's __dict__, skipping over anything
+    that starts with "__" or with "_vobj__"
+    """
     for n in obj.__dict__:
         if n.startswith('__') or n.startswith('_vobj__'):
             continue
