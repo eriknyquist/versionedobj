@@ -117,11 +117,13 @@ structure across time, and to migrate between different object versions.</p>
 </li>
 <li><p><a class="reference internal" href="#migrations-migrating-an-unversioned-object" id="id16">Migrations: migrating an unversioned object</a></p></li>
 <li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id17">Validating input data without deserializing</a></p></li>
-<li><p><a class="reference internal" href="#performance-stress-test-visualization" id="id18">Performance/stress test visualization</a></p></li>
-<li><p><a class="reference internal" href="#contributions" id="id19">Contributions</a></p></li>
+<li><p><a class="reference internal" href="#resetting-object-instance-to-default-values" id="id18">Resetting object instance to default values</a></p></li>
+<li><p><a class="reference internal" href="#testing-object-instance-equality" id="id19">Testing object instance equality</a></p></li>
+<li><p><a class="reference internal" href="#performance-stress-test-visualization" id="id20">Performance/stress test visualization</a></p></li>
+<li><p><a class="reference internal" href="#contributions" id="id21">Contributions</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#indices-and-tables" id="id20">Indices and tables</a></p></li>
+<li><p><a class="reference internal" href="#indices-and-tables" id="id22">Indices and tables</a></p></li>
 </ul>
 </div>
 <div class="section" id="installing">
@@ -463,8 +465,66 @@ and loading the object values. You can use the <code class="docutils literal not
 </pre></div>
 </div>
 </div>
+<div class="section" id="resetting-object-instance-to-default-values">
+<h2><a class="toc-backref" href="#id18">Resetting object instance to default values</a><a class="headerlink" href="#resetting-object-instance-to-default-values" title="Permalink to this headline"></a></h2>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">Serializer.reset_to_defaults</span></code> method to set all instance attributes to
+the default values defined in the matching class attributes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">Serializer</span>
+
+<span class="k">class</span> <span class="nc">Recipe</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">ingredient_1</span> <span class="o">=</span> <span class="s2">&quot;onions&quot;</span>
+    <span class="n">ingredient_2</span> <span class="o">=</span> <span class="s2">&quot;tomatoes&quot;</span>
+    <span class="n">ingredient_3</span> <span class="o">=</span> <span class="s2">&quot;garlic&quot;</span>
+
+<span class="n">serializer</span> <span class="o">=</span> <span class="n">Serializer</span><span class="p">()</span>
+<span class="n">rcp</span> <span class="o">=</span> <span class="n">Recipe</span><span class="p">()</span>
+
+<span class="c1"># Change a value</span>
+<span class="n">rcp</span><span class="o">.</span><span class="n">ingredient_1</span> <span class="o">=</span> <span class="s2">&quot;celery&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">rcp</span><span class="p">))</span>
+<span class="c1"># {&quot;ingredient_1&quot;: &quot;celery&quot;, &quot;ingredient_2&quot;: &quot;tomatoes&quot;, &quot;ingredient_3&quot;: &quot;garlic&quot;}</span>
+
+<span class="c1"># Reset object instance to defaults</span>
+<span class="n">serializer</span><span class="o">.</span><span class="n">reset_to_defaults</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">rcp</span><span class="p">))</span>
+<span class="c1"># {&quot;ingredient_1&quot;: &quot;onions&quot;, &quot;ingredient_2&quot;: &quot;tomatoes&quot;, &quot;ingredient_3&quot;: &quot;garlic&quot;}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing-object-instance-equality">
+<h2><a class="toc-backref" href="#id19">Testing object instance equality</a><a class="headerlink" href="#testing-object-instance-equality" title="Permalink to this headline"></a></h2>
+<p>You can test whether two <code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code> instances are equal in both structure and,
+values, the same way in which you would check equality of any other two objects:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
+
+<span class="k">class</span> <span class="nc">Recipe</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">ingredient_1</span> <span class="o">=</span> <span class="s2">&quot;onions&quot;</span>
+    <span class="n">ingredient_2</span> <span class="o">=</span> <span class="s2">&quot;tomatoes&quot;</span>
+    <span class="n">ingredient_3</span> <span class="o">=</span> <span class="s2">&quot;garlic&quot;</span>
+
+<span class="n">rcp1</span> <span class="o">=</span> <span class="n">Recipe</span><span class="p">()</span>
+<span class="n">rcp2</span> <span class="o">=</span> <span class="n">Recipe</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">rcp1</span> <span class="o">==</span> <span class="n">rcp2</span><span class="p">)</span>
+<span class="c1"># True</span>
+
+<span class="n">rcp1</span><span class="o">.</span><span class="n">ingredient_3</span> <span class="o">=</span> <span class="s2">&quot;ginger&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">rcp1</span> <span class="o">==</span> <span class="n">rcp2</span><span class="p">)</span>
+<span class="c1"># False</span>
+</pre></div>
+</div>
+<p>In order for two <code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code> instances to be considered equal, the following
+conditions must be true:</p>
+<ul class="simple">
+<li><p>Both objects are instances of the same class</p></li>
+<li><p>Both objects contain matching attribute names and values</p></li>
+</ul>
+</div>
 <div class="section" id="performance-stress-test-visualization">
-<h2><a class="toc-backref" href="#id18">Performance/stress test visualization</a><a class="headerlink" href="#performance-stress-test-visualization" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id20">Performance/stress test visualization</a><a class="headerlink" href="#performance-stress-test-visualization" title="Permalink to this headline"></a></h2>
 <p>The following image is generated by the <code class="docutils literal notranslate"><span class="pre">tests/performance_tests/big_class_performance_test.py</span></code> script,
 which creates multiple versioned objects of increasing size.</p>
 <p>The time taken to serialize each object to a dict, and also to deserialize the object data
@@ -476,7 +536,7 @@ with Linux debian 4.19.0-21-amd64.</p>
 <img alt="https://github.com/eriknyquist/versionedobj/raw/master/images/performance_graph.png" src="https://github.com/eriknyquist/versionedobj/raw/master/images/performance_graph.png" />
 </div>
 <div class="section" id="contributions">
-<h2><a class="toc-backref" href="#id19">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id21">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
 <p>Contributions are welcome, please open a pull request at <a class="reference external" href="https://github.com/eriknyquist/versionedobj">https://github.com/eriknyquist/versionedobj</a> and ensure that:</p>
 <ol class="arabic simple">
 <li><p>All existing unit tests pass (run tests via <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></code>)</p></li>
@@ -487,7 +547,7 @@ contact Erik at <a class="reference external" href="mailto:eknyquist&#37;&#52;&#
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h1><a class="toc-backref" href="#id20">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<h1><a class="toc-backref" href="#id22">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>

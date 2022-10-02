@@ -404,6 +404,68 @@ and loading the object values. You can use the ``Serializer.validate_dict`` meth
     serializer.validate_dict(rcp, {"ingredient_1": "celery", "ingredient_2": "carrots", "ingredient_12": "cumin"})
     # Raises versionedobj.exceptions.InputValidationError because 'ingredient_12' is not a valid attribute
 
+Resetting object instance to default values
+-------------------------------------------
+
+You can use the ``Serializer.reset_to_defaults`` method to set all instance attributes to
+the default values defined in the matching class attributes.
+
+.. code:: python
+
+    from versionedobj import VersionedObject, Serializer
+
+    class Recipe(VersionedObject):
+        ingredient_1 = "onions"
+        ingredient_2 = "tomatoes"
+        ingredient_3 = "garlic"
+
+    serializer = Serializer()
+    rcp = Recipe()
+
+    # Change a value
+    rcp.ingredient_1 = "celery"
+
+    print(serializer.to_dict(rcp))
+    # {"ingredient_1": "celery", "ingredient_2": "tomatoes", "ingredient_3": "garlic"}
+
+    # Reset object instance to defaults
+    serializer.reset_to_defaults(obj)
+
+    print(serializer.to_dict(rcp))
+    # {"ingredient_1": "onions", "ingredient_2": "tomatoes", "ingredient_3": "garlic"}
+
+Testing object instance equality
+--------------------------------
+
+You can test whether two ``VersionedObject`` instances are equal in both structure and,
+values, the same way in which you would check equality of any other two objects:
+
+.. code:: python
+
+    from versionedobj import VersionedObject
+
+    class Recipe(VersionedObject):
+        ingredient_1 = "onions"
+        ingredient_2 = "tomatoes"
+        ingredient_3 = "garlic"
+
+    rcp1 = Recipe()
+    rcp2 = Recipe()
+
+    print(rcp1 == rcp2)
+    # True
+
+    rcp1.ingredient_3 = "ginger"
+
+    print(rcp1 == rcp2)
+    # False
+
+In order for two ``VersionedObject`` instances to be considered equal, the following
+conditions must be true:
+
+* Both objects are instances of the same class
+* Both objects contain matching attribute names and values
+
 Performance/stress test visualization
 -------------------------------------
 

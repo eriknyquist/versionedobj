@@ -305,9 +305,16 @@
 <span class="sd">        :rtype: MigrationResult</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Serializer.reset_to_defaults"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.reset_to_defaults">[docs]</a>    <span class="k">def</span> <span class="nf">reset_to_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets instance attribute values of a VersionedObject instance back to the</span>
+<span class="sd">        default values defined in the matching class attributes.</span>
 
+<span class="sd">        :param obj: VersionedObject instance to reset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">_vobj__populate_instance</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

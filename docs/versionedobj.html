@@ -309,6 +309,18 @@ that should be used for migrating an object from one version to another.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.Serializer.reset_to_defaults">
+<span class="sig-name descname"><span class="pre">reset_to_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.reset_to_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.reset_to_defaults" title="Permalink to this definition"></a></dt>
+<dd><p>Resets instance attribute values of a VersionedObject instance back to the
+default values defined in the matching class attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> – VersionedObject instance to reset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.serializer.Serializer.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.to_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Convert object to a dict, suitable for passing to the json library</p>

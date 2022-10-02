@@ -156,7 +156,43 @@
 <span class="sd">        :param dict: map of initial values. Keys are the field name, and values are\</span>
 <span class="sd">            the initial values to set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Set all class attributes as instance attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vobj__populate_instance</span><span class="p">()</span>
+
+        <span class="c1"># Set alternate initial values, if any</span>
+        <span class="k">if</span> <span class="n">initial_values</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">dotname</span> <span class="ow">in</span> <span class="n">initial_values</span><span class="p">:</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">initial_values</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">seen_in_other</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">seen_in_other</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="n">seen_in_other</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">other_val</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_obj_field</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">self_val</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">other_val</span> <span class="o">!=</span> <span class="n">self_val</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">seen_in_other</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">seen_in_other</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_vobj__populate_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_iter_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 
@@ -174,14 +210,6 @@
                 <span class="n">val</span> <span class="o">=</span> <span class="n">vobj_class</span><span class="p">()</span>
 
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-
-        <span class="c1"># Set alternate initial values, if any</span>
-        <span class="k">if</span> <span class="n">initial_values</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">dotname</span> <span class="ow">in</span> <span class="n">initial_values</span><span class="p">:</span>
-                    <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">initial_values</span><span class="p">[</span><span class="n">dotname</span><span class="p">]</span>
-                    <span class="n">field</span><span class="o">.</span><span class="n">set_obj_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_vobj__migrate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
