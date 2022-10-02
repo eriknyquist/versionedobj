@@ -437,7 +437,7 @@ the default values defined in the matching class attributes.
 Testing object instance equality
 --------------------------------
 
-You can test whether two ``VersionedObject`` instances are equal in both structure and,
+You can test whether two ``VersionedObject`` instances are equal in both structure and
 values, the same way in which you would check equality of any other two objects:
 
 .. code:: python
