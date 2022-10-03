@@ -2,7 +2,7 @@ import unittest
 from coverage import Coverage
 
 
-MIN_COVERAGE_PERCENT = 95.0
+MIN_COVERAGE_PERCENT = 98.0
 
 
 def main():
@@ -19,7 +19,7 @@ def main():
     if pc < MIN_COVERAGE_PERCENT:
         raise ValueError(f"Coverage percent was below {MIN_COVERAGE_PERCENT:.4f} ({pc:.4f})")
 
-    print(f"Success, coverage was above {MIN_COVERAGE_PERCENT:.4f}")
+    print(f"Success, coverage was above {MIN_COVERAGE_PERCENT:.2f}%")
 
 if __name__ == "__main__":
     main()
