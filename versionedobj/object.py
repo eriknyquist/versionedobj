@@ -123,6 +123,9 @@ class VersionedObject(metaclass=__Meta):
 
         return True
 
+    def __neq__(self):
+        return not self.__eq__()
+
     def _vobj__populate_instance(self):
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
