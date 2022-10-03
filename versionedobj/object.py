@@ -98,6 +98,16 @@ class VersionedObject(metaclass=__Meta):
                     field.value = initial_values[dotname]
                     field.set_obj_field(self)
 
+    def __str__(self):
+        json_str = json.dumps(_obj_to_dict(self))
+        if len(json_str) > 36:
+            json_str = json_str[:30] + ' ... }'
+
+        return f"{self.__class__.__name__}({json_str})"
+
+    def __repr__(self):
+        return self.__str__()
+
     def __eq__(self, other):
         if self.__class__ != other.__class__:
             return False
