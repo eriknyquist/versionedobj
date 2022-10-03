@@ -3,8 +3,8 @@
 #. Bump the version number in versionedobj/__init__.py
 #. Bump the version number in sphinx_docs/source/conf.py
 #. Build HTML API docs (``cd sphinx_docs && make html && cp -r build/html ../docs``)
-#. Build PDF API docs (you may need want to first delete/comment out the TOC at
-   the top of in README.rst ) (``make latexpdf``)
+#. Build PDF API docs (you may want to first delete/comment out the TOC at
+   the top of README.rst ) (``make latexpdf``)
 #. Rename PDF API docs to ``versionedobj_x.x.x_documentation.pdf``
 #. Ensure TOC in README.rst is restored/uncommented
 #. Make a new commit, adding all changed files (don't forget ``docs``)
