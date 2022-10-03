@@ -466,6 +466,30 @@ conditions must be true:
 * Both objects are instances of the same class
 * Both objects contain matching attribute names and values
 
+Object instance hashing
+-----------------------
+
+Objects can be uniquely hashed based on their instance attribute values, using the builtin
+``hash()`` function. This means, for example, that you can use object instances as dict keys:
+
+.. code:: python
+
+    from versionedobj import VersionedObject
+
+    class Person(VersionedObject):
+        name = "sam"
+        age = 31
+
+    p1 = Person()
+    p2 = Person()
+
+    # Change 1 value on p2 so the hash value is different
+    p2.age = 32
+
+    d = {p1: "a", p2: "b"}
+    print(d)
+    # { Person({"name": "sam", "age": 31}): "a", Person({"name": "sam", "age": 32}): "b" }
+
 Performance/stress test visualization
 -------------------------------------
 

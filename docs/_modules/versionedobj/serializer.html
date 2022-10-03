@@ -71,7 +71,7 @@
 <span class="kn">from</span> <span class="nn">json.decoder</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
 
 <span class="kn">from</span> <span class="nn">versionedobj.object</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">CustomValue</span>
-<span class="kn">from</span> <span class="nn">versionedobj.utils</span> <span class="kn">import</span> <span class="n">_ObjField</span><span class="p">,</span> <span class="n">_walk_obj_attrs</span><span class="p">,</span> <span class="n">_field_should_be_skipped</span>
+<span class="kn">from</span> <span class="nn">versionedobj.utils</span> <span class="kn">import</span> <span class="n">_ObjField</span><span class="p">,</span> <span class="n">_walk_obj_attrs</span><span class="p">,</span> <span class="n">_field_should_be_skipped</span><span class="p">,</span> <span class="n">_obj_to_dict</span>
 <span class="kn">from</span> <span class="nn">versionedobj.exceptions</span> <span class="kn">import</span> <span class="n">InvalidFilterError</span><span class="p">,</span> <span class="n">LoadObjectError</span><span class="p">,</span> <span class="n">InputValidationError</span><span class="p">,</span> <span class="n">InvalidVersionAttributeError</span>
 
 
@@ -123,17 +123,7 @@
 <span class="sd">        :return: object data as a dict</span>
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
-
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_walk_obj_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">CustomValue</span><span class="p">):</span>
-                <span class="n">field</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">set_dict_field</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">ret</span></div>
+        <span class="k">return</span> <span class="n">_obj_to_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Serializer.validate_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.validate_dict">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
