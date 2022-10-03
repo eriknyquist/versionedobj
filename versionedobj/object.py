@@ -1,8 +1,9 @@
+import json
 import sys
 import inspect
 
 from versionedobj.exceptions import InvalidVersionAttributeError, InputValidationError
-from versionedobj.utils import _ObjField, _iter_obj_attrs, _walk_obj_attrs
+from versionedobj.utils import _ObjField, _iter_obj_attrs, _walk_obj_attrs, _obj_to_dict
 
 
 def migration(cls, from_version, to_version):
@@ -125,6 +126,9 @@ class VersionedObject(metaclass=__Meta):
 
     def __neq__(self):
         return not self.__eq__()
+
+    def __hash__(self):
+        return hash(json.dumps(_obj_to_dict(self)))
 
     def _vobj__populate_instance(self):
         for n in _iter_obj_attrs(self.__class__):

@@ -1,3 +1,5 @@
+from versionedobj.exceptions import InvalidFilterError
+
 
 class _ObjField(object):
     """
@@ -158,3 +160,21 @@ def _walk_obj_attrs(parent_obj, only=[], ignore=[]):
                     yield field
 
 
+def _obj_to_dict(obj, only=[], ignore=[]):
+    """
+    Serialize an object instance to a dict
+    :param parent_obj: Versioned object to convert to dict
+    :param list only: List of 'only' names
+    :param list ignore: List of 'ignore' names
+    """
+    if only and ignore:
+        raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
+    ret = {}
+    for field in _walk_obj_attrs(obj, only, ignore):
+        if hasattr(field.value, 'to_dict'):
+            field.value = field.value.to_dict()
+
+        ret = field.set_dict_field(ret)
+
+    return ret

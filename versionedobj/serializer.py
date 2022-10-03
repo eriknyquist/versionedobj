@@ -2,7 +2,7 @@ import json
 from json.decoder import JSONDecodeError
 
 from versionedobj.object import VersionedObject, CustomValue
-from versionedobj.utils import _ObjField, _walk_obj_attrs, _field_should_be_skipped
+from versionedobj.utils import _ObjField, _walk_obj_attrs, _field_should_be_skipped, _obj_to_dict
 from versionedobj.exceptions import InvalidFilterError, LoadObjectError, InputValidationError, InvalidVersionAttributeError
 
 
@@ -54,17 +54,7 @@ class Serializer(object):
         :return: object data as a dict
         :rtype: dict
         """
-        if only and ignore:
-            raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
-
-        ret = {}
-        for field in _walk_obj_attrs(obj, only, ignore):
-            if isinstance(field.value, CustomValue):
-                field.value = field.value.to_dict()
-
-            ret = field.set_dict_field(ret)
-
-        return ret
+        return _obj_to_dict(obj, only, ignore)
 
     def validate_dict(self, obj, attrs, only=[], ignore=[]):
         """

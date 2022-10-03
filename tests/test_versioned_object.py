@@ -546,3 +546,83 @@ class TestVersionedObject(TestCase):
         setattr(cfg1.var4, 'badattr', 66)
 
         self.assertFalse(cfg1 == cfg2)
+
+    def test_object_as_dictkey_1(self):
+        """
+        Tests object hashing by verifying that obbject instances with different values
+        can be used as unique dict keys (no nested objects)
+        """
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = [1,2,3]
+
+        cfg1 = TestConfig()
+        cfg2 = TestConfig()
+
+        cfg2.var1 = 2
+
+        d = {}
+
+        d[cfg1] = "a"
+        d[cfg2] = "b"
+
+        self.assertEqual(2, len(d))
+        self.assertEqual("a", d[cfg1])
+        self.assertEqual("b", d[cfg2])
+
+    def test_object_as_dictkey_2(self):
+        """
+        Tests object hashing by verifying that obbject instances with different values
+        can be used as unique dict keys (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            var1 = 44.4
+            var2 = "yah"
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = NestedConfig
+
+        cfg1 = TestConfig()
+        cfg2 = TestConfig()
+
+        cfg2.var3.var2 = "y"
+
+        d = {}
+
+        d[cfg1] = "a"
+        d[cfg2] = "b"
+
+        self.assertEqual(2, len(d))
+        self.assertEqual("a", d[cfg1])
+        self.assertEqual("b", d[cfg2])
+
+    def test_object_as_dictkey_3(self):
+        """
+        Test object hashing by verifying that two object instances of the same
+        value overwrite each other when used as a dict key
+        """
+        class NestedConfig(VersionedObject):
+            var1 = 44.4
+            var2 = "yah"
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = NestedConfig
+
+        cfg1 = TestConfig()
+        cfg2 = TestConfig()
+
+        d = {}
+        d[cfg1] = "a"
+        d[cfg2] = "b"
+
+        self.assertEqual(1, len(d))
+        self.assertEqual("b", d[cfg2])
+
+        d[cfg1] = "a"
+        self.assertEqual(1, len(d))
+        self.assertEqual("a", d[cfg1])
