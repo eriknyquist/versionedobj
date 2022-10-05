@@ -160,10 +160,31 @@ migrating older files to the current version</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="versionedobj.object.add_migration">
+<span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">add_migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">migration_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_version</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#add_migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.add_migration" title="Permalink to this definition"></a></dt>
+<dd><p>Add a migration function to an object class. Use this function to register a
+migration function that should be used for migrating an object from one version
+to another. This is an equivalent alternative to the versionedobj.objbect.migration
+decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>migration_func</strong> (<em>callable</em>) – Function to call to perform the migration</p></li>
+<li><p><strong>cls</strong> – Class object to add migration to</p></li>
+<li><p><strong>from_version</strong> – Version to migrate from. If you are migrating an object that        previously had no version number, use ‘None’ here.</p></li>
+<li><p><strong>to_version</strong> – Version to migrate to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="versionedobj.object.migration">
 <span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">migration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_version</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#migration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.migration" title="Permalink to this definition"></a></dt>
-<dd><p>Decorator for migration functions. Use this decorator on any function or method
-that should be used for migrating an object from one version to another.</p>
+<dd><p>Decorator for adding a migration function to an object class. Use this
+decorator on any function or method that should be used for migrating an
+object from one version to another. This is an equivalent alternative to the
+versionedobject.object.add_migration function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
