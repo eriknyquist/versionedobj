@@ -194,8 +194,14 @@ class VersionedObject(metaclass=__Meta):
         return result, attrs
 
     def __getitem__(self, key):
-        field = _ObjField.from_dot_name(key, self)
-        return field.get_obj_field(self)
+        try:
+            field = _ObjField.from_dot_name(key, self)
+            val = field.get_obj_field(self)
+        except AttributeError:
+            msg = f"{self.__class__.__name__} object has no attribute '{key}'"
+            raise KeyError(msg) from None
+
+        return val
 
     def __setitem__(self, key, value):
         field = _ObjField.from_dot_name(key, self)

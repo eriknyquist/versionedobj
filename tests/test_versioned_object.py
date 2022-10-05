@@ -627,6 +627,54 @@ class TestVersionedObject(TestCase):
         self.assertEqual(1, len(d))
         self.assertEqual("a", d[cfg1])
 
+    def test_object_as_dictkey_invalid_key_1(self):
+        """
+        Tests that expected exception is raised when object is accessed as a dict with
+        an invalid key (no nested objects)
+        """
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = True
+
+        cfg = TestConfig()
+
+        raised = False
+        val = None
+        try:
+            val = cfg['var4']
+        except KeyError:
+            raised = True
+
+        self.assertTrue(raised)
+        self.assertIs(None, val)
+
+    def test_object_as_dictkey_invalid_key_2(self):
+        """
+        Tests that expected exception is raised when object is accessed as a dict with
+        an invalid key (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            var1 = 44.4
+            var2 = "yah"
+
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = NestedConfig
+
+        cfg = TestConfig()
+
+        raised = False
+        val = None
+        try:
+            val = cfg['var3.srgrg']
+        except KeyError:
+            raised = True
+
+        self.assertTrue(raised)
+        self.assertIs(None, val)
+
     def test_contains_value_1(self):
         """
         Tests __contains__ dunder method (no nested objects)
