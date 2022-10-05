@@ -98,6 +98,13 @@ class VersionedObject(metaclass=__Meta):
                     field.value = initial_values[dotname]
                     field.set_obj_field(self)
 
+    def __contains__(self, item):
+        for field in _walk_obj_attrs(self):
+            if field.get_obj_field(self) == item:
+                return True
+
+        return False
+
     def __str__(self):
         json_str = json.dumps(_obj_to_dict(self))
         if len(json_str) > 36:

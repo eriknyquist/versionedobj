@@ -491,6 +491,33 @@ Objects can be uniquely hashed based on their instance attribute values, using t
     print(d)
     # { Person({"name": "sam", "age": 31}): "a", Person({"name": "sam", "age": 32}): "b" }
 
+Testing whether object instances contain specific values
+--------------------------------------------------------
+
+You can check whether an object instance contains a particular attribute value using the ``in``
+keyword:
+
+.. code:: python
+
+    from versionedobj import VersionedObject
+
+    class Person(VersionedObject):
+        name = "sam"
+        age = 31
+
+    p = Person()
+
+    print("sam" in p)
+    # True
+
+    p.name = "sally"
+
+    print("sam" in p)
+    # False
+
+    print("sally" in p)
+    # True
+
 Performance/stress test visualization
 -------------------------------------
 

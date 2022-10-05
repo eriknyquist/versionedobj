@@ -626,3 +626,56 @@ class TestVersionedObject(TestCase):
         d[cfg1] = "a"
         self.assertEqual(1, len(d))
         self.assertEqual("a", d[cfg1])
+
+    def test_contains_value_1(self):
+        """
+        Tests __contains__ dunder method (no nested objects)
+        """
+        class TestConfig(VersionedObject):
+            var1 = 0
+            var2 = "ff"
+            var3 = 55.5
+
+        cfg = TestConfig()
+
+        self.assertTrue(0 in cfg)
+        self.assertTrue("ff" in cfg)
+        self.assertTrue(55.5 in cfg)
+
+        self.assertFalse(99 in cfg)
+        self.assertFalse("hh" in cfg)
+
+        cfg.var1 = 99
+        self.assertTrue(99 in cfg)
+        self.assertTrue("ff" in cfg)
+        self.assertTrue(55.5 in cfg)
+
+    def test_contains_value_2(self):
+        """
+        Tests __contains__ dunder method (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            var1 = "a"
+            var2 = "b"
+
+        class TestConfig(VersionedObject):
+            var1 = 0
+            var2 = "ff"
+            var3 = NestedConfig()
+
+        cfg = TestConfig()
+
+        self.assertTrue(0 in cfg)
+        self.assertTrue("ff" in cfg)
+        self.assertTrue("a" in cfg)
+        self.assertTrue("b" in cfg)
+
+        self.assertFalse(99 in cfg)
+        self.assertFalse("hh" in cfg)
+
+        cfg.var3.var1 = 99
+
+        self.assertTrue(0 in cfg)
+        self.assertTrue("ff" in cfg)
+        self.assertTrue(99 in cfg)
+        self.assertTrue("b" in cfg)
