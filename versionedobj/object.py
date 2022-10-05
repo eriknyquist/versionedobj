@@ -6,10 +6,33 @@ from versionedobj.exceptions import InvalidVersionAttributeError, InputValidatio
 from versionedobj.utils import _ObjField, _iter_obj_attrs, _walk_obj_attrs, _obj_to_dict
 
 
+def add_migration(migration_func, cls, from_version, to_version):
+    """
+    Add a migration function to an object class. Use this function to register a
+    migration function that should be used for migrating an object from one version
+    to another. This is an equivalent alternative to the versionedobj.objbect.migration
+    decorator.
+
+    :param callable migration_func: Function to call to perform the migration
+    :param cls: Class object to add migration to
+    :param from_version: Version to migrate from. If you are migrating an object that\
+        previously had no version number, use 'None' here.
+    :param to_version: Version to migrate to
+    """
+    try:
+        version = cls.__dict__['version']
+    except KeyError:
+        raise ValueError("Cannot add migration to un-versioned object. Add a 'version' attribute.")
+
+    cls._vobj__migrations.append((from_version, to_version, migration_func))
+
+
 def migration(cls, from_version, to_version):
     """
-    Decorator for migration functions. Use this decorator on any function or method
-    that should be used for migrating an object from one version to another.
+    Decorator for adding a migration function to an object class. Use this
+    decorator on any function or method that should be used for migrating an
+    object from one version to another. This is an equivalent alternative to the
+    versionedobject.object.add_migration function.
 
     :param cls: Class object to add migration to
     :param from_version: Version to migrate from. If you are migrating an object that\
@@ -17,12 +40,7 @@ def migration(cls, from_version, to_version):
     :param to_version: Version to migrate to
     """
     def _inner_migration(migration_func):
-        try:
-            version = cls.__dict__['version']
-        except KeyError:
-            raise ValueError("Cannot add migration to un-versioned object. Add a 'version' attribute.")
-
-        cls._vobj__migrations.append((from_version, to_version, migration_func))
+        add_migration(migration_func, cls, from_version, to_version)
 
     return _inner_migration
 
