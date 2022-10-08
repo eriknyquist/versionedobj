@@ -16,7 +16,7 @@ obj = TopObject()
 print(serializer.to_json(obj, indent=4))
 
 # Now, set all attributes to 0
-for attr_name, attr_value in obj:
+for attr_name in obj:
     obj[attr_name] = 0
 
 # Serialize it again

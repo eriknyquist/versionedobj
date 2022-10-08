@@ -244,8 +244,8 @@ class TestVersionedObject(TestCase):
         cfg = TestConfig()
         retrieved = {}
 
-        for name, val in cfg:
-            retrieved[name] = val
+        for name in cfg:
+            retrieved[name] = cfg[name]
 
         self.assertEqual(3, len(retrieved))
         self.assertEqual(1, retrieved['var1'])
@@ -268,8 +268,8 @@ class TestVersionedObject(TestCase):
         cfg = TestConfig()
         retrieved = {}
 
-        for name, val in cfg:
-            retrieved[name] = val
+        for name in cfg:
+            retrieved[name] = cfg[name]
 
         self.assertEqual(3, len(retrieved))
         self.assertEqual(1, retrieved['var1'])
@@ -288,7 +288,7 @@ class TestVersionedObject(TestCase):
 
         cfg = TestConfig()
 
-        for name, val in cfg:
+        for name in cfg:
             cfg[name] = 99
 
         self.assertEqual(99, cfg.var1)
@@ -310,7 +310,7 @@ class TestVersionedObject(TestCase):
 
         cfg = TestConfig()
 
-        for name, val in cfg:
+        for name in cfg:
             cfg[name] = 99
 
         self.assertEqual(99, cfg.var1)
@@ -775,3 +775,59 @@ class TestVersionedObject(TestCase):
         self.assertTrue("ff" in cfg)
         self.assertTrue(99 in cfg)
         self.assertTrue("b" in cfg)
+
+    def test_object_to_list_1(self):
+        """
+        Tests that converting object instance to list yields expected list (no nested objects)
+        """
+        class TestConfig(VersionedObject):
+            var1 = 0
+            var2 = "ff"
+            var3 = 55.5
+
+        cfg = TestConfig()
+        self.assertEqual(['var1', 'var2', 'var3'], list(cfg))
+
+    def test_object_to_list_2(self):
+        """
+        Tests that converting object instance to list yields expected list (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            var1 = 2929
+            var2 = (1,2,3)
+
+        class TestConfig(VersionedObject):
+            var1 = 0
+            var2 = "ff"
+            var3 = NestedConfig
+
+        cfg = TestConfig()
+        self.assertEqual(['var1', 'var2', 'var3.var1', 'var3.var2'], list(cfg))
+
+    def test_object_to_tuple_1(self):
+        """
+        Tests that converting object instance to tuple yields expected tuple (no nested objects)
+        """
+        class TestConfig(VersionedObject):
+            var1 = 0
+            var2 = "ff"
+            var3 = 55.5
+
+        cfg = TestConfig()
+        self.assertEqual(('var1', 'var2', 'var3'), tuple(cfg))
+
+    def test_object_to_tuple_2(self):
+        """
+        Tests that converting object instance to tuple yields expected tuple (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            var1 = 2929
+            var2 = (1,2,3)
+
+        class TestConfig(VersionedObject):
+            var1 = 0
+            var2 = "ff"
+            var3 = NestedConfig
+
+        cfg = TestConfig()
+        self.assertEqual(('var1', 'var2', 'var3.var1', 'var3.var2'), tuple(cfg))

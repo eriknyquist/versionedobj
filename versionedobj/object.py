@@ -228,7 +228,7 @@ class VersionedObject(metaclass=__Meta):
 
     def __iter__(self):
         for field in _walk_obj_attrs(self):
-            yield (field.dot_name(), field.get_obj_field(self))
+            yield field.dot_name()
 
 _ObjField.set_obj_class(VersionedObject)
 

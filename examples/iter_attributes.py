@@ -11,5 +11,5 @@ class Session(VersionedObject):
 
 session = Session()
 
-for attr_name, attr_value in session:
-    print(f"{attr_name}: {attr_value}")
+for attr_name in session:
+    print(f"{attr_name}: {session[attr_name]}")

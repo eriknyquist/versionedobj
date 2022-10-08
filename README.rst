@@ -111,12 +111,12 @@ and access individual attributes using their full dot name as the key:
     # Output looks like this: "fullscreen"
 
 You can also treat a ``VersionedObjbect`` instance as an iterable, to iterate
-over all object attribute names and values:
+over all object attribute names, as you would with keys in a dict:
 
 .. code:: python
 
-    for attr_name, attr_value in obj:
-        print(f"{attr_name}: {attr_value}")
+    for attr_name in obj:
+        print(f"{attr_name}: {obj[attr_name]}")
 
     # Output looks like this:
     #
