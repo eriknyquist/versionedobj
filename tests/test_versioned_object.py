@@ -350,7 +350,7 @@ class TestVersionedObject(TestCase):
 
     def test_object_equality_success_1(self):
         """
-        Tests successful object equality/comparison (no nested objects)
+        Tests basic successful object equality/comparison (no nested objects)
         """
         class TestConfig(VersionedObject):
             var1 = 1
@@ -365,7 +365,7 @@ class TestVersionedObject(TestCase):
 
     def test_object_equality_success_2(self):
         """
-        Tests successful object equality/comparison (nested objects)
+        Tests basic successful object equality/comparison (nested objects)
         """
         class NestedConfig(VersionedObject):
             var1 = 77
@@ -382,6 +382,54 @@ class TestVersionedObject(TestCase):
         cfg2 = TestConfig()
 
         self.assertTrue(cfg1 == cfg2)
+
+    def test_object_equality_same_attrs_diff_class_1(self):
+        """
+        Tests that object equality/comparison fails when two objects have identical
+        attributes / values, but each object is a different class (no nested objects)
+        """
+        class TestConfig1(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = 88.8
+            var4 = False
+
+        class TestConfig2(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = 88.8
+            var4 = False
+
+        cfg1 = TestConfig1()
+        cfg2 = TestConfig2()
+
+        self.assertFalse(cfg1 == cfg2)
+
+    def test_object_equality_same_attrs_diff_class_2(self):
+        """
+        Tests that object equality/comparison fails when two objects have identical
+        attributes / values, but each object is a different class (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            var1 = "qq"
+            var2 = 5657
+
+        class TestConfig1(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = 88.8
+            var4 = NestedConfig
+
+        class TestConfig2(VersionedObject):
+            var1 = 1
+            var2 = "ff"
+            var3 = 88.8
+            var4 = NestedConfig
+
+        cfg1 = TestConfig1()
+        cfg2 = TestConfig2()
+
+        self.assertFalse(cfg1 == cfg2)
 
     def test_object_equality_fail_other_value_1(self):
         """
