@@ -106,6 +106,7 @@ class VersionedObject(metaclass=__Meta):
         :param dict: map of initial values. Keys are the field name, and values are\
             the initial values to set.
         """
+        self._vobj__field_count = 0
         self._vobj__populate_instance()
 
         # Set alternate initial values, if any
@@ -165,6 +166,9 @@ class VersionedObject(metaclass=__Meta):
     def __hash__(self):
         return hash(json.dumps(_obj_to_dict(self)))
 
+    def __len__(self):
+        return self._vobj__field_count
+
     def _vobj__populate_instance(self):
         for n in _iter_obj_attrs(self.__class__):
             val = getattr(self.__class__, n)
@@ -181,6 +185,9 @@ class VersionedObject(metaclass=__Meta):
                                                         "Only the top-level object can have a version attribute.")
 
                 val = vobj_class()
+                self._vobj__field_count += val._vobj__field_count
+            else:
+                self._vobj__field_count += 1
 
             setattr(self, n, val)
 

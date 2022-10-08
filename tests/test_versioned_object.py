@@ -831,3 +831,50 @@ class TestVersionedObject(TestCase):
 
         cfg = TestConfig()
         self.assertEqual(('var1', 'var2', 'var3.var1', 'var3.var2'), tuple(cfg))
+
+    def test_object_len_1(self):
+        """
+        Tests that len() on an object instance returns the number of fields (no nested objects)
+        """
+        class TestConfig1(VersionedObject):
+            val1 = 66
+            val2 = 88
+            srgg = 4456
+            ftdj = 8888
+            gg = 9
+
+        class TestConfig2(VersionedObject):
+            val1 = 66
+            ftdj = 8888
+            gg = 9
+
+        cfg1 = TestConfig1()
+        cfg2 = TestConfig2()
+        self.assertEqual(5, len(cfg1))
+        self.assertEqual(3, len(cfg2))
+
+    def test_object_len_2(self):
+        """
+        Tests that len() on an object instance returns the number of fields (nested objects)
+        """
+        class NestedConfig(VersionedObject):
+            ff = 99
+            ll = 55
+            gg = 77
+
+        class TestConfig1(VersionedObject):
+            val1 = 66
+            val2 = 88
+            srgg = 4456
+            ftdj = 8888
+            gg = NestedConfig()
+
+        class TestConfig2(VersionedObject):
+            val1 = 66
+            ftdj = 8888
+            gg = NestedConfig()
+
+        cfg1 = TestConfig1()
+        cfg2 = TestConfig2()
+        self.assertEqual(7, len(cfg1))
+        self.assertEqual(5, len(cfg2))
