@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj package &mdash; versionedobj v1.0.2 documentation</title>
+  <title>versionedobj package &mdash; versionedobj v1.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="index.html" class="icon icon-home"> versionedobj
           </a>
               <div class="version">
-                v1.0.2
+                v1.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -230,6 +230,20 @@ versionedobject.object.add_migration function.</p>
 </div>
 <div class="section" id="module-versionedobj.serializer">
 <span id="versionedobj-serializer-module"></span><h2>versionedobj.serializer module<a class="headerlink" href="#module-versionedobj.serializer" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="versionedobj.serializer.FileLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.serializer.</span></span><span class="sig-name descname"><span class="pre">FileLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_or_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#FileLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.FileLoader" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Context manager for modifying object data saved to a JSON file. Deserializes
+the object on entry, if it exists, allowing you to modify the deserialized object, and
+serializes the changed object data back to the same file on exit.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.serializer.FileLoader.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_or_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#FileLoader.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.FileLoader.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="versionedobj.serializer.Serializer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.serializer.</span></span><span class="sig-name descname"><span class="pre">Serializer</span></span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer" title="Permalink to this definition"></a></dt>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj &mdash; versionedobj v1.0.2 documentation</title>
+  <title>versionedobj &mdash; versionedobj v1.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="#" class="icon icon-home"> versionedobj
           </a>
               <div class="version">
-                v1.0.2
+                v1.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -108,25 +108,26 @@ structure across time, and to migrate between different object versions.</p>
 <li><p><a class="reference internal" href="#blacklisting-by-field-name" id="id10">Blacklisting by field name</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#migrations-making-use-of-the-version-number" id="id11">Migrations: making use of the version number</a></p>
+<li><p><a class="reference internal" href="#context-manager-for-loading-editing-saved-object-data" id="id11">Context manager for loading &amp; editing saved object data</a></p></li>
+<li><p><a class="reference internal" href="#migrations-making-use-of-the-version-number" id="id12">Migrations: making use of the version number</a></p>
 <ul>
-<li><p><a class="reference internal" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" id="id12">Example scenario, part 1: you have created a beautiful versioned object</a></p></li>
-<li><p><a class="reference internal" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" id="id13">Example scenario, part 2: you update your software, modifying the versioned object</a></p></li>
-<li><p><a class="reference internal" href="#uh-oh-you-have-a-problem" id="id14">Uh-oh, you have a problem…</a></p></li>
-<li><p><a class="reference internal" href="#solution-migrations" id="id15">Solution– migrations!</a></p></li>
+<li><p><a class="reference internal" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" id="id13">Example scenario, part 1: you have created a beautiful versioned object</a></p></li>
+<li><p><a class="reference internal" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" id="id14">Example scenario, part 2: you update your software, modifying the versioned object</a></p></li>
+<li><p><a class="reference internal" href="#uh-oh-you-have-a-problem" id="id15">Uh-oh, you have a problem…</a></p></li>
+<li><p><a class="reference internal" href="#solution-migrations" id="id16">Solution– migrations!</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#migrations-migrating-an-unversioned-object" id="id16">Migrations: migrating an unversioned object</a></p></li>
-<li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id17">Validating input data without deserializing</a></p></li>
-<li><p><a class="reference internal" href="#resetting-object-instance-to-default-values" id="id18">Resetting object instance to default values</a></p></li>
-<li><p><a class="reference internal" href="#testing-object-instance-equality" id="id19">Testing object instance equality</a></p></li>
-<li><p><a class="reference internal" href="#object-instance-hashing" id="id20">Object instance hashing</a></p></li>
-<li><p><a class="reference internal" href="#testing-whether-object-instances-contain-specific-values" id="id21">Testing whether object instances contain specific values</a></p></li>
-<li><p><a class="reference internal" href="#performance-stress-test-visualization" id="id22">Performance/stress test visualization</a></p></li>
-<li><p><a class="reference internal" href="#contributions" id="id23">Contributions</a></p></li>
+<li><p><a class="reference internal" href="#migrations-migrating-an-unversioned-object" id="id17">Migrations: migrating an unversioned object</a></p></li>
+<li><p><a class="reference internal" href="#validating-input-data-without-deserializing" id="id18">Validating input data without deserializing</a></p></li>
+<li><p><a class="reference internal" href="#resetting-object-instance-to-default-values" id="id19">Resetting object instance to default values</a></p></li>
+<li><p><a class="reference internal" href="#testing-object-instance-equality" id="id20">Testing object instance equality</a></p></li>
+<li><p><a class="reference internal" href="#object-instance-hashing" id="id21">Object instance hashing</a></p></li>
+<li><p><a class="reference internal" href="#testing-whether-object-instances-contain-specific-values" id="id22">Testing whether object instances contain specific values</a></p></li>
+<li><p><a class="reference internal" href="#performance-stress-test-visualization" id="id23">Performance/stress test visualization</a></p></li>
+<li><p><a class="reference internal" href="#contributions" id="id24">Contributions</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#indices-and-tables" id="id24">Indices and tables</a></p></li>
+<li><p><a class="reference internal" href="#indices-and-tables" id="id25">Indices and tables</a></p></li>
 </ul>
 </div>
 <div class="section" id="installing">
@@ -204,9 +205,9 @@ and access individual attributes using their full dot name as the key:</p>
 </pre></div>
 </div>
 <p>You can also treat a <code class="docutils literal notranslate"><span class="pre">VersionedObjbect</span></code> instance as an iterable, to iterate
-over all object attribute names and values:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">attr_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+over all object attribute names, as you would with keys in a dict:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Output looks like this:</span>
 <span class="c1">#</span>
@@ -320,14 +321,45 @@ by field name):</p>
 </div>
 </div>
 </div>
+<div class="section" id="context-manager-for-loading-editing-saved-object-data">
+<h2><a class="toc-backref" href="#id11">Context manager for loading &amp; editing saved object data</a><a class="headerlink" href="#context-manager-for-loading-editing-saved-object-data" title="Permalink to this headline"></a></h2>
+<p>If you want to load object data from a JSON file, make some changes to the data,
+and save it back to the same JSON file, then you can use the <code class="docutils literal notranslate"><span class="pre">FileLoader</span></code> context
+manager, which will load/create the file for you on entry, return a deserialized
+object for you to modify, and then serializes your modified object back to the same
+file on exit. This may be useful if you are worried about forgetting to re-serialize
+the object when you are done.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">FileLoader</span>
+
+<span class="k">class</span> <span class="nc">Recipe</span><span class="p">(</span><span class="n">VersionedObject</span><span class="p">):</span>
+    <span class="n">ingredient_1</span> <span class="o">=</span> <span class="s2">&quot;onions&quot;</span>
+    <span class="n">ingredient_2</span> <span class="o">=</span> <span class="s2">&quot;tomatoes&quot;</span>
+    <span class="n">ingredient_3</span> <span class="o">=</span> <span class="s2">&quot;garlic&quot;</span>
+
+<span class="c1"># Creates a new instance of the object, and loads data from</span>
+<span class="c1"># &quot;recipe.json&quot; if the file already exists</span>
+<span class="k">with</span> <span class="n">FileLoader</span><span class="p">(</span><span class="n">Recipe</span><span class="p">,</span> <span class="s2">&quot;recipe.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">obj</span><span class="p">:</span>
+    <span class="c1"># Change something</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">ingredient_3</span> <span class="o">=</span> <span class="s2">&quot;celery&quot;</span>
+
+<span class="c1"># recipe.json now looks like this:</span>
+<span class="c1">#</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;ingredient_1&quot;: &quot;onions&quot;,</span>
+<span class="c1">#     &quot;ingredient_2&quot;: &quot;tomatoes&quot;,</span>
+<span class="c1">#     &quot;ingredient_3&quot;: &quot;celery&quot;,</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="migrations-making-use-of-the-version-number">
-<h2><a class="toc-backref" href="#id11">Migrations: making use of the version number</a><a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id12">Migrations: making use of the version number</a><a class="headerlink" href="#migrations-making-use-of-the-version-number" title="Permalink to this headline"></a></h2>
 <p>A VersionedObject object can have a <code class="docutils literal notranslate"><span class="pre">version</span></code> attribute, which can be any object,
 although it is typically a string (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;v1.2.3&quot;</span></code>). This version attribute can be
 used to support migrations for older objects, in the event that you need to
 change the format of your object.</p>
 <div class="section" id="example-scenario-part-1-you-have-created-a-beautiful-versioned-object">
-<h3><a class="toc-backref" href="#id12">Example scenario, part 1: you have created a beautiful versioned object</a><a class="headerlink" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id13">Example scenario, part 1: you have created a beautiful versioned object</a><a class="headerlink" href="#example-scenario-part-1-you-have-created-a-beautiful-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Let’s take the same config file definition from the previous example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
 
@@ -350,7 +382,7 @@ using it, and they have JSON files generated by your <code class="docutils liter
 on their computers.</p>
 </div>
 <div class="section" id="example-scenario-part-2-you-update-your-software-modifying-the-versioned-object">
-<h3><a class="toc-backref" href="#id13">Example scenario, part 2: you update your software, modifying the versioned object</a><a class="headerlink" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id14">Example scenario, part 2: you update your software, modifying the versioned object</a><a class="headerlink" href="#example-scenario-part-2-you-update-your-software-modifying-the-versioned-object" title="Permalink to this headline"></a></h3>
 <p>Now, imagine you are making a new release of your software, and some new features
 require you to make the following changes to your versioned object:</p>
 <ul class="simple">
@@ -376,7 +408,7 @@ require you to make the following changes to your versioned object:</p>
 </div>
 </div>
 <div class="section" id="uh-oh-you-have-a-problem">
-<h3><a class="toc-backref" href="#id14">Uh-oh, you have a problem…</a><a class="headerlink" href="#uh-oh-you-have-a-problem" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id15">Uh-oh, you have a problem…</a><a class="headerlink" href="#uh-oh-you-have-a-problem" title="Permalink to this headline"></a></h3>
 <p>Right now, if you send this updated UserConfig class to your existing users, it will fail
 to load their existing JSON files with version <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code>, since those files will contain
 the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.resolution</span></code> field that we deleted in <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code>, and
@@ -384,7 +416,7 @@ the <code class="docutils literal notranslate"><span class="pre">DisplayConfig.r
 <code class="docutils literal notranslate"><span class="pre">DisplayConfig.volumes</span></code>. This situation is what migrations are for.</p>
 </div>
 <div class="section" id="solution-migrations">
-<h3><a class="toc-backref" href="#id15">Solution– migrations!</a><a class="headerlink" href="#solution-migrations" title="Permalink to this headline"></a></h3>
+<h3><a class="toc-backref" href="#id16">Solution– migrations!</a><a class="headerlink" href="#solution-migrations" title="Permalink to this headline"></a></h3>
 <p>The solution is to:</p>
 <ol class="arabic simple">
 <li><p>Change the version number to something new, e.g. <code class="docutils literal notranslate"><span class="pre">v1.0.0</span></code> becomes <code class="docutils literal notranslate"><span class="pre">v1.0.1</span></code></p></li>
@@ -427,7 +459,7 @@ number, or don’t create a <code class="docutils literal notranslate"><span cla
 </div>
 </div>
 <div class="section" id="migrations-migrating-an-unversioned-object">
-<h2><a class="toc-backref" href="#id16">Migrations: migrating an unversioned object</a><a class="headerlink" href="#migrations-migrating-an-unversioned-object" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id17">Migrations: migrating an unversioned object</a><a class="headerlink" href="#migrations-migrating-an-unversioned-object" title="Permalink to this headline"></a></h2>
 <p>You may run into a situation where you release an unversioned object, but then
 later you need to make changes, and migrate an unversioned object to a versioned object.</p>
 <p>This can be handled simply by passing “None” to the “add_migration()” method, for the
@@ -447,7 +479,7 @@ later you need to make changes, and migrate an unversioned object to a versioned
 </div>
 </div>
 <div class="section" id="validating-input-data-without-deserializing">
-<h2><a class="toc-backref" href="#id17">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id18">Validating input data without deserializing</a><a class="headerlink" href="#validating-input-data-without-deserializing" title="Permalink to this headline"></a></h2>
 <p>You may want to validate some serialized object data without actually deserializing
 and loading the object values. You can use the <code class="docutils literal notranslate"><span class="pre">Serializer.validate_dict</span></code> method for this.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">Serializer</span>
@@ -469,7 +501,7 @@ and loading the object values. You can use the <code class="docutils literal not
 </div>
 </div>
 <div class="section" id="resetting-object-instance-to-default-values">
-<h2><a class="toc-backref" href="#id18">Resetting object instance to default values</a><a class="headerlink" href="#resetting-object-instance-to-default-values" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id19">Resetting object instance to default values</a><a class="headerlink" href="#resetting-object-instance-to-default-values" title="Permalink to this headline"></a></h2>
 <p>You can use the <code class="docutils literal notranslate"><span class="pre">Serializer.reset_to_defaults</span></code> method to set all instance attributes to
 the default values defined in the matching class attributes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span><span class="p">,</span> <span class="n">Serializer</span>
@@ -497,7 +529,7 @@ the default values defined in the matching class attributes.</p>
 </div>
 </div>
 <div class="section" id="testing-object-instance-equality">
-<h2><a class="toc-backref" href="#id19">Testing object instance equality</a><a class="headerlink" href="#testing-object-instance-equality" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id20">Testing object instance equality</a><a class="headerlink" href="#testing-object-instance-equality" title="Permalink to this headline"></a></h2>
 <p>You can test whether two <code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code> instances are equal in both structure and
 values, the same way in which you would check equality of any other two objects:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
@@ -527,7 +559,7 @@ conditions must be true:</p>
 </ul>
 </div>
 <div class="section" id="object-instance-hashing">
-<h2><a class="toc-backref" href="#id20">Object instance hashing</a><a class="headerlink" href="#object-instance-hashing" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id21">Object instance hashing</a><a class="headerlink" href="#object-instance-hashing" title="Permalink to this headline"></a></h2>
 <p>Objects can be uniquely hashed based on their instance attribute values, using the builtin
 <code class="docutils literal notranslate"><span class="pre">hash()</span></code> function. This means, for example, that you can use object instances as dict keys:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
@@ -549,7 +581,7 @@ conditions must be true:</p>
 </div>
 </div>
 <div class="section" id="testing-whether-object-instances-contain-specific-values">
-<h2><a class="toc-backref" href="#id21">Testing whether object instances contain specific values</a><a class="headerlink" href="#testing-whether-object-instances-contain-specific-values" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id22">Testing whether object instances contain specific values</a><a class="headerlink" href="#testing-whether-object-instances-contain-specific-values" title="Permalink to this headline"></a></h2>
 <p>You can check whether an object instance contains a particular attribute value using the <code class="docutils literal notranslate"><span class="pre">in</span></code>
 keyword:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">versionedobj</span> <span class="kn">import</span> <span class="n">VersionedObject</span>
@@ -574,7 +606,7 @@ keyword:</p>
 </div>
 </div>
 <div class="section" id="performance-stress-test-visualization">
-<h2><a class="toc-backref" href="#id22">Performance/stress test visualization</a><a class="headerlink" href="#performance-stress-test-visualization" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id23">Performance/stress test visualization</a><a class="headerlink" href="#performance-stress-test-visualization" title="Permalink to this headline"></a></h2>
 <p>The following image is generated by the <code class="docutils literal notranslate"><span class="pre">tests/performance_tests/big_class_performance_test.py</span></code> script,
 which creates and serializes/deserializes multiple versioned objects of an incrementally increasing size,
 and simultaneously having an increasing depth of contained nested objects.</p>
@@ -589,7 +621,7 @@ with Linux debian 4.19.0-21-amd64.</p>
 <img alt="https://github.com/eriknyquist/versionedobj/raw/master/images/performance_graph.png" src="https://github.com/eriknyquist/versionedobj/raw/master/images/performance_graph.png" />
 </div>
 <div class="section" id="contributions">
-<h2><a class="toc-backref" href="#id23">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
+<h2><a class="toc-backref" href="#id24">Contributions</a><a class="headerlink" href="#contributions" title="Permalink to this headline"></a></h2>
 <p>Contributions are welcome, please open a pull request at <a class="reference external" href="https://github.com/eriknyquist/versionedobj">https://github.com/eriknyquist/versionedobj</a> and ensure that:</p>
 <ol class="arabic simple">
 <li><p>All existing unit tests pass (run tests via <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></code>)</p></li>
@@ -605,7 +637,7 @@ contact Erik at <a class="reference external" href="mailto:eknyquist&#37;&#52;&#
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h1><a class="toc-backref" href="#id24">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
+<h1><a class="toc-backref" href="#id25">Indices and tables</a><a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
