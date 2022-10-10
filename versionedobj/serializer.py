@@ -1,3 +1,5 @@
+import os
+import inspect
 import json
 from json.decoder import JSONDecodeError
 
@@ -236,3 +238,30 @@ class Serializer(object):
         :param obj: VersionedObject instance to reset
         """
         obj._vobj__populate_instance()
+
+
+class FileLoader(object):
+    """
+    Context manager for modifying object data saved to a JSON file. Deserializes
+    the object on entry, if it exists, allowing you to modify the deserialized object, and
+    serializes the changed object data back to the same file on exit.
+    """
+    def __init__(self, instance_or_class, filename):
+        if isinstance(instance_or_class, VersionedObject):
+            self.obj = instance_or_class
+        elif inspect.isclass(instance_or_class) and issubclass(instance_or_class, VersionedObject):
+            self.obj = instance_or_class()
+        else:
+            raise ValueError("First argument must be a VersionedObject instance or class object")
+
+        self.filename = filename
+        self.serializer = Serializer()
+
+    def __enter__(self):
+        if os.path.isfile(self.filename):
+            self.serializer.from_file(self.obj, self.filename)
+
+        return self.obj
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.serializer.to_file(self.obj, self.filename)

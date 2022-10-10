@@ -18,9 +18,6 @@ structure across time, and to migrate between different object versions.
 
 See `API documentation <https://eriknyquist.github.io/versionedobj/versionedobj.html>`_
 
-..
-    .. only:: html
-
 .. contents:: **Table of Contents**
 
 
@@ -240,6 +237,39 @@ The same parameter can be used for de-serializing:
     serializer.from_file(obj, 'user_config.json', ignore=['friend_list'])
 
     # Every field except for the 'friend_list' field is loaded from the file
+
+Context manager for loading & editing saved object data
+-------------------------------------------------------
+
+If you want to load object data from a JSON file, make some changes to the data,
+and save it back to the same JSON file, then you can use the ``FileLoader`` context
+manager, which will load/create the file for you on entry, return a deserialized
+object for you to modify, and then serializes your modified object back to the same
+file on exit. This may be useful if you are worried about forgetting to re-serialize
+the object when you are done.
+
+.. code:: python
+
+    from versionedobj import VersionedObject, FileLoader
+
+    class Recipe(VersionedObject):
+        ingredient_1 = "onions"
+        ingredient_2 = "tomatoes"
+        ingredient_3 = "garlic"
+
+    # Creates a new instance of the object, and loads data from
+    # "recipe.json" if the file already exists
+    with FileLoader(Recipe, "recipe.json") as obj:
+        # Change something
+        obj.ingredient_3 = "celery"
+
+    # recipe.json now looks like this:
+    #
+    # {
+    #     "ingredient_1": "onions",
+    #     "ingredient_2": "tomatoes",
+    #     "ingredient_3": "celery",
+    # }
 
 Migrations: making use of the version number
 --------------------------------------------

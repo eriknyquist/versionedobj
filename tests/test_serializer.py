@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedobj import (VersionedObject, LoadObjectError, InvalidFilterError, Serializer, CustomValue, migration)
+from versionedobj import (VersionedObject, FileLoader, LoadObjectError, InvalidFilterError, Serializer, CustomValue, migration)
 
 
 class TestVersionedObjectSerializer(TestCase):
@@ -1428,4 +1428,83 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(88, cfg.var3.var1)
         self.assertEqual("hey", cfg.var3.var2)
         self.assertEqual(5.5, cfg.var3.var3)
+
+    def test_file_loader_success_1(self):
+        """
+        Tests that file loader serializes and deserializes object data from file
+        as expected, when the file already exists
+        """
+        class TestConfig(VersionedObject):
+            var1 = 11
+            var2 = 22
+            var3 = 33
+
+        ser = Serializer()
+        cfg = TestConfig()
+        cfg.var1 = 44
+        cfg.var2 = 55
+        cfg.var3 = 66
+
+        filename = "__test_config.txt"
+        ser.to_file(cfg, filename)
+
+        with FileLoader(TestConfig, filename) as obj:
+            self.assertEqual(44, obj.var1)
+            self.assertEqual(55, obj.var2)
+            self.assertEqual(66, obj.var3)
+            obj.var1 = 77
+            obj.var2 = 88
+            obj.var3 = 99
+
+        ser.from_file(cfg, filename)
+        self.assertEqual(77, cfg.var1)
+        self.assertEqual(88, cfg.var2)
+        self.assertEqual(99, cfg.var3)
+
+        os.remove(filename)
+
+    def test_file_loader_success_2(self):
+        """
+        Tests that file loader serializes and deserializes object data from file
+        as expected, when the file does not already exist
+        """
+        class TestConfig(VersionedObject):
+            var1 = 11
+            var2 = 22
+            var3 = 33
+
+        ser = Serializer()
+        cfg = TestConfig()
+        cfg.var1 = 44
+        cfg.var2 = 55
+        cfg.var3 = 66
+
+        filename = "__test_config.txt"
+        with FileLoader(TestConfig, filename) as obj:
+            self.assertEqual(11, obj.var1)
+            self.assertEqual(22, obj.var2)
+            self.assertEqual(33, obj.var3)
+
+            obj.var1 = 77
+            obj.var2 = 88
+            obj.var3 = 99
+
+        ser.from_file(cfg, filename)
+        self.assertEqual(77, cfg.var1)
+        self.assertEqual(88, cfg.var2)
+        self.assertEqual(99, cfg.var3)
+
+        os.remove(filename)
+
+    def test_file_loader_invalid_objtype(self):
+        """
+        Tests that file loader raises expected exception when invalid object type
+        is passed
+        """
+        filename = "__test_config.txt"
+        self.assertRaises(ValueError, FileLoader, 4, filename)
+        self.assertRaises(ValueError, FileLoader, 4.5, filename)
+        self.assertRaises(ValueError, FileLoader, True, filename)
+        self.assertRaises(ValueError, FileLoader, [12], filename)
+        self.assertRaises(ValueError, FileLoader, {12:2}, filename)
 
