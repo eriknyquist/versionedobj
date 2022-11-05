@@ -16,7 +16,7 @@ class TestVersionedObjectExceptions(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(InputValidationError, ser.from_dict, cfg, {"val2": 55})
+        self.assertRaises(InputValidationError, ser.from_dict, {"val2": 55}, cfg)
 
     def test_load_dict_invalid_attr_2(self):
         """
@@ -31,9 +31,9 @@ class TestVersionedObjectExceptions(TestCase):
             val1 = 1
             val2 = NestedConfig
 
-        ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(InputValidationError, ser.from_dict, cfg, {"val1": 1, "val2": {"val1": 1, "val2": 1, "val3": 1}})
+        ser = Serializer(cfg)
+        self.assertRaises(InputValidationError, ser.from_dict, {"val1": 1, "val2": {"val1": 1, "val2": 1, "val3": 1}})
 
     def test_load_dict_missing_attr_1(self):
         """
@@ -46,7 +46,7 @@ class TestVersionedObjectExceptions(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(InputValidationError, ser.from_dict, cfg, {"val2": 55})
+        self.assertRaises(InputValidationError, ser.from_dict, {"val2": 55}, cfg)
 
     def test_load_dict_missing_attr_2(self):
         """
@@ -63,7 +63,7 @@ class TestVersionedObjectExceptions(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(InputValidationError, ser.from_dict, cfg, {"val1": 99, "val2": {"val2": False}})
+        self.assertRaises(InputValidationError, ser.from_dict, {"val1": 99, "val2": {"val2": False}}, cfg)
 
     def test_from_json_invalid_json(self):
         """
@@ -72,9 +72,9 @@ class TestVersionedObjectExceptions(TestCase):
         class TestConfig(VersionedObject):
             val1 = 1
 
-        ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(LoadObjectError, ser.from_json, cfg, "zsrg]s\er]gsegr")
+        ser = Serializer(cfg)
+        self.assertRaises(LoadObjectError, ser.from_json, "zsrg]s\er]gsegr")
 
     def test_from_file_invalid_json(self):
         """
@@ -89,7 +89,7 @@ class TestVersionedObjectExceptions(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(LoadObjectError, ser.from_file, cfg, filename)
+        self.assertRaises(LoadObjectError, ser.from_file, filename, cfg)
 
     def test_custom_value_to_dict_not_implemented(self):
         """
@@ -122,7 +122,7 @@ class TestVersionedObjectExceptions(TestCase):
         ser = Serializer()
         cfg = TestConfig()
         d = ser.to_dict(cfg)
-        self.assertRaises(NotImplementedError, ser.from_dict, cfg, d)
+        self.assertRaises(NotImplementedError, ser.from_dict, d, cfg)
 
     def test_to_dict_ignore_and_only_error(self):
         """
@@ -133,9 +133,9 @@ class TestVersionedObjectExceptions(TestCase):
             var1 = 1
             var2 = 2
 
-        ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(InvalidFilterError, ser.to_dict, cfg, ['var1'], ['var1'])
+        ser = Serializer(cfg)
+        self.assertRaises(InvalidFilterError, ser.to_dict, ignore=['var1'], only=['var1'])
 
     def test_from_dict_ignore_and_only_error(self):
         """
@@ -149,7 +149,7 @@ class TestVersionedObjectExceptions(TestCase):
         ser = Serializer()
         cfg = TestConfig()
         d = ser.to_dict(cfg)
-        self.assertRaises(InvalidFilterError, ser.from_dict, cfg, d, ignore=['var1'], only=['var1'])
+        self.assertRaises(InvalidFilterError, ser.from_dict, d, cfg, ignore=['var1'], only=['var1'])
 
     def test_validate_dict_missing_from_dict(self):
         """
@@ -168,7 +168,7 @@ class TestVersionedObjectExceptions(TestCase):
         cfg = TestConfig()
         bad_config = {'var1': 1, 'var2': {'var1': "hey"}}
 
-        self.assertRaises(InputValidationError, ser.validate_dict, cfg, bad_config)
+        self.assertRaises(InputValidationError, ser.validate_dict, bad_config, cfg)
 
     def test_validate_dict_invalid_dict_field_1(self):
         """
@@ -187,7 +187,7 @@ class TestVersionedObjectExceptions(TestCase):
         cfg = TestConfig()
         bad_config = {'var1': 1, 'var2': {'var1': "hey", 'var2': 8.8, 'bad': 5}}
 
-        self.assertRaises(InputValidationError, ser.validate_dict, cfg, bad_config)
+        self.assertRaises(InputValidationError, ser.validate_dict, bad_config, cfg)
 
     def test_validate_dict_invalid_dict_field_2(self):
         """
@@ -206,7 +206,7 @@ class TestVersionedObjectExceptions(TestCase):
         cfg = TestConfig()
         bad_config = {'var1': 1, 'var2': {'var1': "hey", 'val2': 8.8}}
 
-        self.assertRaises(InputValidationError, ser.validate_dict, cfg, bad_config)
+        self.assertRaises(InputValidationError, ser.validate_dict, bad_config, cfg)
 
     def test_validate_dict_invalid_filter(self):
         """
@@ -219,7 +219,7 @@ class TestVersionedObjectExceptions(TestCase):
 
         ser = Serializer()
         cfg = TestConfig()
-        self.assertRaises(InvalidFilterError, ser.validate_dict, cfg, {}, only=['a'], ignore=['b'])
+        self.assertRaises(InvalidFilterError, ser.validate_dict, {}, cfg, only=['a'], ignore=['b'])
 
     def test_nested_version_exception_1(self):
         """

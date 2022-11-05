@@ -42,10 +42,10 @@ class Serializer(object):
     """
     Class for serializing/deserializing any VersionedObject types
     """
-    def __init__(self):
-        pass
+    def __init__(self, obj=None):
+        self.obj = obj
 
-    def to_dict(self, obj, only=[], ignore=[]):
+    def to_dict(self, obj=None, only=[], ignore=[]):
         """
         Convert object to a dict, suitable for passing to the json library
 
@@ -56,14 +56,15 @@ class Serializer(object):
         :return: object data as a dict
         :rtype: dict
         """
-        return _obj_to_dict(obj, only, ignore)
+        return _obj_to_dict(obj if obj is not None else self.obj, only, ignore)
 
-    def validate_dict(self, obj, attrs, only=[], ignore=[]):
+    def validate_dict(self, attrs, obj=None, only=[], ignore=[]):
         """
         Validate a versioned object in dict form.
 
-        :param obj: VersionedObject instance you want to validate the dict against
         :param dict attrs: dict to validate
+        :param obj: VersionedObject instance you want to validate the dict against. If unset,\
+                    object passed to __init__ will be used instead
         :param list only: Whitelist of attribute names to validate (cannot be used with 'ignore')
         :param list ignore: Blacklist of attribute names to exclude from validation (cannot be used with 'only')
 
@@ -75,6 +76,8 @@ class Serializer(object):
         """
         if only and ignore:
             raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
+
+        obj = obj if obj is not None else self.obj
 
         # Create a map of all object attribute names, to track which attributes have
         # also been seen in the dict
@@ -110,12 +113,13 @@ class Serializer(object):
         if missing:
             raise InputValidationError(f"Attributes missing from dict: {','.join(missing)}")
 
-    def from_dict(self, obj, attrs, validate=True, only=[], ignore=[]):
+    def from_dict(self, attrs, obj=None, validate=True, only=[], ignore=[]):
         """
         Populate instance attributes of a VersionedObjbect instance, with object data from a dict.
 
-        :param obj: VersionedObject instance to populate
         :param dict attrs: dict containing object data
+        :param obj: VersionedObject instance to populate. If unset,\
+                    object passed to __init__ will be used instead
         :param bool validate: If false, pre-validation will be skipped for the input data.\
             This may be useful if you want to load a partial object that is missing some fields,\
             and don't want to mess with filtering.
@@ -132,13 +136,15 @@ class Serializer(object):
         if only and ignore:
             raise InvalidFilterError("Cannot use both 'only' and 'ignore'")
 
+        obj = obj if obj is not None else self.obj
+
         version = obj.__dict__.get('version', None)
         migration_result, attrs = obj._vobj__migrate(version, attrs)
         if (migration_result is not None) and (not migration_result.success):
             return migration_result
 
         if validate:
-            self.validate_dict(obj, attrs, only, ignore)
+            self.validate_dict(attrs, obj, only, ignore)
 
         # Delete version field from dict, if it exists
         if 'version' in attrs:
@@ -153,12 +159,13 @@ class Serializer(object):
 
         return migration_result
 
-    def to_json(self, obj, indent=None, only=[], ignore=[]):
+    def to_json(self, obj=None, indent=None, only=[], ignore=[]):
         """
         Generate a JSON string containing all data from a VersionedObject instance
 
-        :param obj: VersionedObject instance
         :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
+        :param obj: VersionedObject instance to serialize. If unset, object passed to __init__\
+                    will be used instead
         :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
 
@@ -167,12 +174,13 @@ class Serializer(object):
         """
         return json.dumps(self.to_dict(obj, only, ignore), indent=indent)
 
-    def from_json(self, obj, jsonstr, validate=True, only=[], ignore=[]):
+    def from_json(self, jsonstr, obj=None, validate=True, only=[], ignore=[]):
         """
         Populate instance attributes of a VersionedObject instance with object data from a JSON string.
 
-        :param obj: VersionedObject instance to populate
         :param str jsonstr: JSON string to load
+        :param obj: VersionedObject instance to populate. If unset, object passed to __init__\
+            will be used instead
         :param bool validate: If false, pre-validation will be skipped for the input data.\
             This may be useful if you want to load a partial object that is missing some fields,\
             and don't want to mess with filtering.
@@ -192,14 +200,15 @@ class Serializer(object):
         except JSONDecodeError:
             raise LoadObjectError("JSON decode failure")
 
-        return self.from_dict(obj, d, validate, only, ignore)
+        return self.from_dict(d, obj, validate, only, ignore)
 
-    def to_file(self, obj, filename, indent=None, only=[], ignore=[]):
+    def to_file(self, filename, obj=None, indent=None, only=[], ignore=[]):
         """
         Save VersionedObject instance data to a JSON file
 
-        :param obj: VersionedObject instance
         :param str filename: Name of file to write
+        :param obj: VersionedObject instance to serialize. If unset, object passed to __init__\
+            will be used instead.
         :param int indent: Indentation level to use, in columns. If None, everything will be on one line.
         :param list only: Whitelist of field names to serialize (cannot be used with blacklist)
         :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)
@@ -207,12 +216,13 @@ class Serializer(object):
         with open(filename, 'w') as fh:
             fh.write(self.to_json(obj, indent, only, ignore))
 
-    def from_file(self, obj, filename, validate=True, only=[], ignore=[]):
+    def from_file(self, filename, obj=None, validate=True, only=[], ignore=[]):
         """
         Populate instance attributes of a VersionedObject instance with object data from a JSON file.
 
-        :param obj: VersionedObject instance to populate
         :param str filename: Name of file to load
+        :param obj: VersionedObject instance to populate. If unset, object passed to __init__ will\
+            be used instead
         :param bool validate: If false, pre-validation will be skipped for the input data.\
             This may be useful if you want to load a partial object that is missing some fields,\
             and don't want to mess with filtering.
@@ -228,15 +238,17 @@ class Serializer(object):
         :rtype: MigrationResult
         """
         with open(filename, 'r') as fh:
-            return self.from_json(obj, fh.read(), validate, only, ignore)
+            return self.from_json(fh.read(), obj, validate, only, ignore)
 
-    def reset_to_defaults(self, obj):
+    def reset_to_defaults(self, obj=None):
         """
         Resets instance attribute values of a VersionedObject instance back to the
         default values defined in the matching class attributes.
 
-        :param obj: VersionedObject instance to reset
+        :param obj: VersionedObject instance to reset. If unset, object passed to __init__\
+            will be used instead
         """
+        obj = obj if obj is not None else self.obj
         obj._vobj__populate_instance()
 
 
@@ -255,13 +267,13 @@ class FileLoader(object):
             raise ValueError("First argument must be a VersionedObject instance or class object")
 
         self.filename = filename
-        self.serializer = Serializer()
+        self.serializer = Serializer(self.obj)
 
     def __enter__(self):
         if os.path.isfile(self.filename):
-            self.serializer.from_file(self.obj, self.filename)
+            self.serializer.from_file(self.filename)
 
         return self.obj
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        self.serializer.to_file(self.obj, self.filename)
+        self.serializer.to_file(self.filename)
