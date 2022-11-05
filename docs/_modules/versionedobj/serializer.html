@@ -111,10 +111,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for serializing/deserializing any VersionedObject types</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Serializer.__init__"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+<div class="viewcode-block" id="Serializer.__init__"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span></div>
 
-<div class="viewcode-block" id="Serializer.to_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="Serializer.to_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert object to a dict, suitable for passing to the json library</span>
 
@@ -125,14 +125,15 @@
 <span class="sd">        :return: object data as a dict</span>
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_obj_to_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_obj_to_dict</span><span class="p">(</span><span class="n">obj</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Serializer.validate_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.validate_dict">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="Serializer.validate_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.validate_dict">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate a versioned object in dict form.</span>
 
-<span class="sd">        :param obj: VersionedObject instance you want to validate the dict against</span>
 <span class="sd">        :param dict attrs: dict to validate</span>
+<span class="sd">        :param obj: VersionedObject instance you want to validate the dict against. If unset,\</span>
+<span class="sd">                    object passed to __init__ will be used instead</span>
 <span class="sd">        :param list only: Whitelist of attribute names to validate (cannot be used with &#39;ignore&#39;)</span>
 <span class="sd">        :param list ignore: Blacklist of attribute names to exclude from validation (cannot be used with &#39;only&#39;)</span>
 
@@ -144,6 +145,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span>
 
         <span class="c1"># Create a map of all object attribute names, to track which attributes have</span>
         <span class="c1"># also been seen in the dict</span>
@@ -179,12 +182,13 @@
         <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InputValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attributes missing from dict: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Serializer.from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="Serializer.from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Populate instance attributes of a VersionedObjbect instance, with object data from a dict.</span>
 
-<span class="sd">        :param obj: VersionedObject instance to populate</span>
 <span class="sd">        :param dict attrs: dict containing object data</span>
+<span class="sd">        :param obj: VersionedObject instance to populate. If unset,\</span>
+<span class="sd">                    object passed to __init__ will be used instead</span>
 <span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
 <span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
 <span class="sd">            and don&#39;t want to mess with filtering.</span>
@@ -201,13 +205,15 @@
         <span class="k">if</span> <span class="n">only</span> <span class="ow">and</span> <span class="n">ignore</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidFilterError</span><span class="p">(</span><span class="s2">&quot;Cannot use both &#39;only&#39; and &#39;ignore&#39;&quot;</span><span class="p">)</span>
 
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span>
+
         <span class="n">version</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">migration_result</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_vobj__migrate</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">migration_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">migration_result</span><span class="o">.</span><span class="n">success</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">migration_result</span>
 
         <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate_dict</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
 
         <span class="c1"># Delete version field from dict, if it exists</span>
         <span class="k">if</span> <span class="s1">&#39;version&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
@@ -222,12 +228,13 @@
 
         <span class="k">return</span> <span class="n">migration_result</span></div>
 
-<div class="viewcode-block" id="Serializer.to_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="Serializer.to_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a JSON string containing all data from a VersionedObject instance</span>
 
-<span class="sd">        :param obj: VersionedObject instance</span>
 <span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
+<span class="sd">        :param obj: VersionedObject instance to serialize. If unset, object passed to __init__\</span>
+<span class="sd">                    will be used instead</span>
 <span class="sd">        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)</span>
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
 
@@ -236,12 +243,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Serializer.from_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="Serializer.from_json"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonstr</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Populate instance attributes of a VersionedObject instance with object data from a JSON string.</span>
 
-<span class="sd">        :param obj: VersionedObject instance to populate</span>
 <span class="sd">        :param str jsonstr: JSON string to load</span>
+<span class="sd">        :param obj: VersionedObject instance to populate. If unset, object passed to __init__\</span>
+<span class="sd">            will be used instead</span>
 <span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
 <span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
 <span class="sd">            and don&#39;t want to mess with filtering.</span>
@@ -261,14 +269,15 @@
         <span class="k">except</span> <span class="n">JSONDecodeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">LoadObjectError</span><span class="p">(</span><span class="s2">&quot;JSON decode failure&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Serializer.to_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.to_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="Serializer.to_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.to_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save VersionedObject instance data to a JSON file</span>
 
-<span class="sd">        :param obj: VersionedObject instance</span>
 <span class="sd">        :param str filename: Name of file to write</span>
+<span class="sd">        :param obj: VersionedObject instance to serialize. If unset, object passed to __init__\</span>
+<span class="sd">            will be used instead.</span>
 <span class="sd">        :param int indent: Indentation level to use, in columns. If None, everything will be on one line.</span>
 <span class="sd">        :param list only: Whitelist of field names to serialize (cannot be used with blacklist)</span>
 <span class="sd">        :param list ignore: Blacklist of field names to ignore (cannot be used with whitelist)</span>
@@ -276,12 +285,13 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Serializer.from_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="Serializer.from_file"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.from_file">[docs]</a>    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="p">[],</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Populate instance attributes of a VersionedObject instance with object data from a JSON file.</span>
 
-<span class="sd">        :param obj: VersionedObject instance to populate</span>
 <span class="sd">        :param str filename: Name of file to load</span>
+<span class="sd">        :param obj: VersionedObject instance to populate. If unset, object passed to __init__ will\</span>
+<span class="sd">            be used instead</span>
 <span class="sd">        :param bool validate: If false, pre-validation will be skipped for the input data.\</span>
 <span class="sd">            This may be useful if you want to load a partial object that is missing some fields,\</span>
 <span class="sd">            and don&#39;t want to mess with filtering.</span>
@@ -297,15 +307,17 @@
 <span class="sd">        :rtype: MigrationResult</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">obj</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Serializer.reset_to_defaults"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.reset_to_defaults">[docs]</a>    <span class="k">def</span> <span class="nf">reset_to_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="Serializer.reset_to_defaults"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.serializer.Serializer.reset_to_defaults">[docs]</a>    <span class="k">def</span> <span class="nf">reset_to_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resets instance attribute values of a VersionedObject instance back to the</span>
 <span class="sd">        default values defined in the matching class attributes.</span>
 
-<span class="sd">        :param obj: VersionedObject instance to reset</span>
+<span class="sd">        :param obj: VersionedObject instance to reset. If unset, object passed to __init__\</span>
+<span class="sd">            will be used instead</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">_vobj__populate_instance</span><span class="p">()</span></div></div>
 
 
@@ -324,16 +336,16 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;First argument must be a VersionedObject instance or class object&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span> <span class="o">=</span> <span class="n">Serializer</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span> <span class="o">=</span> <span class="n">Serializer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">exc_traceback</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serializer</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
