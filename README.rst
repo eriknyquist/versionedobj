@@ -145,37 +145,74 @@ and ``from_file`` methods to serialize/deserialize data to/from a JSON file:
         friend_list = ["user1", "user2", "user3"]
         display_config = DisplayConfig() # VersionedObjects can be nested
 
-    # Create a serializer instance
-    serializer = Serializer()
-
     # Create an instance of our VersionedObject
     obj = UserConfig()
 
+    # Create a serializer instance
+    serializer = Serializer(obj)
+
     # Save object instance to JSON file
-    serializer.to_file(obj, 'user_config.json', indent=4)
+    serializer.to_file('user_config.json', indent=4)
 
     # Load JSON file and populate the same object instance
-    serializer.from_file(obj, 'user_config.json')
+    serializer.from_file('user_config.json')
 
 You can also save/load object data as a JSON string:
 
 .. code:: python
 
     # Save object instance to JSON string
-    obj_as_json = serializer.to_json(obj, indent=4)
+    obj_as_json = serializer.to_json(indent=4)
 
     # Load object instance from JSON string
-    serializer.from_json(obj, obj_as_json)
+    serializer.from_json(obj_as_json)
 
 Or, as a dict:
 
 .. code:: python
 
     # Save object instance to dict
-    obj_as_dict = serializer.to_dict(obj)
+    obj_as_dict = serializer.to_dict()
 
     # Load object instance from dict
-    serializer.from_dict(obj, obj_as_dict)
+    serializer.from_dict(obj_as_dict)
+
+Using one Serializer instance with multiple object types
+--------------------------------------------------------
+
+For convenience, you can pass an object instance when you create a ``versionedobj.Serializer``,
+and this object will be used for all future serialization/deserialization operations,
+so that you don't have to pass in the object instance every time (as shown in previous
+examples).
+
+However, this is not required, and you can optionally provide an object instance
+for all serialization/deserialization methods, if you want to (for example) use
+a single ``versionedobj.Serializer`` instance for multiple object types:
+
+.. code:: python
+
+    from versionedobj import VersionedObject, Serializer
+
+    class ObjectA(VersionedObject):
+        name = "john"
+        age = 44
+
+    class ObjectB(VersionedObject):
+        last_login_time = 12345678
+        enabled = False
+
+    # Create an instance of each object
+    a = ObjectA()
+    b = ObjectB()
+    serializer = Serializer()
+
+    # Serialize both objects using the same serializer
+    a_jsonstr = serializer.to_json(a)
+    b_jsonstr = serializer.to_json(b)
+
+    # De-serialize both objects using the same serializer
+    serializer.from_json(a_jsonstr, a)
+    serializer.from_json(b_jsonstr, b)
 
 Filtering serialization/deserialization output
 ----------------------------------------------
@@ -188,7 +225,7 @@ parameter to specify which fields should be output (effectively a whitelist by f
 
 .. code:: python
 
-    serializer.to_file(obj 'user_config.json', only=['version', 'username', 'display_config.resolution'])
+    serializer.to_file('user_config.json', only=['version', 'username', 'display_config.resolution'])
 
     # Output looks like this:
     #
@@ -204,7 +241,7 @@ The same parameter can be used for de-serializing:
 
 .. code:: python
 
-    serializer.from_file(obj, 'user_config.json', only=['display_config.display_mode'])
+    serializer.from_file('user_config.json', only=['display_config.display_mode'])
 
     # Only the 'display_config.display_mode' field is loaded from the file
 
@@ -217,7 +254,7 @@ by field name):
 
 .. code:: python
 
-    serializer.to_file(obj, 'user_config.json', ignore=['friend_list', 'display_config.volume'])
+    serializer.to_file('user_config.json', ignore=['friend_list', 'display_config.volume'])
 
     # Output looks like this:
     #
@@ -234,7 +271,7 @@ The same parameter can be used for de-serializing:
 
 .. code:: python
 
-    serializer.from_file(obj, 'user_config.json', ignore=['friend_list'])
+    serializer.from_file('user_config.json', ignore=['friend_list'])
 
     # Every field except for the 'friend_list' field is loaded from the file
 
@@ -427,13 +464,13 @@ and loading the object values. You can use the ``Serializer.validate_dict`` meth
         ingredient_2 = "tomatoes"
         ingredient_3 = "garlic"
 
-    serializer = Serializer()
     rcp = Recipe()
+    serializer = Serializer(rcp)
 
-    serializer.validate_dict(rcp, {"ingredient_1": "celery", "ingredient_2": "carrots"})
+    serializer.validate_dict({"ingredient_1": "celery", "ingredient_2": "carrots"})
     # Raises versionedobj.exceptions.InputValidationError because 'ingredient_3' is missing
 
-    serializer.validate_dict(rcp, {"ingredient_1": "celery", "ingredient_2": "carrots", "ingredient_12": "cumin"})
+    serializer.validate_dict({"ingredient_1": "celery", "ingredient_2": "carrots", "ingredient_12": "cumin"})
     # Raises versionedobj.exceptions.InputValidationError because 'ingredient_12' is not a valid attribute
 
 Resetting object instance to default values
@@ -451,19 +488,19 @@ the default values defined in the matching class attributes.
         ingredient_2 = "tomatoes"
         ingredient_3 = "garlic"
 
-    serializer = Serializer()
     rcp = Recipe()
+    serializer = Serializer(rcp)
 
     # Change a value
     rcp.ingredient_1 = "celery"
 
-    print(serializer.to_dict(rcp))
+    print(serializer.to_dict())
     # {"ingredient_1": "celery", "ingredient_2": "tomatoes", "ingredient_3": "garlic"}
 
     # Reset object instance to defaults
-    serializer.reset_to_defaults(obj)
+    serializer.reset_to_defaults()
 
-    print(serializer.to_dict(rcp))
+    print(serializer.to_dict())
     # {"ingredient_1": "onions", "ingredient_2": "tomatoes", "ingredient_3": "garlic"}
 
 Testing object instance equality
