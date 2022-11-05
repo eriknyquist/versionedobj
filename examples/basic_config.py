@@ -14,19 +14,21 @@ class UserConfig(VersionedObject):
     display_config = DisplayConfig()
 
 
-s = Serializer()
 
 # Create an instance of the top-level object
 cfg = UserConfig()
+
+# Create a serializer, and provide the object instance
+s = Serializer(cfg)
 
 # Change some values
 cfg.display_config.volume = 1.0
 cfg.username = "jane doe"
 
 # Save to JSON file
-s.to_file(cfg, 'user_config.json', indent=4)
+s.to_file('user_config.json', indent=4)
 
 # Load from JSON file
-s.from_file(cfg, 'user_config.json')
+s.from_file('user_config.json')
 
-print(s.to_dict(cfg))
+print(s.to_dict())

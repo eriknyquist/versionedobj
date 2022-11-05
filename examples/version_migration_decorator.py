@@ -37,7 +37,7 @@ new_cfg = NewUserConfig()
 old_cfg_json = serializer.to_json(old_cfg)
 
 # Load serialized old object data, with new object instance
-serializer.from_json(new_cfg, old_cfg_json)
+serializer.from_json(old_cfg_json, new_cfg)
 
 # Success, print loaded object attributes
 print(serializer.to_json(new_cfg))

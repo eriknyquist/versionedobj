@@ -1,4 +1,4 @@
-from versionedobj import VersionedObject, CustomValue
+from versionedobj import VersionedObject, Serializer, CustomValue
 
 class TestValue(CustomValue):
     def __init__(self):
@@ -17,6 +17,7 @@ class TestConfig(VersionedObject):
     val2 = TestValue()
 
 cfg = TestConfig()
-s = cfg.to_json(indent=4)
-print(s)
-cfg.from_json(s)
+serializer = Serializer(cfg)
+jsonstr = serializer.to_json(indent=4)
+print(jsonstr)
+serializer.from_json(jsonstr)
