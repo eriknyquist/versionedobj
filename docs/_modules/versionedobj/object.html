@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj.object &mdash; versionedobj v2.0.0 documentation</title>
+  <title>versionedobj.object &mdash; versionedobj v2.0.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
             <a href="../../index.html" class="icon icon-home"> versionedobj
           </a>
               <div class="version">
-                v2.0.0
+                v2.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -264,7 +264,7 @@
     <span class="k">def</span> <span class="nf">_vobj__migrate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="n">old_version</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">version_before_migration</span> <span class="o">=</span> <span class="n">old_version</span>
-        <span class="n">version_after_migration</span> <span class="o">=</span> <span class="n">old_version</span>
+        <span class="n">current_version</span> <span class="o">=</span> <span class="n">old_version</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -273,17 +273,17 @@
 
             <span class="c1"># Attempt migrations</span>
             <span class="k">for</span> <span class="n">fromversion</span><span class="p">,</span> <span class="n">toversion</span><span class="p">,</span> <span class="n">migrate</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_vobj__migrations</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">fromversion</span> <span class="o">==</span> <span class="n">version_after_migration</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fromversion</span> <span class="o">==</span> <span class="n">current_version</span><span class="p">:</span>
                     <span class="n">attrs</span> <span class="o">=</span> <span class="n">migrate</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
 
-                <span class="n">version_after_migration</span> <span class="o">=</span> <span class="n">toversion</span>
-                <span class="k">if</span> <span class="n">toversion</span> <span class="o">==</span> <span class="n">version</span><span class="p">:</span>
-                    <span class="k">break</span>
+                    <span class="n">current_version</span> <span class="o">=</span> <span class="n">toversion</span>
+                    <span class="k">if</span> <span class="n">toversion</span> <span class="o">==</span> <span class="n">version</span><span class="p">:</span>
+                        <span class="k">break</span>
 
-            <span class="k">if</span> <span class="n">version_after_migration</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current_version</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
 
-            <span class="n">result</span><span class="o">.</span><span class="n">version_reached</span> <span class="o">=</span> <span class="n">version_after_migration</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">version_reached</span> <span class="o">=</span> <span class="n">current_version</span>
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">attrs</span>
 
