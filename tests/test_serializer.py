@@ -1192,7 +1192,7 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual("1.0.3", result.target_version)
         self.assertEqual("1.0.0", result.version_reached)
 
-    def test_dict_multiple_migrations(self):
+    def test_dict_multiple_migrations_1(self):
         """
         Tests that from_dict can successfully migrate an object that is 4 versions old,
         to the latest version (migration decorator)
@@ -1249,6 +1249,66 @@ class TestVersionedObjectSerializer(TestCase):
 
         self.assertEqual(True, result.success)
         self.assertEqual(None, result.old_version)
+        self.assertEqual("1.0.3", result.target_version)
+        self.assertEqual("1.0.3", result.version_reached)
+
+    def test_dict_multiple_migrations_2(self):
+        """
+        Tests that from_dict can successfully migrate an object that is 3 versions old,
+        when there are 4 versions total, to the latest version (migration decorator)
+        """
+        # Newest config, with version number added
+        class TestConfig(VersionedObject):
+            version = "1.0.3"
+            var1 = 1
+            var2 = 2
+            var3 = 3
+            var4 = 4
+            var5 = 5
+            var6 = 6
+
+        # oldest config, different format, and without version number
+        fake_config = {'version': '1.0.1', 'var1': 11, 'var2': 12, 'var3': 113, 'var4': 114}
+
+        # Add migration from unversioned to 1.0.0
+        @migration(TestConfig, None, "1.0.0")
+        def migrate_none_to_100(attrs):
+            attrs['var3'] = 13
+            return attrs
+
+        # Add migration from 1.0.0 to 1.0.1
+        @migration(TestConfig, "1.0.0", "1.0.1")
+        def migrate_100_to_101(attrs):
+            attrs['var4'] = 14
+            return attrs
+
+        # Add migration from 1.0.1 to 1.0.2
+        @migration(TestConfig, "1.0.1", "1.0.2")
+        def migrate_101_to_102(attrs):
+            attrs['var5'] = 15
+            return attrs
+
+        # Add migration from 1.0.2 to 1.0.3
+        @migration(TestConfig, "1.0.2", "1.0.3")
+        def migrate_102_to_103(attrs):
+            attrs['var6'] = 16
+            return attrs
+
+        # Load oldest config from dict
+        ser = Serializer()
+        cfg = TestConfig()
+        result = ser.from_dict(fake_config, cfg)
+
+        # Verify all migrations were performed
+        self.assertEqual(11, cfg.var1)
+        self.assertEqual(12, cfg.var2)
+        self.assertEqual(113, cfg.var3)
+        self.assertEqual(114, cfg.var4)
+        self.assertEqual(15, cfg.var5)
+        self.assertEqual(16, cfg.var6)
+
+        self.assertEqual(True, result.success)
+        self.assertEqual("1.0.1", result.old_version)
         self.assertEqual("1.0.3", result.target_version)
         self.assertEqual("1.0.3", result.version_reached)
 

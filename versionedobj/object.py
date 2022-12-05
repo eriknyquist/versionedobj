@@ -195,7 +195,7 @@ class VersionedObject(metaclass=__Meta):
     def _vobj__migrate(cls, version, attrs):
         old_version = attrs.get('version', None)
         version_before_migration = old_version
-        version_after_migration = old_version
+        current_version = old_version
 
         result = None
 
@@ -204,17 +204,17 @@ class VersionedObject(metaclass=__Meta):
 
             # Attempt migrations
             for fromversion, toversion, migrate in cls._vobj__migrations:
-                if fromversion == version_after_migration:
+                if fromversion == current_version:
                     attrs = migrate(attrs)
 
-                version_after_migration = toversion
-                if toversion == version:
-                    break
+                    current_version = toversion
+                    if toversion == version:
+                        break
 
-            if version_after_migration != version:
+            if current_version != version:
                 result.success = False
 
-            result.version_reached = version_after_migration
+            result.version_reached = current_version
 
         return result, attrs
 
