@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedobj import (VersionedObject, FileLoader, LoadObjectError, InvalidFilterError, Serializer, CustomValue, migration)
+from versionedobj import (VersionedObject, FileLoader, LoadObjectError, InvalidFilterError, Serializer, CustomValue, migration, List)
 
 
 class TestVersionedObjectSerializer(TestCase):
@@ -1614,3 +1614,190 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertRaises(ValueError, FileLoader, [12], filename)
         self.assertRaises(ValueError, FileLoader, {12:2}, filename)
 
+    def test_to_from_dict_type_list_1(self):
+        """
+        Tests that a VersionedObject containing a types.List object is serialized to,
+        and deserialized from a dict as expected
+        """
+        class TestVal1(VersionedObject):
+            var1 = 55
+            var2 = 66
+
+        class TestVal2(VersionedObject):
+            var1 = 33
+            var2 = 44
+            var3 = TestVal1()
+
+        class TestConfig(VersionedObject):
+            var1 = 11
+            var2 = 22
+            var3 = List([TestVal2(), TestVal2()])
+
+        ser = Serializer()
+        cfg = TestConfig()
+
+        expected_dict = {
+            'var1': 11,
+            'var2': 22,
+            'var3': [
+                {'var1': 33, 'var2': 44, 'var3': {'var1': 55, 'var2': 66}},
+                {'var1': 33, 'var2': 44, 'var3': {'var1': 55, 'var2': 66}},
+            ],
+        }
+
+        cfg2 = TestConfig()
+        actual_dict = ser.to_dict(cfg)
+        self.assertEqual(actual_dict, expected_dict)
+
+        ser.from_dict(actual_dict, cfg2)
+
+        self.assertEqual(cfg2.var1, cfg.var1)
+        self.assertEqual(cfg2.var2, cfg.var2)
+        self.assertEqual(cfg2.var3[0].var1, cfg.var3[0].var1)
+        self.assertEqual(cfg2.var3[0].var2, cfg.var3[0].var2)
+        self.assertEqual(cfg2.var3[1].var1, cfg.var3[1].var1)
+        self.assertEqual(cfg2.var3[1].var2, cfg.var3[1].var2)
+
+    def test_to_from_dict_type_list_2(self):
+        """
+        Tests that a VersionedObject containing a types.List object is serialized to,
+        and deserialized from a dict as expected
+        """
+        class TestVal1(VersionedObject):
+            var1 = 55
+            var2 = 66
+
+        class TestVal2(VersionedObject):
+            var1 = 33
+            var2 = 44
+            var3 = TestVal1()
+
+        class TestConfig(VersionedObject):
+            var1 = 11
+            var2 = 22
+            var3 = List(TestVal2)
+
+        ser = Serializer()
+        cfg = TestConfig()
+
+        cfg.var3.append(TestVal2())
+        cfg.var3.append(TestVal2())
+        cfg.var3[0].var1 = 1
+        cfg.var3[0].var2 = 2
+        cfg.var3[0].var3.var1 = 3
+        cfg.var3[0].var3.var2 = 4
+        cfg.var3[1].var1 = 5
+        cfg.var3[1].var2 = 6
+        cfg.var3[1].var3.var1 = 7
+        cfg.var3[1].var3.var2 = 8
+
+        expected_dict = {
+            'var1': 11,
+            'var2': 22,
+            'var3': [
+                {'var1': 1, 'var2': 2, 'var3': {'var1': 3, 'var2': 4}},
+                {'var1': 5, 'var2': 6, 'var3': {'var1': 7, 'var2': 8}},
+            ],
+        }
+
+        cfg2 = TestConfig()
+        actual_dict = ser.to_dict(cfg)
+        self.assertEqual(actual_dict, expected_dict)
+
+        ser.from_dict(actual_dict, cfg2)
+
+        self.assertEqual(cfg2.var1, cfg.var1)
+        self.assertEqual(cfg2.var2, cfg.var2)
+        self.assertEqual(cfg2.var3[0].var1, cfg.var3[0].var1)
+        self.assertEqual(cfg2.var3[0].var2, cfg.var3[0].var2)
+        self.assertEqual(cfg2.var3[1].var1, cfg.var3[1].var1)
+        self.assertEqual(cfg2.var3[1].var2, cfg.var3[1].var2)
+
+    def test_to_from_json_type_list_1(self):
+        """
+        Tests that a VersionedObject containing a types.List object is serialized to,
+        and deserialized from a JSON string as expected
+        """
+        class TestVal1(VersionedObject):
+            var1 = 55
+            var2 = 66
+
+        class TestVal2(VersionedObject):
+            var1 = 33
+            var2 = 44
+            var3 = TestVal1()
+
+        class TestConfig(VersionedObject):
+            var1 = 11
+            var2 = 22
+            var3 = List([TestVal2(), TestVal2()])
+
+        ser = Serializer()
+        cfg = TestConfig()
+
+        expected_json = ('{"var1": 11, "var2": 22, "var3": [{"var1": 33, "var2":'
+                         ' 44, "var3": {"var1": 55, "var2": 66}}, {"var1": 33, '
+                         '"var2": 44, "var3": {"var1": 55, "var2": 66}}]}')
+
+        cfg2 = TestConfig()
+        actual_json = ser.to_json(cfg)
+        self.assertEqual(actual_json, expected_json)
+
+        ser.from_json(actual_json, cfg2)
+
+        self.assertEqual(cfg2.var1, cfg.var1)
+        self.assertEqual(cfg2.var2, cfg.var2)
+        self.assertEqual(cfg2.var3[0].var1, cfg.var3[0].var1)
+        self.assertEqual(cfg2.var3[0].var2, cfg.var3[0].var2)
+        self.assertEqual(cfg2.var3[1].var1, cfg.var3[1].var1)
+        self.assertEqual(cfg2.var3[1].var2, cfg.var3[1].var2)
+
+    def test_to_from_json_type_list_2(self):
+        """
+        Tests that a VersionedObject containing a types.List object is serialized to,
+        and deserialized from a JSON string as expected
+        """
+        class TestVal1(VersionedObject):
+            var1 = 55
+            var2 = 66
+
+        class TestVal2(VersionedObject):
+            var1 = 33
+            var2 = 44
+            var3 = TestVal1()
+
+        class TestConfig(VersionedObject):
+            var1 = 11
+            var2 = 22
+            var3 = List(TestVal2)
+
+        ser = Serializer()
+        cfg = TestConfig()
+
+        cfg.var3.append(TestVal2())
+        cfg.var3.append(TestVal2())
+        cfg.var3[0].var1 = 1
+        cfg.var3[0].var2 = 2
+        cfg.var3[0].var3.var1 = 3
+        cfg.var3[0].var3.var2 = 4
+        cfg.var3[1].var1 = 5
+        cfg.var3[1].var2 = 6
+        cfg.var3[1].var3.var1 = 7
+        cfg.var3[1].var3.var2 = 8
+
+        expected_json = ('{"var1": 11, "var2": 22, "var3": [{"var1": 1, "var2": '
+                         '2, "var3": {"var1": 3, "var2": 4}}, {"var1": 5, "var2": '
+                         '6, "var3": {"var1": 7, "var2": 8}}]}')
+
+        cfg2 = TestConfig()
+        actual_json = ser.to_json(cfg)
+        self.assertEqual(actual_json, expected_json)
+
+        ser.from_json(actual_json, cfg2)
+
+        self.assertEqual(cfg2.var1, cfg.var1)
+        self.assertEqual(cfg2.var2, cfg.var2)
+        self.assertEqual(cfg2.var3[0].var1, cfg.var3[0].var1)
+        self.assertEqual(cfg2.var3[0].var2, cfg.var3[0].var2)
+        self.assertEqual(cfg2.var3[1].var1, cfg.var3[1].var1)
+        self.assertEqual(cfg2.var3[1].var2, cfg.var3[1].var2)
