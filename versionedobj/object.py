@@ -1,4 +1,5 @@
 import json
+import copy
 import sys
 import inspect
 
@@ -178,6 +179,8 @@ class VersionedObject(metaclass=__Meta):
                 vobj_class = val.__class__
             elif inspect.isclass(val) and issubclass(val, VersionedObject):
                 vobj_class = val
+            elif isinstance(val, CustomValue):
+                val = copy.deepcopy(val)
 
             if vobj_class:
                 if hasattr(val, 'version'):

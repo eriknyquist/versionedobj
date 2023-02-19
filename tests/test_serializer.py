@@ -1801,3 +1801,69 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(cfg2.var3[0].var2, cfg.var3[0].var2)
         self.assertEqual(cfg2.var3[1].var1, cfg.var3[1].var1)
         self.assertEqual(cfg2.var3[1].var2, cfg.var3[1].var2)
+
+    def test_loading_doesnt_change_default_values(self):
+        """
+        Tests that default class values are maintained after loading non-default values with from_dict
+        """
+        class TestConfig(VersionedObject):
+            var1 = 1
+            var2 = 2
+
+        serializer = Serializer()
+        config = TestConfig()
+
+        self.assertEqual(config.var1, 1)
+        self.assertEqual(config.var2, 2)
+
+        serializer.from_dict({"var1": 3, "var2": 4}, config)
+
+        config2 = TestConfig()
+        self.assertEqual(config.var1, 3)
+        self.assertEqual(config.var2, 4)
+        self.assertEqual(config2.var1, 1)
+        self.assertEqual(config2.var2, 2)
+
+    def test_loading_doesnt_change_default_values_nested(self):
+        """
+        Tests that default class values are maintained after loading non-default values with from_dict,
+        nested config object
+        """
+        class TestConfig2(VersionedObject):
+            var1 = 1
+
+        class TestConfig(VersionedObject):
+            var1 = TestConfig2()
+
+        serializer = Serializer()
+        config = TestConfig()
+
+        self.assertEqual(config.var1.var1, 1)
+
+        serializer.from_dict({"var1": {"var1": 2}}, config)
+
+        config2 = TestConfig()
+        self.assertEqual(config.var1.var1, 2)
+        self.assertEqual(config2.var1.var1, 1)
+
+    def test_loading_doesnt_change_default_values_listfield(self):
+        """
+        Tests that default class values are maintained after loading non-default values with from_dict
+        (object contains a ListField)
+        """
+        class TestData(VersionedObject):
+            var1 = 1
+
+        class TestConfig(VersionedObject):
+            var1 = ListField(TestData)
+
+        serializer = Serializer()
+        config = TestConfig()
+
+        self.assertEqual(len(config.var1), 0)
+
+        serializer.from_dict({"var1": [{"var1": 99}]}, config)
+
+        config2 = TestConfig()
+        self.assertEqual(len(config.var1), 1)
+        self.assertEqual(len(config2.var1), 0)
