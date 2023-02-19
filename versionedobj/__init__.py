@@ -1,4 +1,4 @@
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 
 from versionedobj.types import ListField
 from versionedobj.object import VersionedObject, CustomValue, migration
