@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj.object &mdash; versionedobj v2.0.1 documentation</title>
+  <title>versionedobj.object &mdash; versionedobj v2.0.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +24,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> versionedobj
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            versionedobj
           </a>
               <div class="version">
-                v2.0.1
+                v2.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,9 +59,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>versionedobj.object</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">versionedobj.object</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -76,7 +80,7 @@
 
 
 <div class="viewcode-block" id="add_migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.add_migration">[docs]</a><span class="k">def</span> <span class="nf">add_migration</span><span class="p">(</span><span class="n">migration_func</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add a migration function to an object class. Use this function to register a</span>
 <span class="sd">    migration function that should be used for migrating an object from one version</span>
 <span class="sd">    to another. This is an equivalent alternative to the versionedobj.objbect.migration</span>
@@ -97,7 +101,7 @@
 
 
 <div class="viewcode-block" id="migration"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.migration">[docs]</a><span class="k">def</span> <span class="nf">migration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_version</span><span class="p">,</span> <span class="n">to_version</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator for adding a migration function to an object class. Use this</span>
 <span class="sd">    decorator on any function or method that should be used for migrating an</span>
 <span class="sd">    object from one version to another. This is an equivalent alternative to the</span>
@@ -115,7 +119,7 @@
 
 
 <div class="viewcode-block" id="MigrationResult"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.MigrationResult">[docs]</a><span class="k">class</span> <span class="nc">MigrationResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Value returned by Serializer.from_dict, Serializer.from_file, and Serializer.from_json methods,</span>
 <span class="sd">    if a successful or partial object migration was performed.</span>
 
@@ -133,12 +137,12 @@
 
 
 <div class="viewcode-block" id="CustomValue"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.CustomValue">[docs]</a><span class="k">class</span> <span class="nc">CustomValue</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract class that can be sub-classed if you want to serialize/deserialize</span>
 <span class="sd">    a custom class that the standard JSON parser is not handling the way you want</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="CustomValue.to_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.CustomValue.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert this object instance to something that is suitable for json.dump</span>
 
 <span class="sd">        :return: object instance data as a dict, or a single value</span>
@@ -147,7 +151,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CustomValue.from_dict"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.CustomValue.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load this object instance with values from a dict returned by json.load</span>
 
 <span class="sd">        :param dict attrs: object instance data</span>
@@ -156,7 +160,7 @@
 
 
 <span class="k">class</span> <span class="nc">__Meta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Metaclass for VersionedObject, creates the &#39;migrations&#39; class attribute</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
@@ -165,13 +169,13 @@
 
 
 <div class="viewcode-block" id="VersionedObject"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject">[docs]</a><span class="k">class</span> <span class="nc">VersionedObject</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">__Meta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Versioned object class supporting saving/loading to/from JSON files, and</span>
 <span class="sd">    migrating older files to the current version</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="VersionedObject.__init__"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.object.VersionedObject.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_values</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param dict: map of initial values. Keys are the field name, and values are\</span>
 <span class="sd">            the initial values to set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

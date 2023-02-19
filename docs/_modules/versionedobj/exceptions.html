@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj.exceptions &mdash; versionedobj v2.0.1 documentation</title>
+  <title>versionedobj.exceptions &mdash; versionedobj v2.0.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +24,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> versionedobj
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            versionedobj
           </a>
               <div class="version">
-                v2.0.1
+                v2.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,9 +59,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>versionedobj.exceptions</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">versionedobj.exceptions</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,28 +73,28 @@
   <h1>Source code for versionedobj.exceptions</h1><div class="highlight"><pre>
 <span></span>
 <div class="viewcode-block" id="InvalidFilterError"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.exceptions.InvalidFilterError">[docs]</a><span class="k">class</span> <span class="nc">InvalidFilterError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised whenever &#39;only&#39; and &#39;ignore&#39; filters are used at the same time</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="LoadObjectError"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.exceptions.LoadObjectError">[docs]</a><span class="k">class</span> <span class="nc">LoadObjectError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised whenever saved object data cannot be loaded because of a JSON parser error</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="InputValidationError"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.exceptions.InputValidationError">[docs]</a><span class="k">class</span> <span class="nc">InputValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised whenever validation of a serialized object fails</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="InvalidVersionAttributeError"><a class="viewcode-back" href="../../versionedobj.html#versionedobj.exceptions.InvalidVersionAttributeError">[docs]</a><span class="k">class</span> <span class="nc">InvalidVersionAttributeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised whenever a nested VersionedObject has a &#39;version&#39; attribute</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>

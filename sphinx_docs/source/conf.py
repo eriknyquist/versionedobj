@@ -22,7 +22,7 @@ project = 'versionedobj'
 copyright = '2022, Erik K. Nyquist'
 author = 'Erik K. Nyquist'
 
-version = 'v2.0.1'
+version = 'v2.0.2'
 
 # The full version, including alpha/beta/rc tags
 release = version
@@ -59,7 +59,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static', '../../performance_graph.png']
+html_static_path = ['_static', '../../images/performance_graph.png']
 
 def skip(app, what, name, obj, would_skip, options):
     if name == "__init__":

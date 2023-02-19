@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj &mdash; versionedobj v2.0.1 documentation</title>
+  <title>versionedobj &mdash; versionedobj v2.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -26,14 +27,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> versionedobj
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            versionedobj
           </a>
               <div class="version">
-                v2.0.1
+                v2.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,8 +65,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>versionedobj</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">versionedobj</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -71,21 +76,62 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="versionedobj">
-<h1>versionedobj<a class="headerlink" href="#versionedobj" title="Permalink to this headline"></a></h1>
+  <section id="versionedobj">
+<h1>versionedobj<a class="headerlink" href="#versionedobj" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="versionedobj.html">versionedobj package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="versionedobj.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versionedobj.html#module-versionedobj.object">versionedobj.object module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versionedobj.html#module-versionedobj.exceptions">versionedobj.exceptions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="versionedobj.html#module-versionedobj.serializer">versionedobj.serializer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="versionedobj.html#module-versionedobj.object">versionedobj.object module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.object.CustomValue"><code class="docutils literal notranslate"><span class="pre">CustomValue</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.object.CustomValue.from_dict"><code class="docutils literal notranslate"><span class="pre">CustomValue.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.object.CustomValue.to_dict"><code class="docutils literal notranslate"><span class="pre">CustomValue.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.object.MigrationResult"><code class="docutils literal notranslate"><span class="pre">MigrationResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.object.MigrationResult.__init__"><code class="docutils literal notranslate"><span class="pre">MigrationResult.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.object.VersionedObject"><code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.object.VersionedObject.__init__"><code class="docutils literal notranslate"><span class="pre">VersionedObject.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.object.add_migration"><code class="docutils literal notranslate"><span class="pre">add_migration()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.object.migration"><code class="docutils literal notranslate"><span class="pre">migration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="versionedobj.html#module-versionedobj.exceptions">versionedobj.exceptions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.exceptions.InputValidationError"><code class="docutils literal notranslate"><span class="pre">InputValidationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.exceptions.InvalidFilterError"><code class="docutils literal notranslate"><span class="pre">InvalidFilterError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.exceptions.InvalidVersionAttributeError"><code class="docutils literal notranslate"><span class="pre">InvalidVersionAttributeError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.exceptions.LoadObjectError"><code class="docutils literal notranslate"><span class="pre">LoadObjectError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="versionedobj.html#module-versionedobj.serializer">versionedobj.serializer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.FileLoader"><code class="docutils literal notranslate"><span class="pre">FileLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.FileLoader.__init__"><code class="docutils literal notranslate"><span class="pre">FileLoader.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer"><code class="docutils literal notranslate"><span class="pre">Serializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.__init__"><code class="docutils literal notranslate"><span class="pre">Serializer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.from_dict"><code class="docutils literal notranslate"><span class="pre">Serializer.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.from_file"><code class="docutils literal notranslate"><span class="pre">Serializer.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.from_json"><code class="docutils literal notranslate"><span class="pre">Serializer.from_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.reset_to_defaults"><code class="docutils literal notranslate"><span class="pre">Serializer.reset_to_defaults()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.to_dict"><code class="docutils literal notranslate"><span class="pre">Serializer.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.to_file"><code class="docutils literal notranslate"><span class="pre">Serializer.to_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.to_json"><code class="docutils literal notranslate"><span class="pre">Serializer.to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="versionedobj.html#versionedobj.serializer.Serializer.validate_dict"><code class="docutils literal notranslate"><span class="pre">Serializer.validate_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="versionedobj.html#module-versionedobj">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
+</section>
 
 
            </div>

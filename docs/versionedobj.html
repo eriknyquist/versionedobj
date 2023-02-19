@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj package &mdash; versionedobj v2.0.1 documentation</title>
+  <title>versionedobj package &mdash; versionedobj v2.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -25,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> versionedobj
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            versionedobj
           </a>
               <div class="version">
-                v2.0.1
+                v2.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -43,9 +48,26 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">versionedobj</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">versionedobj package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.object">versionedobj.object module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.exceptions">versionedobj.exceptions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.serializer">versionedobj.serializer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.object">versionedobj.object module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.CustomValue"><code class="docutils literal notranslate"><span class="pre">CustomValue</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.MigrationResult"><code class="docutils literal notranslate"><span class="pre">MigrationResult</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.VersionedObject"><code class="docutils literal notranslate"><span class="pre">VersionedObject</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.add_migration"><code class="docutils literal notranslate"><span class="pre">add_migration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.migration"><code class="docutils literal notranslate"><span class="pre">migration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.exceptions">versionedobj.exceptions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InputValidationError"><code class="docutils literal notranslate"><span class="pre">InputValidationError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError"><code class="docutils literal notranslate"><span class="pre">InvalidFilterError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InvalidVersionAttributeError"><code class="docutils literal notranslate"><span class="pre">InvalidVersionAttributeError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError"><code class="docutils literal notranslate"><span class="pre">LoadObjectError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.serializer">versionedobj.serializer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.serializer.FileLoader"><code class="docutils literal notranslate"><span class="pre">FileLoader</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.serializer.Serializer"><code class="docutils literal notranslate"><span class="pre">Serializer</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-versionedobj">Module contents</a></li>
 </ul>
 </li>
@@ -66,9 +88,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">versionedobj</a> &raquo;</li>
-      <li>versionedobj package</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">versionedobj</a></li>
+      <li class="breadcrumb-item active">versionedobj package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/versionedobj.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -78,13 +100,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="versionedobj-package">
-<h1>versionedobj package<a class="headerlink" href="#versionedobj-package" title="Permalink to this headline"></a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</div>
-<div class="section" id="module-versionedobj.object">
-<span id="versionedobj-object-module"></span><h2>versionedobj.object module<a class="headerlink" href="#module-versionedobj.object" title="Permalink to this headline"></a></h2>
+  <section id="versionedobj-package">
+<h1>versionedobj package<a class="headerlink" href="#versionedobj-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-versionedobj.object">
+<span id="versionedobj-object-module"></span><h2>versionedobj.object module<a class="headerlink" href="#module-versionedobj.object" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="versionedobj.object.CustomValue">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.object.</span></span><span class="sig-name descname"><span class="pre">CustomValue</span></span><a class="reference internal" href="_modules/versionedobj/object.html#CustomValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.CustomValue" title="Permalink to this definition"></a></dt>
@@ -96,7 +118,7 @@ a custom class that the standard JSON parser is not handling the way you want</p
 <span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#CustomValue.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.CustomValue.from_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Load this object instance with values from a dict returned by json.load</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>attrs</strong> (<em>dict</em>) – object instance data</p>
 </dd>
 </dl>
@@ -107,10 +129,10 @@ a custom class that the standard JSON parser is not handling the way you want</p
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#CustomValue.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.CustomValue.to_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Convert this object instance to something that is suitable for json.dump</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>object instance data as a dict, or a single value</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>any object</p>
 </dd>
 </dl>
@@ -125,7 +147,7 @@ a custom class that the standard JSON parser is not handling the way you want</p
 <p>Value returned by Serializer.from_dict, Serializer.from_file, and Serializer.from_json methods,
 if a successful or partial object migration was performed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables</dt>
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>old_version</strong> – the object version before migration was attempted</p></li>
 <li><p><strong>target_version</strong> – the target version of the migration (current version)</p></li>
@@ -151,7 +173,7 @@ migrating older files to the current version</p>
 <dt class="sig sig-object py" id="versionedobj.object.VersionedObject.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/object.html#VersionedObject.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.object.VersionedObject.__init__" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dict</strong> – map of initial values. Keys are the field name, and values are            the initial values to set.</p>
 </dd>
 </dl>
@@ -167,7 +189,7 @@ migration function that should be used for migrating an object from one version
 to another. This is an equivalent alternative to the versionedobj.objbect.migration
 decorator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>migration_func</strong> (<em>callable</em>) – Function to call to perform the migration</p></li>
 <li><p><strong>cls</strong> – Class object to add migration to</p></li>
@@ -186,7 +208,7 @@ decorator on any function or method that should be used for migrating an
 object from one version to another. This is an equivalent alternative to the
 versionedobject.object.add_migration function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cls</strong> – Class object to add migration to</p></li>
 <li><p><strong>from_version</strong> – Version to migrate from. If you are migrating an object that        previously had no version number, use ‘None’ here.</p></li>
@@ -196,9 +218,9 @@ versionedobject.object.add_migration function.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-versionedobj.exceptions">
-<span id="versionedobj-exceptions-module"></span><h2>versionedobj.exceptions module<a class="headerlink" href="#module-versionedobj.exceptions" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-versionedobj.exceptions">
+<span id="versionedobj-exceptions-module"></span><h2>versionedobj.exceptions module<a class="headerlink" href="#module-versionedobj.exceptions" title="Permalink to this heading"></a></h2>
 <dl class="py exception">
 <dt class="sig sig-object py" id="versionedobj.exceptions.InputValidationError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InputValidationError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InputValidationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InputValidationError" title="Permalink to this definition"></a></dt>
@@ -227,9 +249,9 @@ versionedobject.object.add_migration function.</p>
 <p>Exception raised whenever saved object data cannot be loaded because of a JSON parser error</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-versionedobj.serializer">
-<span id="versionedobj-serializer-module"></span><h2>versionedobj.serializer module<a class="headerlink" href="#module-versionedobj.serializer" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-versionedobj.serializer">
+<span id="versionedobj-serializer-module"></span><h2>versionedobj.serializer module<a class="headerlink" href="#module-versionedobj.serializer" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="versionedobj.serializer.FileLoader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.serializer.</span></span><span class="sig-name descname"><span class="pre">FileLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_or_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#FileLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.FileLoader" title="Permalink to this definition"></a></dt>
@@ -259,7 +281,7 @@ serializes the changed object data back to the same file on exit.</p>
 <span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.from_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Populate instance attributes of a VersionedObjbect instance, with object data from a dict.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>attrs</strong> (<em>dict</em>) – dict containing object data</p></li>
 <li><p><strong>obj</strong> – VersionedObject instance to populate. If unset,                    object passed to __init__ will be used instead</p></li>
@@ -268,16 +290,16 @@ serializes the changed object data back to the same file on exit.</p>
 <li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
 </dd>
 </dl>
@@ -288,7 +310,7 @@ serializes the changed object data back to the same file on exit.</p>
 <span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.from_file" title="Permalink to this definition"></a></dt>
 <dd><p>Populate instance attributes of a VersionedObject instance with object data from a JSON file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em>) – Name of file to load</p></li>
 <li><p><strong>obj</strong> – VersionedObject instance to populate. If unset, object passed to __init__ will            be used instead</p></li>
@@ -297,17 +319,17 @@ serializes the changed object data back to the same file on exit.</p>
 <li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
 </dd>
 </dl>
@@ -318,7 +340,7 @@ serializes the changed object data back to the same file on exit.</p>
 <span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.from_json" title="Permalink to this definition"></a></dt>
 <dd><p>Populate instance attributes of a VersionedObject instance with object data from a JSON string.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>jsonstr</strong> (<em>str</em>) – JSON string to load</p></li>
 <li><p><strong>obj</strong> – VersionedObject instance to populate. If unset, object passed to __init__            will be used instead</p></li>
@@ -327,17 +349,17 @@ serializes the changed object data back to the same file on exit.</p>
 <li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if validation of input data fails.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError" title="versionedobj.exceptions.LoadObjectError"><strong>versionedobj.exceptions.LoadObjectError</strong></a> – if JSON parsing fails</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>MigrationResult object describing the object migration that was peformed, or            None if no object migrations were required</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#versionedobj.object.MigrationResult" title="versionedobj.object.MigrationResult">MigrationResult</a></p>
 </dd>
 </dl>
@@ -349,7 +371,7 @@ serializes the changed object data back to the same file on exit.</p>
 <dd><p>Resets instance attribute values of a VersionedObject instance back to the
 default values defined in the matching class attributes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>obj</strong> – VersionedObject instance to reset. If unset, object passed to __init__            will be used instead</p>
 </dd>
 </dl>
@@ -360,17 +382,17 @@ default values defined in the matching class attributes.</p>
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.to_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Convert object to a dict, suitable for passing to the json library</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> – VersionedObject instance to convert</p></li>
 <li><p><strong>only</strong> (<em>list</em>) – Whitelist of field names to serialize (cannot be used with blacklist)</p></li>
 <li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>object data as a dict</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -381,7 +403,7 @@ default values defined in the matching class attributes.</p>
 <span class="sig-name descname"><span class="pre">to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.to_file" title="Permalink to this definition"></a></dt>
 <dd><p>Save VersionedObject instance data to a JSON file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em>) – Name of file to write</p></li>
 <li><p><strong>obj</strong> – VersionedObject instance to serialize. If unset, object passed to __init__            will be used instead.</p></li>
@@ -398,7 +420,7 @@ default values defined in the matching class attributes.</p>
 <span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.to_json" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a JSON string containing all data from a VersionedObject instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>indent</strong> (<em>int</em>) – Indentation level to use, in columns. If None, everything will be on one line.</p></li>
 <li><p><strong>obj</strong> – VersionedObject instance to serialize. If unset, object passed to __init__                    will be used instead</p></li>
@@ -406,10 +428,10 @@ default values defined in the matching class attributes.</p>
 <li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of field names to ignore (cannot be used with whitelist)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Object data as a JSON string</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -420,7 +442,7 @@ default values defined in the matching class attributes.</p>
 <span class="sig-name descname"><span class="pre">validate_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/serializer.html#Serializer.validate_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.serializer.Serializer.validate_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Validate a versioned object in dict form.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>attrs</strong> (<em>dict</em>) – dict to validate</p></li>
 <li><p><strong>obj</strong> – VersionedObject instance you want to validate the dict against. If unset,                    object passed to __init__ will be used instead</p></li>
@@ -428,7 +450,7 @@ default values defined in the matching class attributes.</p>
 <li><p><strong>ignore</strong> (<em>list</em>) – Blacklist of attribute names to exclude from validation (cannot be used with ‘only’)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InputValidationError" title="versionedobj.exceptions.InputValidationError"><strong>versionedobj.exceptions.InputValidationError</strong></a> – if the dict contains            fields that are not found in this object, or if the dict is missing            fields that are found in this object.</p></li>
 <li><p><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError" title="versionedobj.exceptions.InvalidFilterError"><strong>versionedobj.exceptions.InvalidFilterError</strong></a> – if both ‘only’ and ‘ignore’ are provided.</p></li>
@@ -439,11 +461,11 @@ default values defined in the matching class attributes.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-versionedobj">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-versionedobj" title="Permalink to this headline"></a></h2>
-</div>
-</div>
+</section>
+<section id="module-versionedobj">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-versionedobj" title="Permalink to this heading"></a></h2>
+</section>
+</section>
 
 
            </div>
