@@ -490,18 +490,16 @@ the same VersionedObject class.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>v</strong> (<em>versionedobj.VersionedObject</em>) – value to append</p>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if v is not an instance of a VersionedObject</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.types.ListField.from_dict">
 <span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField.from_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Load this object instance with values from a dict returned by json.load</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>attrs</strong> (<em>dict</em>) – object instance data</p>
-</dd>
-</dl>
+<dd><p>Populate the list with data from a dict</p>
 </dd></dl>
 
 <dl class="py method">
@@ -515,19 +513,22 @@ the same VersionedObject class.</p>
 <li><p><strong>v</strong> (<em>versionedobj.VersionedObject</em>) – value to insert</p></li>
 </ul>
 </dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if v is not an instance of a VersionedObject</p></li>
+<li><p><strong>IndexError</strong> – if i is not a valid index in the list</p></li>
+</ul>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="versionedobj.types.ListField.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField.to_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Convert this object instance to something that is suitable for json.dump</p>
+<dd><p>Convert the list to JSON-serializable dict</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>object instance data as a dict, or a single value</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>any object</p>
+<dd class="field-odd"><p>serialized dict</p>
 </dd>
 </dl>
 </dd></dl>
