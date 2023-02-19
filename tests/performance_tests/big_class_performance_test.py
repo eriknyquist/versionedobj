@@ -77,11 +77,11 @@ def run_test_iterations(index, nesting_levels, vars_per_level, num_iterations=5)
         to_json_times.append(int((time.time() - to_json_start) * 1000))
 
         from_dict_start = time.time()
-        ser.from_dict(cfg, d, validate=False)
+        ser.from_dict(d, cfg, validate=False)
         from_dict_times.append(int((time.time() - from_dict_start) * 1000))
 
         from_json_start = time.time()
-        ser.from_json(cfg, j, validate=False)
+        ser.from_json(j, cfg, validate=False)
         from_json_times.append(int((time.time() - from_json_start) * 1000))
 
         print(f"completed iteration {i + 1}/{num_iterations}")
