@@ -48,6 +48,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">versionedobj</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">versionedobj package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.exceptions">versionedobj.exceptions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InputValidationError"><code class="docutils literal notranslate"><span class="pre">InputValidationError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError"><code class="docutils literal notranslate"><span class="pre">InvalidFilterError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InvalidVersionAttributeError"><code class="docutils literal notranslate"><span class="pre">InvalidVersionAttributeError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError"><code class="docutils literal notranslate"><span class="pre">LoadObjectError</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.object">versionedobj.object module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.CustomValue"><code class="docutils literal notranslate"><span class="pre">CustomValue</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.MigrationResult"><code class="docutils literal notranslate"><span class="pre">MigrationResult</span></code></a></li>
@@ -56,18 +63,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#versionedobj.object.migration"><code class="docutils literal notranslate"><span class="pre">migration()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.exceptions">versionedobj.exceptions module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InputValidationError"><code class="docutils literal notranslate"><span class="pre">InputValidationError</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InvalidFilterError"><code class="docutils literal notranslate"><span class="pre">InvalidFilterError</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.InvalidVersionAttributeError"><code class="docutils literal notranslate"><span class="pre">InvalidVersionAttributeError</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#versionedobj.exceptions.LoadObjectError"><code class="docutils literal notranslate"><span class="pre">LoadObjectError</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.serializer">versionedobj.serializer module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#versionedobj.serializer.FileLoader"><code class="docutils literal notranslate"><span class="pre">FileLoader</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#versionedobj.serializer.Serializer"><code class="docutils literal notranslate"><span class="pre">Serializer</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.types">versionedobj.types module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#versionedobj.types.ListField"><code class="docutils literal notranslate"><span class="pre">ListField</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-versionedobj.utils">versionedobj.utils module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-versionedobj">Module contents</a></li>
 </ul>
 </li>
@@ -104,6 +109,37 @@
 <h1>versionedobj package<a class="headerlink" href="#versionedobj-package" title="Permalink to this heading"></a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-versionedobj.exceptions">
+<span id="versionedobj-exceptions-module"></span><h2>versionedobj.exceptions module<a class="headerlink" href="#module-versionedobj.exceptions" title="Permalink to this heading"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="versionedobj.exceptions.InputValidationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InputValidationError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InputValidationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InputValidationError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised whenever validation of a serialized object fails</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="versionedobj.exceptions.InvalidFilterError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidFilterError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InvalidFilterError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InvalidFilterError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised whenever ‘only’ and ‘ignore’ filters are used at the same time</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="versionedobj.exceptions.InvalidVersionAttributeError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidVersionAttributeError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InvalidVersionAttributeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InvalidVersionAttributeError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised whenever a nested VersionedObject has a ‘version’ attribute</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="versionedobj.exceptions.LoadObjectError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">LoadObjectError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#LoadObjectError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.LoadObjectError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised whenever saved object data cannot be loaded because of a JSON parser error</p>
+</dd></dl>
+
 </section>
 <section id="module-versionedobj.object">
 <span id="versionedobj-object-module"></span><h2>versionedobj.object module<a class="headerlink" href="#module-versionedobj.object" title="Permalink to this heading"></a></h2>
@@ -216,37 +252,6 @@ versionedobject.object.add_migration function.</p>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-</section>
-<section id="module-versionedobj.exceptions">
-<span id="versionedobj-exceptions-module"></span><h2>versionedobj.exceptions module<a class="headerlink" href="#module-versionedobj.exceptions" title="Permalink to this heading"></a></h2>
-<dl class="py exception">
-<dt class="sig sig-object py" id="versionedobj.exceptions.InputValidationError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InputValidationError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InputValidationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InputValidationError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised whenever validation of a serialized object fails</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="versionedobj.exceptions.InvalidFilterError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidFilterError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InvalidFilterError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InvalidFilterError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised whenever ‘only’ and ‘ignore’ filters are used at the same time</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="versionedobj.exceptions.InvalidVersionAttributeError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidVersionAttributeError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#InvalidVersionAttributeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.InvalidVersionAttributeError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised whenever a nested VersionedObject has a ‘version’ attribute</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="versionedobj.exceptions.LoadObjectError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.exceptions.</span></span><span class="sig-name descname"><span class="pre">LoadObjectError</span></span><a class="reference internal" href="_modules/versionedobj/exceptions.html#LoadObjectError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.exceptions.LoadObjectError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised whenever saved object data cannot be loaded because of a JSON parser error</p>
 </dd></dl>
 
 </section>
@@ -461,6 +466,77 @@ default values defined in the matching class attributes.</p>
 
 </dd></dl>
 
+</section>
+<section id="module-versionedobj.types">
+<span id="versionedobj-types-module"></span><h2>versionedobj.types module<a class="headerlink" href="#module-versionedobj.types" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="versionedobj.types.ListField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">versionedobj.types.</span></span><span class="sig-name descname"><span class="pre">ListField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#versionedobj.object.CustomValue" title="versionedobj.object.CustomValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomValue</span></code></a></p>
+<p>List class that allows putting a sequence of VersionedObject instances in a
+single VersionedObject field. Behaves like a regular python list, except that it
+can only contain VersionedObject instances, and can only contain instances of
+the same VersionedObject class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.types.ListField.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.types.ListField.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField.append" title="Permalink to this definition"></a></dt>
+<dd><p>Append a value to the list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>versionedobj.VersionedObject</em>) – value to append</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.types.ListField.from_dict">
+<span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Load this object instance with values from a dict returned by json.load</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attrs</strong> (<em>dict</em>) – object instance data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.types.ListField.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField.insert" title="Permalink to this definition"></a></dt>
+<dd><p>Insert a value at a specific position in the list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<em>int</em>) – list position to insert new item at</p></li>
+<li><p><strong>v</strong> (<em>versionedobj.VersionedObject</em>) – value to insert</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="versionedobj.types.ListField.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/versionedobj/types.html#ListField.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#versionedobj.types.ListField.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert this object instance to something that is suitable for json.dump</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object instance data as a dict, or a single value</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>any object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-versionedobj.utils">
+<span id="versionedobj-utils-module"></span><h2>versionedobj.utils module<a class="headerlink" href="#module-versionedobj.utils" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-versionedobj">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-versionedobj" title="Permalink to this heading"></a></h2>

@@ -5,6 +5,12 @@ from versionedobj.serializer import Serializer
 
 
 class ListField(CustomValue):
+    """
+    List class that allows putting a sequence of VersionedObject instances in a
+    single VersionedObject field. Behaves like a regular python list, except that it
+    can only contain VersionedObject instances, and can only contain instances of
+    the same VersionedObject class.
+    """
     def __init__(self, arg):
         self._obj_class = None
         self._values = []
@@ -97,10 +103,21 @@ class ListField(CustomValue):
         return list(self._values) == list(othervals)
 
     def append(self, v):
+        """
+        Append a value to the list
+
+        :param versionedobj.VersionedObject v: value to append
+        """
         self._check_value(v)
         self._values.append(v)
 
     def insert(self, i, v):
+        """
+        Insert a value at a specific position in the list
+
+        :param int i: list position to insert new item at
+        :param versionedobj.VersionedObject v: value to insert
+        """
         self._check_index(i)
         self._check_value(v)
         self._values.insert(i, v)

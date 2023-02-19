@@ -4,14 +4,6 @@ versionedobj package
 Submodules
 ----------
 
-versionedobj.object module
---------------------------
-
-.. automodule:: versionedobj.object
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 versionedobj.exceptions module
 ------------------------------
 
@@ -20,10 +12,34 @@ versionedobj.exceptions module
    :undoc-members:
    :show-inheritance:
 
+versionedobj.object module
+--------------------------
+
+.. automodule:: versionedobj.object
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 versionedobj.serializer module
 ------------------------------
 
 .. automodule:: versionedobj.serializer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+versionedobj.types module
+-------------------------
+
+.. automodule:: versionedobj.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+versionedobj.utils module
+-------------------------
+
+.. automodule:: versionedobj.utils
    :members:
    :undoc-members:
    :show-inheritance:
