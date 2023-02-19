@@ -275,23 +275,23 @@ The same parameter can be used for de-serializing:
 
     # Every field except for the 'friend_list' field is loaded from the file
 
-versionedobj.List: store a sequence of objects in a single field
-----------------------------------------------------------------
+versionedobj.ListField: store a sequence of objects in a single field
+---------------------------------------------------------------------
 
-``versionedobj.List`` is a list class that behaves exactly like a regular python list,
+``versionedobj.ListField`` is a list class that behaves exactly like a regular python list,
 except for the following 2 differences:
 
 * Only instances of a class which is a subclass of the ``VersionedObject`` may be added to lists
   (ValueError is raised otherwise)
 * Only instances of the same class may be added to a single list (ValueError is raised otherwise)
 
-You can assign a ``versionedobj.List`` instance as the value for a field in your versioned object
+You can assign a ``versionedobj.ListField`` instance as the value for a field in your versioned object
 class definition, and that field can then hold a sequence of multiple versioned objects. This
 is useful if you need to store a variably-sized collection of objects that are created a runtime.
 
 .. code:: python
 
-    from versionedobj import VersionedObject, Serializer, List
+    from versionedobj import VersionedObject, Serializer, ListField
 
     # The list will contain objects of this type only
     class UserData(VersionedObject):
@@ -301,9 +301,8 @@ is useful if you need to store a variably-sized collection of objects that are c
     # This object will contain a list of multiple users
     class AllUserData(VersionedObject):
         # a List may only contain instances of the same class
-        users = List(UserData)
+        users = ListField(UserData)
 
-    serializer = Serializer(AllUserData)
     all_user_data = AllUserData()
 
     # Add some users to the list
@@ -311,8 +310,7 @@ is useful if you need to store a variably-sized collection of objects that are c
     all_user_data.users.append(UserData(initial_values={'name': 'sally', 'age': 28}))
 
     # Serialize object and print out JSON data
-    json_str = serializer.to_json(all_user_data, indent=4)
-    print(json_str)
+    print(Serializer(AllUserData).to_json(all_user_data, indent=4))
 
     # Output looks like this:
     #

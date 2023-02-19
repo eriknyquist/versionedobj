@@ -1,4 +1,4 @@
-from versionedobj import VersionedObject, Serializer, List
+from versionedobj import VersionedObject, Serializer, ListField
 
 # The list will contain objects of this type only
 class UserData(VersionedObject):
@@ -7,8 +7,8 @@ class UserData(VersionedObject):
 
 # This object will contain a list of multiple users
 class AllUserData(VersionedObject):
-    # a List may only contain instances of the same class
-    users = List(UserData)
+    # a ListField may only contain instances of the same class
+    users = ListField(UserData)
 
 serializer = Serializer(AllUserData)
 all_user_data = AllUserData()

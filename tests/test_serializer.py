@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from versionedobj import (VersionedObject, FileLoader, LoadObjectError, InvalidFilterError, Serializer, CustomValue, migration, List)
+from versionedobj import (VersionedObject, FileLoader, LoadObjectError, InvalidFilterError, Serializer, CustomValue, migration, ListField)
 
 
 class TestVersionedObjectSerializer(TestCase):
@@ -1616,7 +1616,7 @@ class TestVersionedObjectSerializer(TestCase):
 
     def test_to_from_dict_type_list_1(self):
         """
-        Tests that a VersionedObject containing a types.List object is serialized to,
+        Tests that a VersionedObject containing a types.ListField object is serialized to,
         and deserialized from a dict as expected
         """
         class TestVal1(VersionedObject):
@@ -1631,7 +1631,7 @@ class TestVersionedObjectSerializer(TestCase):
         class TestConfig(VersionedObject):
             var1 = 11
             var2 = 22
-            var3 = List([TestVal2(), TestVal2()])
+            var3 = ListField([TestVal2(), TestVal2()])
 
         ser = Serializer()
         cfg = TestConfig()
@@ -1660,7 +1660,7 @@ class TestVersionedObjectSerializer(TestCase):
 
     def test_to_from_dict_type_list_2(self):
         """
-        Tests that a VersionedObject containing a types.List object is serialized to,
+        Tests that a VersionedObject containing a types.ListField object is serialized to,
         and deserialized from a dict as expected
         """
         class TestVal1(VersionedObject):
@@ -1675,7 +1675,7 @@ class TestVersionedObjectSerializer(TestCase):
         class TestConfig(VersionedObject):
             var1 = 11
             var2 = 22
-            var3 = List(TestVal2)
+            var3 = ListField(TestVal2)
 
         ser = Serializer()
         cfg = TestConfig()
@@ -1715,7 +1715,7 @@ class TestVersionedObjectSerializer(TestCase):
 
     def test_to_from_json_type_list_1(self):
         """
-        Tests that a VersionedObject containing a types.List object is serialized to,
+        Tests that a VersionedObject containing a types.ListField object is serialized to,
         and deserialized from a JSON string as expected
         """
         class TestVal1(VersionedObject):
@@ -1730,7 +1730,7 @@ class TestVersionedObjectSerializer(TestCase):
         class TestConfig(VersionedObject):
             var1 = 11
             var2 = 22
-            var3 = List([TestVal2(), TestVal2()])
+            var3 = ListField([TestVal2(), TestVal2()])
 
         ser = Serializer()
         cfg = TestConfig()
@@ -1754,7 +1754,7 @@ class TestVersionedObjectSerializer(TestCase):
 
     def test_to_from_json_type_list_2(self):
         """
-        Tests that a VersionedObject containing a types.List object is serialized to,
+        Tests that a VersionedObject containing a types.ListField object is serialized to,
         and deserialized from a JSON string as expected
         """
         class TestVal1(VersionedObject):
@@ -1769,7 +1769,7 @@ class TestVersionedObjectSerializer(TestCase):
         class TestConfig(VersionedObject):
             var1 = 11
             var2 = 22
-            var3 = List(TestVal2)
+            var3 = ListField(TestVal2)
 
         ser = Serializer()
         cfg = TestConfig()

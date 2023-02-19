@@ -4,7 +4,7 @@ from versionedobj.object import CustomValue, VersionedObject
 from versionedobj.serializer import Serializer
 
 
-class List(CustomValue):
+class ListField(CustomValue):
     def __init__(self, arg):
         self._obj_class = None
         self._values = []
@@ -23,13 +23,13 @@ class List(CustomValue):
             if iterable:
                 for i in arg:
                     if not isinstance(i, VersionedObject):
-                        raise ValueError("versionedobj.types.List may only contain VersionedObject instances")
+                        raise ValueError("ListField may only contain VersionedObject instances")
 
                     if self._obj_class is None:
                         self._obj_class = i.__class__
                     else:
                         if self._obj_class != i.__class__:
-                            raise ValueError("versionedobj.types.List may only contain objects of the same class")
+                            raise ValueError("ListField may only contain objects of the same class")
 
                     self._values.append(i)
 
@@ -72,15 +72,15 @@ class List(CustomValue):
         return (i for i in self._values)
 
     def __add__(self, other):
-        if isinstance(other, List):
+        if isinstance(other, ListField):
             othervals = other._values
         else:
             othervals = other
 
-        return List(self._values + list(othervals))
+        return ListField(self._values + list(othervals))
 
     def __iadd__(self, other):
-        if isinstance(other, List):
+        if isinstance(other, ListField):
             othervals = other._values
         else:
             othervals = other
@@ -89,7 +89,7 @@ class List(CustomValue):
         return self
 
     def __eq__(self, other):
-        if isinstance(other, List):
+        if isinstance(other, ListField):
             othervals = other._values
         else:
             othervals = other

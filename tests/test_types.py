@@ -20,20 +20,20 @@ class WrongVal(VersionedObject):
 class TestTypes(TestCase):
     def test_exceptions(self):
         """
-        Tests that types.List throws all the expected exceptions
+        Tests that types.ListField throws all the expected exceptions
         """
         # init errors
-        self.assertRaises(ValueError, types.List, 5)
-        self.assertRaises(ValueError, types.List, "hdth")
-        self.assertRaises(ValueError, types.List, True)
-        self.assertRaises(ValueError, types.List, 44.4)
-        self.assertRaises(ValueError, types.List, [44.4])
-        self.assertRaises(ValueError, types.List, [Val(1), 44.4])
-        self.assertRaises(ValueError, types.List, [])
-        self.assertRaises(ValueError, types.List, [Val(1), WrongVal(1)])
+        self.assertRaises(ValueError, types.ListField, 5)
+        self.assertRaises(ValueError, types.ListField, "hdth")
+        self.assertRaises(ValueError, types.ListField, True)
+        self.assertRaises(ValueError, types.ListField, 44.4)
+        self.assertRaises(ValueError, types.ListField, [44.4])
+        self.assertRaises(ValueError, types.ListField, [Val(1), 44.4])
+        self.assertRaises(ValueError, types.ListField, [])
+        self.assertRaises(ValueError, types.ListField, [Val(1), WrongVal(1)])
 
         # append errors
-        x = types.List([Val(1), Val(2)])
+        x = types.ListField([Val(1), Val(2)])
         self.assertRaises(ValueError, x.append, WrongVal(1))
 
         # insert errors
@@ -66,14 +66,14 @@ class TestTypes(TestCase):
 
     def test_list_basic(self):
         """
-        Tests that types.List behaves like a list for basic/common operations
+        Tests that types.ListField behaves like a list for basic/common operations
         """
         source_data = [Val(1), Val(2), Val(3), Val(4)]
-        x = types.List(source_data)
+        x = types.ListField(source_data)
 
         # List equality
         self.assertEqual(x, source_data)
-        self.assertEqual(x, types.List(source_data))
+        self.assertEqual(x, types.ListField(source_data))
 
         # List length
         self.assertEqual(len(x), len(source_data))
@@ -104,10 +104,10 @@ class TestTypes(TestCase):
 
     def test_list_iteration(self):
         """
-        Tests that types.List behaves like a list for iteration stuff
+        Tests that types.ListField behaves like a list for iteration stuff
         """
         source_data = [Val(1), Val(2), Val(3), Val(4), Val(True), Val(33.3), Val(1212123)]
-        x = types.List(source_data)
+        x = types.ListField(source_data)
 
         # Iteration
         count = 0
@@ -120,27 +120,27 @@ class TestTypes(TestCase):
 
     def test_list_combining(self):
         """
-        Tests that types.List behaves like a list when adding lists together
+        Tests that types.ListField behaves like a list when adding lists together
         """
-        x = types.List([Val(5), Val(6), Val(7)])
+        x = types.ListField([Val(5), Val(6), Val(7)])
 
         # test __iadd__
         x += [Val(8), Val(9)]
         self.assertEqual(x, [Val(5), Val(6), Val(7), Val(8), Val(9)])
-        x += types.List([Val(10), Val(11)])
+        x += types.ListField([Val(10), Val(11)])
         self.assertEqual(x, [Val(5), Val(6), Val(7), Val(8), Val(9), Val(10), Val(11)])
 
         # test __add__
         x1 = x + [Val(12), Val(13)]
         self.assertEqual(x1, [Val(5), Val(6), Val(7), Val(8), Val(9), Val(10), Val(11), Val(12), Val(13)])
 
-        x2 = x1 + types.List([Val(14), Val(15)])
+        x2 = x1 + types.ListField([Val(14), Val(15)])
         self.assertEqual(x2, [Val(5), Val(6), Val(7), Val(8), Val(9), Val(10), Val(11), Val(12), Val(13),
                               Val(14), Val(15)])
 
     def test_list_to_from_dict(self):
         """
-        Tests that types.List behaves as expected when serialized to and from a dict
+        Tests that types.ListField behaves as expected when serialized to and from a dict
         """
 
         test_data = [
@@ -151,8 +151,8 @@ class TestTypes(TestCase):
         ]
 
         for input_list, expected_dict in test_data:
-            L = types.List(input_list)
-            L2 = types.List(Val)
+            L = types.ListField(input_list)
+            L2 = types.ListField(Val)
             L2.from_dict(expected_dict)
 
             self.assertEqual(L.to_dict(), expected_dict)
