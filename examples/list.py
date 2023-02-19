@@ -10,8 +10,8 @@ class AllUserData(VersionedObject):
     # a ListField may only contain instances of the same class
     users = ListField(UserData)
 
-serializer = Serializer(AllUserData)
 all_user_data = AllUserData()
+serializer = Serializer()
 
 # Add some users to the list
 all_user_data.users.append(UserData(initial_values={'name': 'sam', 'age': 66}))
@@ -25,5 +25,5 @@ print(json_str)
 other_user_data = AllUserData()
 
 # Load new object from JSON string containing the added users and print user list
-serializer.from_json(json_str)
+serializer.from_json(json_str, other_user_data)
 print(other_user_data.users)

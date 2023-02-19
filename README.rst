@@ -310,7 +310,7 @@ is useful if you need to store a variably-sized collection of objects that are c
     all_user_data.users.append(UserData(initial_values={'name': 'sally', 'age': 28}))
 
     # Serialize object and print out JSON data
-    print(Serializer(AllUserData).to_json(all_user_data, indent=4))
+    print(Serializer(all_user_data).to_json(indent=4))
 
     # Output looks like this:
     #
