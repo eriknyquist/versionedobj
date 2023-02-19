@@ -275,6 +275,60 @@ The same parameter can be used for de-serializing:
 
     # Every field except for the 'friend_list' field is loaded from the file
 
+versionedobj.List: store a sequence of objects in a single field
+----------------------------------------------------------------
+
+``versionedobj.List`` is a list class that behaves exactly like a regular python list,
+except for the following 2 differences:
+
+* Only instances of a class which is a subclass of the ``VersionedObject`` may be added to lists
+  (ValueError is raised otherwise)
+* Only instances of the same class may be added to a single list (ValueError is raised otherwise)
+
+You can assign a ``versionedobj.List`` instance as the value for a field in your versioned object
+class definition, and that field can then hold a sequence of multiple versioned objects. This
+is useful if you need to store a variably-sized collection of objects that are created a runtime.
+
+.. code:: python
+
+    from versionedobj import VersionedObject, Serializer, List
+
+    # The list will contain objects of this type only
+    class UserData(VersionedObject):
+        name = "john"
+        age = 30
+
+    # This object will contain a list of multiple users
+    class AllUserData(VersionedObject):
+        # a List may only contain instances of the same class
+        users = List(UserData)
+
+    serializer = Serializer(AllUserData)
+    all_user_data = AllUserData()
+
+    # Add some users to the list
+    all_user_data.users.append(UserData(initial_values={'name': 'sam', 'age': 66}))
+    all_user_data.users.append(UserData(initial_values={'name': 'sally', 'age': 28}))
+
+    # Serialize object and print out JSON data
+    json_str = serializer.to_json(all_user_data, indent=4)
+    print(json_str)
+
+    # Output looks like this:
+    #
+    # {
+    #     "users": [
+    #         {
+    #             "name": "sam",
+    #             "age": 66
+    #         },
+    #         {
+    #             "name": "sally",
+    #             "age": 28
+    #         }
+    #     ]
+    # }
+
 Context manager for loading & editing saved object data
 -------------------------------------------------------
 
