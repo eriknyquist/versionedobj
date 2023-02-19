@@ -107,6 +107,7 @@ class ListField(CustomValue):
         Append a value to the list
 
         :param versionedobj.VersionedObject v: value to append
+        :raises ValueError: if v is not an instance of a VersionedObject
         """
         self._check_value(v)
         self._values.append(v)
@@ -117,15 +118,25 @@ class ListField(CustomValue):
 
         :param int i: list position to insert new item at
         :param versionedobj.VersionedObject v: value to insert
+        :raises ValueError: if v is not an instance of a VersionedObject
+        :raises IndexError: if i is not a valid index in the list
         """
         self._check_index(i)
         self._check_value(v)
         self._values.insert(i, v)
 
     def to_dict(self):
+        """
+        Convert the list to JSON-serializable dict
+
+        :return: serialized dict
+        """
         return [self._serializer.to_dict(i) for i in self._values]
 
     def from_dict(self, attrs):
+        """
+        Populate the list with data from a dict
+        """
         self._values = []
         for d in attrs:
             ins = self._obj_class()
