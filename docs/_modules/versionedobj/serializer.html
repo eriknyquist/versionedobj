@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>versionedobj.serializer &mdash; versionedobj v2.0.3 documentation</title>
+  <title>versionedobj.serializer &mdash; versionedobj v2.0.4 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             versionedobj
           </a>
               <div class="version">
-                v2.0.3
+                v2.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -90,24 +90,21 @@
 <span class="sd">    :param list only: List of &#39;only&#39; names</span>
 <span class="sd">    :param list ignore: List of &#39;ignore&#39; names</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">attrs_stack</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_attrs</span><span class="p">)]</span>
+    <span class="n">attrs_stack</span> <span class="o">=</span> <span class="p">[(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="n">parent_attrs</span><span class="p">)]</span>
 
     <span class="k">while</span> <span class="n">attrs_stack</span><span class="p">:</span>
-        <span class="n">fieldname</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">fieldname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+        <span class="n">fieldname</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">parents</span> <span class="k">if</span> <span class="n">fieldname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">parents</span> <span class="o">+</span> <span class="p">[</span><span class="n">fieldname</span><span class="p">]</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-            <span class="n">field</span> <span class="o">=</span> <span class="n">_ObjField</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="n">dotname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">()</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">_ObjField</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="n">field_value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">get_obj_field</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">VersionedObject</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">)):</span>
-                <span class="n">attrs_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+                <span class="n">attrs_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">_field_should_be_skipped</span><span class="p">(</span><span class="n">dotname</span><span class="p">,</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_field_should_be_skipped</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">dot_name</span><span class="p">(),</span> <span class="n">only</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">field</span>
 
 
