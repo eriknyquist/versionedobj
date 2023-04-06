@@ -149,6 +149,41 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(1, cfg.val2.val1)
         self.assertEqual(55.5, cfg.val2.val2)
 
+    def test_nested_config_dict_2(self):
+        """
+        Tests that a VersionedObject instance with nested VersionedObjbects still
+        contains the same values after being serialized to a dict and deserialized
+        back from the dict
+        """
+        class NestedConfig(VersionedObject):
+            val1 = 1
+            val2 = 55.5
+
+        class TestConfig(VersionedObject):
+            val1 = "a"
+            val2 = NestedConfig()
+            val3 = NestedConfig()
+
+        cfg = TestConfig()
+        s = Serializer(cfg)
+
+        d = s.to_dict()
+
+        self.assertEqual("a", d["val1"])
+        self.assertEqual(1, d["val2"]["val1"])
+        self.assertEqual(55.5, d["val2"]["val2"])
+        self.assertEqual(1, d["val3"]["val1"])
+        self.assertEqual(55.5, d["val3"]["val2"])
+
+        result = s.from_dict(d)
+        self.assertIs(None, result) # verify no migrations peformewd
+
+        self.assertEqual("a", cfg.val1)
+        self.assertEqual(1, cfg.val2.val1)
+        self.assertEqual(55.5, cfg.val2.val2)
+        self.assertEqual(1, cfg.val3.val1)
+        self.assertEqual(55.5, cfg.val3.val2)
+
     def test_nested_config_dict_change(self):
         """
         Tests that we can change instance attributes on a VersionedObject instance
@@ -331,6 +366,7 @@ class TestVersionedObjectSerializer(TestCase):
         class Level3(VersionedObject):
             val1 = 66.6
             val2 = Level4()
+            val3 = Level4()
 
         class Level2(VersionedObject):
             val1 = "gg"
@@ -342,6 +378,7 @@ class TestVersionedObjectSerializer(TestCase):
 
         ser = Serializer()
         cfg = Level1()
+
         d = ser.to_dict(cfg)
 
         self.assertEqual(3, d['val1'])
@@ -349,6 +386,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(66.6, d['val2']['val2']['val1'])
         self.assertEqual(True, d['val2']['val2']['val2']['val1'])
         self.assertEqual(False, d['val2']['val2']['val2']['val2'])
+        self.assertEqual(True, d['val2']['val2']['val3']['val1'])
+        self.assertEqual(False, d['val2']['val2']['val3']['val2'])
 
         d['val2']['val1'] = "changed"
         result = ser.from_dict(d, cfg)
@@ -359,6 +398,8 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual(66.6, cfg.val2.val2.val1)
         self.assertEqual(True, cfg.val2.val2.val2.val1)
         self.assertEqual(False, cfg.val2.val2.val2.val2)
+        self.assertEqual(True, cfg.val2.val2.val3.val1)
+        self.assertEqual(False, cfg.val2.val2.val3.val2)
 
     def test_load_json_deeper_nesting(self):
         """
@@ -385,7 +426,7 @@ class TestVersionedObjectSerializer(TestCase):
         ser = Serializer(cfg)
         d = ser.to_json(cfg)
         result = ser.from_json(d)
-        self.assertIs(None, result) # verify no migrations peformewd
+        self.assertIs(None, result) # verify no migrations peformed
 
         self.assertEqual(3, cfg.val1)
         self.assertEqual('gg', cfg.val2.val1)
@@ -1834,17 +1875,25 @@ class TestVersionedObjectSerializer(TestCase):
 
         class TestConfig(VersionedObject):
             var1 = TestConfig2()
+            var2 = 7
+            var3 = TestConfig2()
 
         serializer = Serializer()
         config = TestConfig()
 
         self.assertEqual(config.var1.var1, 1)
+        self.assertEqual(config.var2, 7)
+        self.assertEqual(config.var3.var1, 1)
 
-        serializer.from_dict({"var1": {"var1": 2}}, config)
+        serializer.from_dict({"var1": {"var1": 2}, "var2": 8, "var3": {"var1": 3}}, config)
 
         config2 = TestConfig()
         self.assertEqual(config.var1.var1, 2)
+        self.assertEqual(config.var2, 8)
+        self.assertEqual(config.var3.var1, 3)
         self.assertEqual(config2.var1.var1, 1)
+        self.assertEqual(config2.var2, 7)
+        self.assertEqual(config2.var3.var1, 1)
 
     def test_loading_doesnt_change_default_values_listfield(self):
         """

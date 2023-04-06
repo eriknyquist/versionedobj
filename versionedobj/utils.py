@@ -140,23 +140,20 @@ def _walk_obj_attrs(parent_obj, only=[], ignore=[]):
     :param list only: List of 'only' names
     :param list ignore: List of 'ignore' names
     """
-    parents = []
-    obj_stack = [(None, parent_obj)]
+    obj_stack = [(None, [], parent_obj)]
 
     while obj_stack:
-        fieldname, obj = obj_stack.pop(0)
-        if fieldname is not None:
-            parents.append(fieldname)
+        fieldname, parents, obj = obj_stack.pop(0)
 
         for n in _iter_obj_attrs(obj):
+            p = parents if fieldname is None else parents + [fieldname]
             value = obj.__dict__[n]
-            field = _ObjField(parents, n, value)
-            dotname = field.dot_name()
+            field = _ObjField(p, n, value)
 
             if isinstance(value, _ObjField.obj_class):
-                obj_stack.append((n, value))
+                obj_stack.append((n, p, value))
             else:
-                if not _field_should_be_skipped(dotname, only, ignore):
+                if not _field_should_be_skipped(field.dot_name(), only, ignore):
                     yield field
 
 

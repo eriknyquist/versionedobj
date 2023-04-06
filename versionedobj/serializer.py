@@ -17,24 +17,21 @@ def _walk_dict_attrs(obj, parent_attrs, only=[], ignore=[]):
     :param list only: List of 'only' names
     :param list ignore: List of 'ignore' names
     """
-    parents = []
-    attrs_stack = [(None, parent_attrs)]
+    attrs_stack = [(None, [], parent_attrs)]
 
     while attrs_stack:
-        fieldname, attrs = attrs_stack.pop(0)
-        if fieldname is not None:
-            parents.append(fieldname)
+        fieldname, parents, attrs = attrs_stack.pop(0)
 
         for n in attrs:
+            p = parents if fieldname is None else parents + [fieldname]
             value = attrs[n]
-            field = _ObjField(parents, n, value)
-            dotname = field.dot_name()
+            field = _ObjField(p, n, value)
             field_value = field.get_obj_field(obj)
 
             if (isinstance(field_value, VersionedObject) and (type(value) == dict)):
-                attrs_stack.append((n, value))
+                attrs_stack.append((n, p, value))
             else:
-                if not _field_should_be_skipped(dotname, only, ignore):
+                if not _field_should_be_skipped(field.dot_name(), only, ignore):
                     yield field
 
 
