@@ -162,7 +162,8 @@ class TestVersionedObjectSerializer(TestCase):
         class TestConfig(VersionedObject):
             val1 = "a"
             val2 = NestedConfig()
-            val3 = NestedConfig()
+            val3 = 5
+            val4 = NestedConfig()
 
         cfg = TestConfig()
         s = Serializer(cfg)
@@ -172,8 +173,9 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual("a", d["val1"])
         self.assertEqual(1, d["val2"]["val1"])
         self.assertEqual(55.5, d["val2"]["val2"])
-        self.assertEqual(1, d["val3"]["val1"])
-        self.assertEqual(55.5, d["val3"]["val2"])
+        self.assertEqual(5, d["val3"])
+        self.assertEqual(1, d["val4"]["val1"])
+        self.assertEqual(55.5, d["val4"]["val2"])
 
         result = s.from_dict(d)
         self.assertIs(None, result) # verify no migrations peformewd
@@ -181,8 +183,9 @@ class TestVersionedObjectSerializer(TestCase):
         self.assertEqual("a", cfg.val1)
         self.assertEqual(1, cfg.val2.val1)
         self.assertEqual(55.5, cfg.val2.val2)
-        self.assertEqual(1, cfg.val3.val1)
-        self.assertEqual(55.5, cfg.val3.val2)
+        self.assertEqual(5, cfg.val3)
+        self.assertEqual(1, cfg.val4.val1)
+        self.assertEqual(55.5, cfg.val4.val2)
 
     def test_nested_config_dict_change(self):
         """
